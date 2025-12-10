@@ -61,15 +61,13 @@ export default function SapereLayout({ children }: { children: React.ReactNode }
   }
 
   if (!user) {
-    // Redirect to login page
-    if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+    // Redirect to login page (but not if already there)
+    if (typeof window !== "undefined" && window.location.pathname !== "/login" && window.location.pathname !== "/change-password") {
       window.location.href = "/login";
+      return null;
     }
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    // If on login page, don't render layout
+    return null;
   }
 
   const filteredNavItems = navItems.filter((item) => item.roles.includes(user.role));

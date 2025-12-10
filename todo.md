@@ -97,3 +97,10 @@
 - [x] Modificar SapereLayout para redirecionar para /login ao invés de OAuth
 - [x] Remover botão OAuth da página de login
 - [x] Simplificar fluxo de login para usar apenas email/senha
+
+## Correção de Bugs na Tela de Login
+- [x] Identificar causa do travamento na página de login
+- [x] Simplificar LoginPage removendo redirecionamentos desnecessários
+- [x] Corrigir loop de redirecionamento entre SapereLayout e LoginPage
+- [x] Separar rotas públicas (login) de rotas protegidas (dashboard)
+- [x] Testar fluxo completo de login

@@ -41,23 +41,30 @@ function DashboardRouter() {
 
 function Router() {
   return (
-    <SapereLayout>
-      <Switch>
-        <Route path="/" component={DashboardRouter} />
-        <Route path="/agenda" component={AgendaPage} />
-        <Route path="/documentos" component={DocumentosPage} />
-        <Route path="/notificacoes" component={NotificacoesPage} />
-        <Route path="/pacientes" component={PacientesPage} />
-        <Route path="/prontuarios/:id" component={ProntuarioPage} />
-        <Route path="/admin/usuarios" component={AdminUsersPage} />
-        <Route path="/login" component={LoginPage} />
-        <Route path="/change-password" component={ChangePasswordPage} />
-        {/* Redirect unknown routes to home */}
-        <Route>
-          <Redirect to="/" />
-        </Route>
-      </Switch>
-    </SapereLayout>
+    <Switch>
+      {/* Public routes without layout */}
+      <Route path="/login" component={LoginPage} />
+      <Route path="/change-password" component={ChangePasswordPage} />
+      
+      {/* Protected routes with layout */}
+      <Route path="/">
+        <SapereLayout>
+          <Switch>
+            <Route path="/" component={DashboardRouter} />
+            <Route path="/agenda" component={AgendaPage} />
+            <Route path="/documentos" component={DocumentosPage} />
+            <Route path="/notificacoes" component={NotificacoesPage} />
+            <Route path="/pacientes" component={PacientesPage} />
+            <Route path="/prontuarios/:id" component={ProntuarioPage} />
+            <Route path="/admin/usuarios" component={AdminUsersPage} />
+            {/* Redirect unknown routes to home */}
+            <Route>
+              <Redirect to="/" />
+            </Route>
+          </Switch>
+        </SapereLayout>
+      </Route>
+    </Switch>
   );
 }
 

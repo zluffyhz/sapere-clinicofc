@@ -5,19 +5,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-// OAuth login removed - using password-only authentication
 import { AlertCircle, Loader2 } from "lucide-react";
-import { useLocation } from "wouter";
 
 export default function LoginPage() {
-  const [, setLocation] = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const loginMutation = trpc.auth.loginWithPassword.useMutation({
     onSuccess: () => {
-      // Redirect to home after successful login
+      // Force full page reload to refresh auth state
       window.location.href = "/";
     },
     onError: (error) => {
@@ -43,18 +40,18 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center">
           <img src="/logo-sapere.webp" alt="Sapere" className="h-20 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-foreground">Portal Sapere</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="text-2xl font-bold text-gray-900">Portal Sapere</h1>
+          <p className="text-gray-600 mt-2">
             Gestão de terapias para famílias e terapeutas
           </p>
         </div>
 
         {/* Login Card */}
-        <Card>
+        <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle>Entrar com Email e Senha</CardTitle>
+            <CardTitle>Entrar</CardTitle>
             <CardDescription>
-              Acesse sua conta usando suas credenciais
+              Use suas credenciais para acessar o sistema
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -76,6 +73,7 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loginMutation.isPending}
                   required
+                  autoComplete="email"
                 />
               </div>
 
@@ -89,6 +87,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={loginMutation.isPending}
                   required
+                  autoComplete="current-password"
                 />
               </div>
 
@@ -107,12 +106,10 @@ export default function LoginPage() {
                 )}
               </Button>
             </form>
-
-
           </CardContent>
         </Card>
 
-        <p className="text-center text-sm text-muted-foreground">
+        <p className="text-center text-sm text-gray-600">
           Primeira vez? Entre em contato com o administrador para criar sua conta.
         </p>
       </div>
