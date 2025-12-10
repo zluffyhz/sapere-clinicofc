@@ -92,3 +92,8 @@
 - [x] Implementar página de alteração de senha
 - [x] Criar testes para autenticação por senha
 - [x] Mostrar senha temporária ao admin após criar usuário
+
+## Correção de Fluxo de Login
+- [x] Modificar SapereLayout para redirecionar para /login ao invés de OAuth
+- [x] Remover botão OAuth da página de login
+- [x] Simplificar fluxo de login para usar apenas email/senha

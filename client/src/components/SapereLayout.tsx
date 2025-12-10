@@ -1,5 +1,5 @@
 import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
+// import { getLoginUrl } from "@/const"; // Not needed anymore
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -61,18 +61,13 @@ export default function SapereLayout({ children }: { children: React.ReactNode }
   }
 
   if (!user) {
+    // Redirect to login page
+    if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+      window.location.href = "/login";
+    }
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4">
-        <div className="text-center space-y-6 max-w-md">
-          <img src="/logo-sapere.webp" alt="Sapere" className="h-24 mx-auto" />
-          <h1 className="text-3xl font-bold text-foreground">Bem-vindo à Sapere</h1>
-          <p className="text-muted-foreground">
-            Plataforma de gestão de terapias para famílias e terapeutas
-          </p>
-          <Button asChild size="lg" className="w-full">
-            <a href={getLoginUrl()}>Entrar</a>
-          </Button>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
