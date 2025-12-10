@@ -39,6 +39,14 @@ function DashboardRouter() {
   return <FamilyDashboard />;
 }
 
+function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
+  return (
+    <SapereLayout>
+      <Component />
+    </SapereLayout>
+  );
+}
+
 function Router() {
   return (
     <Switch>
@@ -48,21 +56,25 @@ function Router() {
       
       {/* Protected routes with layout */}
       <Route path="/">
-        <SapereLayout>
-          <Switch>
-            <Route path="/" component={DashboardRouter} />
-            <Route path="/agenda" component={AgendaPage} />
-            <Route path="/documentos" component={DocumentosPage} />
-            <Route path="/notificacoes" component={NotificacoesPage} />
-            <Route path="/pacientes" component={PacientesPage} />
-            <Route path="/prontuarios/:id" component={ProntuarioPage} />
-            <Route path="/admin/usuarios" component={AdminUsersPage} />
-            {/* Redirect unknown routes to home */}
-            <Route>
-              <Redirect to="/" />
-            </Route>
-          </Switch>
-        </SapereLayout>
+        {() => <ProtectedRoute component={DashboardRouter} />}
+      </Route>
+      <Route path="/agenda">
+        {() => <ProtectedRoute component={AgendaPage} />}
+      </Route>
+      <Route path="/documentos">
+        {() => <ProtectedRoute component={DocumentosPage} />}
+      </Route>
+      <Route path="/notificacoes">
+        {() => <ProtectedRoute component={NotificacoesPage} />}
+      </Route>
+      <Route path="/pacientes">
+        {() => <ProtectedRoute component={PacientesPage} />}
+      </Route>
+      <Route path="/prontuarios/:id">
+        {(params) => <ProtectedRoute component={ProntuarioPage} />}
+      </Route>
+      <Route path="/admin/usuarios">
+        {() => <ProtectedRoute component={AdminUsersPage} />}
       </Route>
     </Switch>
   );

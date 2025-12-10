@@ -104,3 +104,11 @@
 - [x] Corrigir loop de redirecionamento entre SapereLayout e LoginPage
 - [x] Separar rotas públicas (login) de rotas protegidas (dashboard)
 - [x] Testar fluxo completo de login
+
+## Correção de Tela Branca nas Abas
+- [x] Verificar logs do navegador para erros
+- [x] Revisar estrutura de rotas no App.tsx
+- [x] Corrigir problema de rotas aninhadas com wouter
+- [x] Criar componente ProtectedRoute para encapsular SapereLayout
+- [x] Remover Switch aninhado que causava conflito
+- [x] Testar todas as abas (Início, Agenda, Documentos, Pacientes, etc)
