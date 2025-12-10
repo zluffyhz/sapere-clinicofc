@@ -118,3 +118,12 @@
 - [x] Verificar se ProntuarioPage está recebendo parâmetros corretamente
 - [x] Corrigir ProtectedRoute para passar props para componentes
 - [x] Testar navegação para prontuário
+
+## Busca e Filtros na Página de Pacientes
+- [x] Adicionar campo de busca por nome na PacientesPage
+- [x] Adicionar filtro por tipo de terapia (Fonoaudiologia, Psicologia, etc)
+- [x] Implementar lógica de filtro no frontend
+- [x] Adicionar indicador visual de filtros ativos com badges
+- [x] Adicionar botão de limpar filtros
+- [x] Mostrar badges de tipo de terapia em cada paciente
+- [x] Testar busca e filtros com diferentes combinações

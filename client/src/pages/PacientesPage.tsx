@@ -14,15 +14,24 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Users, Plus, Search, Calendar, FileText } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Users, Plus, Search, Calendar, FileText, Filter, X } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Link } from "wouter";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 
 export default function PacientesPage() {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
+  const [therapyTypeFilter, setTherapyTypeFilter] = useState<string>("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newPatient, setNewPatient] = useState({
     name: "",
@@ -34,6 +43,17 @@ export default function PacientesPage() {
 
   const utils = trpc.useUtils();
   const { data: patients, isLoading } = trpc.patients.list.useQuery();
+  
+  // Get appointments for the last year to determine therapy types
+  const startDate = new Date();
+  startDate.setFullYear(startDate.getFullYear() - 1);
+  const endDate = new Date();
+  endDate.setFullYear(endDate.getFullYear() + 1);
+  
+  const { data: appointments } = trpc.appointments.listByDateRange.useQuery({
+    startDate,
+    endDate,
+  });
 
   const createPatientMutation = trpc.patients.create.useMutation({
     onSuccess: () => {
@@ -70,11 +90,36 @@ export default function PacientesPage() {
     });
   };
 
-  const filteredPatients = patients?.filter((patient) =>
-    patient.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Get therapy types for each patient
+  const getPatientTherapyTypes = (patientId: number): string[] => {
+    if (!appointments) return [];
+    const patientAppointments = appointments.filter((apt: any) => apt.patientId === patientId);
+    const types = new Set<string>(patientAppointments.map((apt: any) => apt.therapyType as string));
+    return Array.from(types);
+  };
+
+  // Filter patients by search term and therapy type
+  const filteredPatients = patients?.filter((patient) => {
+    const matchesSearch = patient.name.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    if (therapyTypeFilter === "all") {
+      return matchesSearch;
+    }
+    
+    const patientTherapyTypes = getPatientTherapyTypes(patient.id);
+    const matchesTherapy = patientTherapyTypes.includes(therapyTypeFilter);
+    
+    return matchesSearch && matchesTherapy;
+  });
 
   const isTherapist = user?.role === "therapist" || user?.role === "admin";
+
+  const hasActiveFilters = searchTerm !== "" || therapyTypeFilter !== "all";
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setTherapyTypeFilter("all");
+  };
 
   return (
     <div className="space-y-6">
@@ -190,18 +235,78 @@ export default function PacientesPage() {
         )}
       </div>
 
-      {/* Search */}
+      {/* Search and Filters */}
       <Card>
-        <CardContent className="pt-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Buscar paciente por nome..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+        <CardContent className="pt-6 space-y-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Search */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar paciente por nome..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            {/* Therapy Type Filter */}
+            <div className="w-full md:w-64">
+              <Select value={therapyTypeFilter} onValueChange={setTherapyTypeFilter}>
+                <SelectTrigger>
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-4 w-4" />
+                    <SelectValue placeholder="Tipo de terapia" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas as terapias</SelectItem>
+                  <SelectItem value="fonoaudiologia">Fonoaudiologia</SelectItem>
+                  <SelectItem value="psicologia">Psicologia</SelectItem>
+                  <SelectItem value="terapia_ocupacional">Terapia Ocupacional</SelectItem>
+                  <SelectItem value="psicopedagogia">Psicopedagogia</SelectItem>
+                  <SelectItem value="neuropsicologia">Neuropsicologia</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
+
+          {/* Active Filters */}
+          {hasActiveFilters && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-sm text-muted-foreground">Filtros ativos:</span>
+              {searchTerm && (
+                <Badge variant="secondary" className="gap-1">
+                  Busca: {searchTerm}
+                  <X
+                    className="h-3 w-3 cursor-pointer"
+                    onClick={() => setSearchTerm("")}
+                  />
+                </Badge>
+              )}
+              {therapyTypeFilter !== "all" && (
+                <Badge variant="secondary" className="gap-1">
+                  {therapyTypeFilter === "fonoaudiologia" && "Fonoaudiologia"}
+                  {therapyTypeFilter === "psicologia" && "Psicologia"}
+                  {therapyTypeFilter === "terapia_ocupacional" && "Terapia Ocupacional"}
+                  {therapyTypeFilter === "psicopedagogia" && "Psicopedagogia"}
+                  {therapyTypeFilter === "neuropsicologia" && "Neuropsicologia"}
+                  <X
+                    className="h-3 w-3 cursor-pointer"
+                    onClick={() => setTherapyTypeFilter("all")}
+                  />
+                </Badge>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearFilters}
+                className="h-7 text-xs"
+              >
+                Limpar filtros
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -222,60 +327,89 @@ export default function PacientesPage() {
             <div className="text-center py-12">
               <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
               <p className="text-muted-foreground">
-                {searchTerm
-                  ? "Nenhum paciente encontrado com esse nome"
+                {hasActiveFilters
+                  ? "Nenhum paciente encontrado com os filtros aplicados"
                   : "Nenhum paciente cadastrado"}
               </p>
+              {hasActiveFilters && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={clearFilters}
+                  className="mt-4"
+                >
+                  Limpar filtros
+                </Button>
+              )}
             </div>
           ) : (
             <div className="space-y-4">
-              {filteredPatients.map((patient) => (
-                <div
-                  key={patient.id}
-                  className="p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 space-y-2">
-                      <h3 className="font-semibold text-lg">{patient.name}</h3>
-                      
-                      <div className="grid gap-2 text-sm text-muted-foreground">
-                        {patient.dateOfBirth && (
-                          <div className="flex items-center gap-2">
-                            <Calendar className="h-4 w-4" />
-                            <span>
-                              Nascimento:{" "}
-                              {format(new Date(patient.dateOfBirth), "PP", {
-                                locale: ptBR,
-                              })}
-                            </span>
-                          </div>
-                        )}
+              {filteredPatients.map((patient) => {
+                const therapyTypes = getPatientTherapyTypes(patient.id);
+                
+                return (
+                  <div
+                    key={patient.id}
+                    className="p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 space-y-2">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="font-semibold text-lg">{patient.name}</h3>
+                          {therapyTypes.length > 0 && (
+                            <div className="flex gap-1 flex-wrap">
+                              {therapyTypes.map((type) => (
+                                <Badge key={type} variant="outline" className="text-xs">
+                                  {type === "fonoaudiologia" && "Fono"}
+                                  {type === "psicologia" && "Psico"}
+                                  {type === "terapia_ocupacional" && "TO"}
+                                  {type === "psicopedagogia" && "Psicopedagogia"}
+                                  {type === "neuropsicologia" && "Neuropsi"}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                         
-                        {patient.diagnosis && (
-                          <div className="flex items-start gap-2">
-                            <FileText className="h-4 w-4 mt-0.5" />
-                            <span>Diagnóstico: {patient.diagnosis}</span>
-                          </div>
+                        <div className="grid gap-2 text-sm text-muted-foreground">
+                          {patient.dateOfBirth && (
+                            <div className="flex items-center gap-2">
+                              <Calendar className="h-4 w-4" />
+                              <span>
+                                Nascimento:{" "}
+                                {format(new Date(patient.dateOfBirth), "PP", {
+                                  locale: ptBR,
+                                })}
+                              </span>
+                            </div>
+                          )}
+                          
+                          {patient.diagnosis && (
+                            <div className="flex items-start gap-2">
+                              <FileText className="h-4 w-4 mt-0.5" />
+                              <span>Diagnóstico: {patient.diagnosis}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {patient.notes && (
+                          <p className="text-sm text-muted-foreground mt-2">
+                            {patient.notes}
+                          </p>
                         )}
                       </div>
 
-                      {patient.notes && (
-                        <p className="text-sm text-muted-foreground mt-2">
-                          {patient.notes}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="flex gap-2">
-                      <Link href={`/prontuarios/${patient.id}`}>
-                        <Button variant="default" size="sm">
-                          Ver Prontuário
-                        </Button>
-                      </Link>
+                      <div className="flex gap-2">
+                        <Link href={`/prontuarios/${patient.id}`}>
+                          <Button variant="default" size="sm">
+                            Ver Prontuário
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </CardContent>
