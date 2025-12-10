@@ -39,10 +39,10 @@ function DashboardRouter() {
   return <FamilyDashboard />;
 }
 
-function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
+function ProtectedRoute({ component: Component, ...props }: { component: React.ComponentType<any>, [key: string]: any }) {
   return (
     <SapereLayout>
-      <Component />
+      <Component {...props} />
     </SapereLayout>
   );
 }

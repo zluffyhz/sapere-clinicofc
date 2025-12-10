@@ -112,3 +112,9 @@
 - [x] Criar componente ProtectedRoute para encapsular SapereLayout
 - [x] Remover Switch aninhado que causava conflito
 - [x] Testar todas as abas (Início, Agenda, Documentos, Pacientes, etc)
+
+## Correção da Aba de Prontuário
+- [x] Verificar rota de prontuário no App.tsx
+- [x] Verificar se ProntuarioPage está recebendo parâmetros corretamente
+- [x] Corrigir ProtectedRoute para passar props para componentes
+- [x] Testar navegação para prontuário
