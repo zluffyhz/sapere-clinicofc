@@ -29,6 +29,7 @@ const navItems: NavItem[] = [
   { label: "Documentos", href: "/documentos", icon: <FileText className="h-5 w-5" />, roles: ["family", "therapist", "admin"] },
   { label: "Pacientes", href: "/pacientes", icon: <Users className="h-5 w-5" />, roles: ["therapist", "admin"] },
   { label: "Prontuários", href: "/prontuarios", icon: <ClipboardList className="h-5 w-5" />, roles: ["therapist", "admin"] },
+  { label: "Usuários", href: "/admin/usuarios", icon: <Users className="h-5 w-5" />, roles: ["admin"] },
 ];
 
 export default function SapereLayout({ children }: { children: React.ReactNode }) {

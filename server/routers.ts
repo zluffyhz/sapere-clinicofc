@@ -25,6 +25,14 @@ const familyProcedure = protectedProcedure.use(({ ctx, next }) => {
   return next({ ctx });
 });
 
+// Middleware for admin-only procedures
+const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
+  if (ctx.user.role !== 'admin') {
+    throw new TRPCError({ code: 'FORBIDDEN', message: 'Acesso restrito a administradores' });
+  }
+  return next({ ctx });
+});
+
 export const appRouter = router({
   system: systemRouter,
   auth: router({
@@ -454,6 +462,43 @@ export const appRouter = router({
       await db.markAllNotificationsAsRead(ctx.user.id);
       return { success: true };
     }),
+  }),
+
+  // ============ ADMIN ROUTER ============
+  admin: router({
+    listUsers: adminProcedure.query(async () => {
+      return await db.getAllUsers();
+    }),
+    
+    createUser: adminProcedure
+      .input(z.object({
+        name: z.string(),
+        email: z.string().email(),
+        role: z.enum(['family', 'therapist', 'admin']),
+      }))
+      .mutation(async ({ input }) => {
+        const result = await db.createUser(input);
+        return { success: true, id: result[0].insertId };
+      }),
+    
+    updateUserRole: adminProcedure
+      .input(z.object({
+        userId: z.number(),
+        role: z.enum(['family', 'therapist', 'admin']),
+      }))
+      .mutation(async ({ input }) => {
+        await db.updateUserRole(input.userId, input.role);
+        return { success: true };
+      }),
+    
+    deleteUser: adminProcedure
+      .input(z.object({
+        userId: z.number(),
+      }))
+      .mutation(async ({ input }) => {
+        await db.deleteUser(input.userId);
+        return { success: true };
+      }),
   }),
 });
 

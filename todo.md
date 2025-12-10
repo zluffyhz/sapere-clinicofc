@@ -68,3 +68,15 @@
 - [x] Implementar navegação específica para terapeuta
 - [x] Configurar rotas em App.tsx
 - [x] Garantir responsividade mobile-first
+
+## Painel de Administração de Usuários
+- [x] Criar router de administração para gerenciar usuários
+- [x] Implementar criação de novos usuários pelo admin
+- [x] Implementar listagem de todos os usuários
+- [x] Implementar edição de perfil de usuário (família/terapeuta)
+- [x] Implementar exclusão de usuários
+- [x] Criar página de administração de usuários no frontend
+- [x] Adicionar formulário de criação de usuário
+- [x] Adicionar tabela de listagem de usuários com ações
+- [x] Adicionar rota de administração na navegação (somente para admin)
+- [x] Criar testes para funcionalidades de administração
