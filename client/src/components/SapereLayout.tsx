@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { trpc } from "@/lib/trpc";
-import { Bell, Calendar, FileText, Home, Users, ClipboardList, LogOut, Menu, X } from "lucide-react";
+import { Bell, Calendar, FileText, Home, Users, ClipboardList, LogOut, Menu, X, Key } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -148,6 +148,12 @@ export default function SapereLayout({ children }: { children: React.ReactNode }
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <Link href="/change-password">
+                  <DropdownMenuItem>
+                    <Key className="mr-2 h-4 w-4" />
+                    <span>Alterar Senha</span>
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Sair</span>

@@ -15,6 +15,8 @@ import NotificacoesPage from "./pages/NotificacoesPage";
 import PacientesPage from "./pages/PacientesPage";
 import ProntuarioPage from "./pages/ProntuarioPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
+import LoginPage from "./pages/LoginPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 
 function DashboardRouter() {
   const { user, loading } = useAuth();
@@ -48,6 +50,8 @@ function Router() {
         <Route path="/pacientes" component={PacientesPage} />
         <Route path="/prontuarios/:id" component={ProntuarioPage} />
         <Route path="/admin/usuarios" component={AdminUsersPage} />
+        <Route path="/login" component={LoginPage} />
+        <Route path="/change-password" component={ChangePasswordPage} />
         {/* Redirect unknown routes to home */}
         <Route>
           <Redirect to="/" />

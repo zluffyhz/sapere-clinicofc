@@ -80,3 +80,15 @@
 - [x] Adicionar tabela de listagem de usuários com ações
 - [x] Adicionar rota de administração na navegação (somente para admin)
 - [x] Criar testes para funcionalidades de administração
+
+## Sistema de Autenticação por Senha
+- [x] Adicionar campo passwordHash ao schema de usuários
+- [x] Instalar biblioteca bcrypt para hash de senhas
+- [x] Criar helpers de hash e verificação de senha
+- [x] Atualizar createUser para gerar senha temporária
+- [x] Implementar endpoint de login com email/senha
+- [x] Criar página de login com formulário email/senha
+- [x] Adicionar funcionalidade de alterar senha
+- [x] Implementar página de alteração de senha
+- [x] Criar testes para autenticação por senha
+- [x] Mostrar senha temporária ao admin após criar usuário

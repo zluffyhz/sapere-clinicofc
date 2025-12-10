@@ -27,7 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Trash2, Edit, Users } from "lucide-react";
+import { Plus, Trash2, Edit, Users, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
@@ -41,12 +41,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function AdminUsersPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [tempPassword, setTempPassword] = useState<string | null>(null);
   
   const [newUser, setNewUser] = useState({
     name: "",
@@ -58,9 +60,9 @@ export default function AdminUsersPage() {
   const { data: users, isLoading } = trpc.admin.listUsers.useQuery();
 
   const createUserMutation = trpc.admin.createUser.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
       utils.admin.listUsers.invalidate();
-      setIsCreateDialogOpen(false);
+      setTempPassword(data.temporaryPassword);
       setNewUser({ name: "", email: "", role: "family" });
       toast.success("Usuário criado com sucesso");
     },
@@ -198,17 +200,45 @@ export default function AdminUsersPage() {
                 </Select>
               </div>
 
+              {tempPassword && (
+                <Alert className="bg-green-50 border-green-200">
+                  <AlertCircle className="h-4 w-4 text-green-600" />
+                  <AlertDescription className="text-green-800">
+                    <strong>Senha temporária gerada:</strong>
+                    <div className="mt-2 p-2 bg-white rounded border border-green-300 font-mono text-sm">
+                      {tempPassword}
+                    </div>
+                    <p className="mt-2 text-xs">
+                      Copie esta senha e envie ao usuário. Ele poderá alterá-la após o primeiro login.
+                    </p>
+                  </AlertDescription>
+                </Alert>
+              )}
+
               <div className="flex justify-end gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsCreateDialogOpen(false)}
-                >
-                  Cancelar
-                </Button>
-                <Button type="submit" disabled={createUserMutation.isPending}>
-                  {createUserMutation.isPending ? "Criando..." : "Criar Usuário"}
-                </Button>
+                {tempPassword ? (
+                  <Button
+                    onClick={() => {
+                      setIsCreateDialogOpen(false);
+                      setTempPassword(null);
+                    }}
+                  >
+                    Fechar
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setIsCreateDialogOpen(false)}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button type="submit" disabled={createUserMutation.isPending}>
+                      {createUserMutation.isPending ? "Criando..." : "Criar Usuário"}
+                    </Button>
+                  </>
+                )}
               </div>
             </form>
           </DialogContent>

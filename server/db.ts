@@ -388,6 +388,7 @@ export async function createUser(userData: {
   name: string;
   email: string;
   role: "family" | "therapist" | "admin";
+  password?: string;
 }) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -395,12 +396,19 @@ export async function createUser(userData: {
   // Generate a unique openId for manually created users
   const openId = `manual-${Date.now()}-${Math.random().toString(36).substring(7)}`;
   
+  // Import hash function here to avoid circular dependency
+  const bcrypt = await import('bcrypt');
+  const passwordHash = userData.password 
+    ? await bcrypt.hash(userData.password, 10)
+    : null;
+  
   const result = await db.insert(users).values({
     openId,
     name: userData.name,
     email: userData.email,
     role: userData.role,
-    loginMethod: "manual",
+    loginMethod: "password",
+    passwordHash,
   });
   
   return result;
@@ -418,4 +426,19 @@ export async function deleteUser(userId: number) {
   if (!db) throw new Error("Database not available");
   
   await db.delete(users).where(eq(users.id, userId));
+}
+
+export async function getUserByEmail(email: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function updateUserPassword(userId: number, newPasswordHash: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(users).set({ passwordHash: newPasswordHash }).where(eq(users.id, userId));
 }

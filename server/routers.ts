@@ -37,13 +37,102 @@ export const appRouter = router({
   system: systemRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
+    
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
-      return { success: true } as const;
+      return {
+        success: true,
+      } as const;
     }),
+    
+    loginWithPassword: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+        password: z.string(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const user = await db.getUserByEmail(input.email);
+        
+        if (!user || !user.passwordHash) {
+          throw new TRPCError({ 
+            code: 'UNAUTHORIZED', 
+            message: 'Email ou senha inválidos' 
+          });
+        }
+        
+        const bcrypt = await import('bcrypt');
+        const isValid = await bcrypt.compare(input.password, user.passwordHash);
+        
+        if (!isValid) {
+          throw new TRPCError({ 
+            code: 'UNAUTHORIZED', 
+            message: 'Email ou senha inválidos' 
+          });
+        }
+        
+        // Update last signed in
+        await db.upsertUser({ 
+          openId: user.openId, 
+          lastSignedIn: new Date() 
+        });
+        
+        // Create session using SDK (same as OAuth)
+        const { sdk } = await import('./_core/sdk');
+        const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
+        const sessionToken = await sdk.createSessionToken(user.openId, {
+          name: user.name || "",
+          expiresInMs: ONE_YEAR_MS,
+        });
+        
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        ctx.res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+        
+        return { 
+          success: true,
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          }
+        };
+      }),
+    
+    changePassword: protectedProcedure
+      .input(z.object({
+        currentPassword: z.string().optional(),
+        newPassword: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const user = await db.getUserById(ctx.user.id);
+        
+        if (!user) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Usuário não encontrado' });
+        }
+        
+        // If user has a password, verify current password
+        if (user.passwordHash && input.currentPassword) {
+          const bcrypt = await import('bcrypt');
+          const isValid = await bcrypt.compare(input.currentPassword, user.passwordHash);
+          
+          if (!isValid) {
+            throw new TRPCError({ 
+              code: 'UNAUTHORIZED', 
+              message: 'Senha atual incorreta' 
+            });
+          }
+        }
+        
+        // Hash new password
+        const bcrypt = await import('bcrypt');
+        const newPasswordHash = await bcrypt.hash(input.newPassword, 10);
+        
+        await db.updateUserPassword(ctx.user.id, newPasswordHash);
+        
+        return { success: true };
+      }),
   }),
-
   // ============ PATIENT ROUTER ============
   patients: router({
     create: therapistProcedure
@@ -477,8 +566,20 @@ export const appRouter = router({
         role: z.enum(['family', 'therapist', 'admin']),
       }))
       .mutation(async ({ input }) => {
-        const result = await db.createUser(input);
-        return { success: true, id: result[0].insertId };
+        // Generate temporary password
+        const { generateTemporaryPassword } = await import('./auth-helpers');
+        const tempPassword = generateTemporaryPassword();
+        
+        const result = await db.createUser({
+          ...input,
+          password: tempPassword,
+        });
+        
+        return { 
+          success: true, 
+          id: result[0].insertId,
+          temporaryPassword: tempPassword,
+        };
       }),
     
     updateUserRole: adminProcedure
