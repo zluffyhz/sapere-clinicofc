@@ -1,35 +1,64 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Switch, Redirect } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
+import SapereLayout from "./components/SapereLayout";
+import { useAuth } from "./_core/hooks/useAuth";
 
-function Router() {
-  // make sure to consider if you need authentication for certain routes
-  return (
-    <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
-      <Route component={NotFound} />
-    </Switch>
-  );
+// Pages
+import FamilyDashboard from "./pages/FamilyDashboard";
+import TherapistDashboard from "./pages/TherapistDashboard";
+import AgendaPage from "./pages/AgendaPage";
+import DocumentosPage from "./pages/DocumentosPage";
+import NotificacoesPage from "./pages/NotificacoesPage";
+import PacientesPage from "./pages/PacientesPage";
+import ProntuarioPage from "./pages/ProntuarioPage";
+
+function DashboardRouter() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  // Redirect to appropriate dashboard based on role
+  if (user?.role === "family") {
+    return <FamilyDashboard />;
+  } else if (user?.role === "therapist" || user?.role === "admin") {
+    return <TherapistDashboard />;
+  }
+
+  return <FamilyDashboard />;
 }
 
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
+function Router() {
+  return (
+    <SapereLayout>
+      <Switch>
+        <Route path="/" component={DashboardRouter} />
+        <Route path="/agenda" component={AgendaPage} />
+        <Route path="/documentos" component={DocumentosPage} />
+        <Route path="/notificacoes" component={NotificacoesPage} />
+        <Route path="/pacientes" component={PacientesPage} />
+        <Route path="/prontuarios/:id" component={ProntuarioPage} />
+        {/* Redirect unknown routes to home */}
+        <Route>
+          <Redirect to="/" />
+        </Route>
+      </Switch>
+    </SapereLayout>
+  );
+}
 
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider
-        defaultTheme="light"
-        // switchable
-      >
+      <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster />
           <Router />
