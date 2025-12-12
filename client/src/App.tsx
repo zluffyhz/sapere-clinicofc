@@ -14,6 +14,7 @@ import DocumentosPage from "./pages/DocumentosPage";
 import NotificacoesPage from "./pages/NotificacoesPage";
 import PacientesPage from "./pages/PacientesPage";
 import ProntuarioPage from "./pages/ProntuarioPage";
+import ProntuariosListPage from "./pages/ProntuariosListPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
 import LoginPage from "./pages/LoginPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
@@ -69,6 +70,9 @@ function Router() {
       </Route>
       <Route path="/pacientes">
         {() => <ProtectedRoute component={PacientesPage} />}
+      </Route>
+      <Route path="/prontuarios">
+        {() => <ProtectedRoute component={ProntuariosListPage} />}
       </Route>
       <Route path="/prontuarios/:id">
         {(params) => <ProtectedRoute component={ProntuarioPage} />}

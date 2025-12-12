@@ -127,3 +127,11 @@
 - [x] Adicionar botão de limpar filtros
 - [x] Mostrar badges de tipo de terapia em cada paciente
 - [x] Testar busca e filtros com diferentes combinações
+
+## Correção da Página de Prontuários
+- [x] Verificar rota /prontuarios no menu de navegação
+- [x] Criar página de listagem de prontuários
+- [x] A rota /prontuarios/:id funciona, mas /prontuarios não tem página
+- [x] Implementar página que lista todos os pacientes para acessar prontuários
+- [x] Adicionar busca por nome na listagem
+- [x] Testar navegação para a aba Prontuários
