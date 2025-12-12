@@ -6,13 +6,21 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isSameDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function AgendaPage() {
   const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [viewMode, setViewMode] = useState<"month" | "week">("month");
+  const [selectedTherapistId, setSelectedTherapistId] = useState<number | null>(null);
 
   // Calculate date range based on view mode
   const { startDate, endDate } = useMemo(() => {
@@ -35,14 +43,19 @@ export default function AgendaPage() {
   });
 
   const { data: patients } = trpc.patients.list.useQuery();
+  const { data: therapists } = trpc.admin.listUsers.useQuery();
 
   // Get appointments for selected date
   const selectedDateAppointments = useMemo(() => {
     if (!appointments) return [];
     return appointments
-      .filter((apt) => isSameDay(new Date(apt.startTime), selectedDate))
+      .filter((apt) => {
+        const matchesDate = isSameDay(new Date(apt.startTime), selectedDate);
+        const matchesTherapist = selectedTherapistId === null || apt.therapistUserId === selectedTherapistId;
+        return matchesDate && matchesTherapist;
+      })
       .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
-  }, [appointments, selectedDate]);
+  }, [appointments, selectedDate, selectedTherapistId]);
 
   // Get dates with appointments for calendar highlighting
   const datesWithAppointments = useMemo(() => {
@@ -76,7 +89,32 @@ export default function AgendaPage() {
             Visualize suas sessões de terapia agendadas
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          {/* Therapist Filter */}
+          <div className="flex items-center gap-2">
+            <Users className="h-4 w-4 text-muted-foreground" />
+            <Select
+              value={selectedTherapistId?.toString() || "all"}
+              onValueChange={(value) =>
+                setSelectedTherapistId(value === "all" ? null : parseInt(value))
+              }
+            >
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Todos os terapeutas" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos os terapeutas</SelectItem>
+                {therapists
+                  ?.filter((u) => u.role === "therapist")
+                  .map((therapist) => (
+                    <SelectItem key={therapist.id} value={therapist.id.toString()}>
+                      {therapist.name}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="h-6 w-px bg-border" />
           <Button
             variant={viewMode === "month" ? "default" : "outline"}
             onClick={() => setViewMode("month")}

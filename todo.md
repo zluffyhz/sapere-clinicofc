@@ -153,3 +153,11 @@
 - [x] Implementar Select com busca de usuários
 - [x] Mostrar nome, email e ID do usuário no dropdown
 - [x] Testar criação de paciente com novo dropdown
+
+## Visualização de Agenda por Terapeuta
+- [x] Criar query para listar terapeutas ativos
+- [x] Adicionar dropdown de seleção de terapeuta na página de agenda
+- [x] Implementar filtro de agendamentos por terapeuta
+- [x] Adicionar opção "Todos os terapeutas" no filtro
+- [x] Contador de sessões já mostra sessões filtradas
+- [x] Testar filtro com múltiplos terapeutas
