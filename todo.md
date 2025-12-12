@@ -173,3 +173,9 @@
 - [x] Atualização automática a cada 30 segundos já configurada
 - [x] Estilizar badge com cor laranja da identidade visual Sapere
 - [x] Badge aparece apenas quando há notificações não lidas
+
+## Correção de Tags <a> Aninhadas
+- [x] Identificar onde há Link com <a> dentro no SapereLayout
+- [x] Remover tag <a> redundante do ícone de notificações
+- [x] Mover className="relative" para o Button
+- [x] Testar se erro foi corrigido

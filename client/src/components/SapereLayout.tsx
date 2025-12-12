@@ -106,16 +106,14 @@ export default function SapereLayout({ children }: { children: React.ReactNode }
           <div className="flex items-center gap-4">
             {/* Notifications */}
             <Link href="/notificacoes">
-              <a className="relative">
-                <Button variant="ghost" size="icon">
-                  <Bell className="h-5 w-5" />
-                  {notificationData && notificationData.count > 0 && (
-                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-orange-500 hover:bg-orange-600 border-0">
-                      {notificationData.count}
-                    </Badge>
-                  )}
-                </Button>
-              </a>
+              <Button variant="ghost" size="icon" className="relative">
+                <Bell className="h-5 w-5" />
+                {notificationData && notificationData.count > 0 && (
+                  <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-orange-500 hover:bg-orange-600 border-0">
+                    {notificationData.count}
+                  </Badge>
+                )}
+              </Button>
             </Link>
 
             {/* User Menu */}
