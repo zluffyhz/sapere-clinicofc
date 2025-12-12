@@ -178,4 +178,6 @@
 - [x] Identificar onde há Link com <a> dentro no SapereLayout
 - [x] Remover tag <a> redundante do ícone de notificações
 - [x] Mover className="relative" para o Button
-- [x] Testar se erro foi corrigido
+- [x] Procurar outras instâncias de Link com <a> aninhado
+- [x] Corrigir tag <a> aninhada no logo do SapereLayout
+- [x] Testar se erro foi completamente eliminado
