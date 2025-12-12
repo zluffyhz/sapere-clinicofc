@@ -1,7 +1,7 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, FileText, Users, ClipboardList } from "lucide-react";
+import { Calendar, FileText, Users, ClipboardList, Timer } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
@@ -212,7 +212,13 @@ export default function TherapistDashboard() {
           <CardDescription>Acesse as funcionalidades principais</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-4">
+            <Link href="/session">
+              <Button variant="default" className="w-full h-24 flex flex-col gap-2 bg-orange-500 hover:bg-orange-600">
+                <Timer className="h-6 w-6" />
+                <span>Iniciar Sessão</span>
+              </Button>
+            </Link>
             <Link href="/pacientes">
               <Button variant="outline" className="w-full h-24 flex flex-col gap-2">
                 <Users className="h-6 w-6" />

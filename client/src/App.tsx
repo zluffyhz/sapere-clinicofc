@@ -18,6 +18,7 @@ import ProntuariosListPage from "./pages/ProntuariosListPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
 import LoginPage from "./pages/LoginPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
+import SessionPage from "./pages/SessionPage";
 
 function DashboardRouter() {
   const { user, loading } = useAuth();
@@ -79,6 +80,12 @@ function Router() {
       </Route>
       <Route path="/admin/usuarios">
         {() => <ProtectedRoute component={AdminUsersPage} />}
+      </Route>
+      <Route path="/session">
+        {() => <ProtectedRoute component={SessionPage} />}
+      </Route>
+      <Route path="/session/:patientId">
+        {(params) => <ProtectedRoute component={SessionPage} />}
       </Route>
     </Switch>
   );

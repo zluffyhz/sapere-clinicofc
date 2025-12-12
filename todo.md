@@ -181,3 +181,16 @@
 - [x] Procurar outras instâncias de Link com <a> aninhado
 - [x] Corrigir tag <a> aninhada no logo do SapereLayout
 - [x] Testar se erro foi completamente eliminado
+
+## Timer de Sessão para Terapeutas
+- [x] Criar componente SessionTimer com cronômetro
+- [x] Adicionar campo de texto para evolução durante a sessão
+- [x] Implementar botões de iniciar, pausar e finalizar sessão
+- [x] Adicionar autosave do texto de evolução
+- [x] Criar página de seleção de paciente para iniciar sessão
+- [x] Integrar com backend para salvar registro de sessão
+- [x] Adicionar botão "Iniciar Sessão" na dashboard do terapeuta
+- [x] Salvar duração da sessão em minutos
+- [x] Mostrar histórico de sessões no prontuário
+- [x] Adicionar rotas /session e /session/:patientId
+- [x] Testar fluxo completo de iniciar e finalizar sessão
