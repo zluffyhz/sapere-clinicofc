@@ -1,0 +1,64 @@
+{
+  "query": "SELECT id, name, dateOfBirth, diagnosis FROM patients ORDER BY id",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, dateOfBirth, diagnosis FROM patients ORDER BY id",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Paciente Teste",
+      "dateOfBirth": "NULL",
+      "diagnosis": "Teste de diagnóstico"
+    },
+    {
+      "id": "2",
+      "name": "Paciente para Agendamento",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "3",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "4",
+      "name": "Paciente Teste",
+      "dateOfBirth": "NULL",
+      "diagnosis": "Teste de diagnóstico"
+    },
+    {
+      "id": "5",
+      "name": "Paciente para Agendamento",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "6",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "30001",
+      "name": "Paciente Teste",
+      "dateOfBirth": "NULL",
+      "diagnosis": "Teste de diagnóstico"
+    },
+    {
+      "id": "30002",
+      "name": "Paciente para Agendamento",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "30003",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdateOfBirth\tdiagnosis\n1\tPaciente Teste\tNULL\tTeste de diagnóstico\n2\tPaciente para Agendamento\tNULL\tNULL\n3\tPaciente para Anamnese\tNULL\tNULL\n4\tPaciente Teste\tNULL\tTeste de diagnóstico\n5\tPaciente para Agendamento\tNULL\tNULL\n6\tPaciente para Anamnese\tNULL\tNULL\n30001\tPaciente Teste\tNULL\tTeste de diagnóstico\n30002\tPaciente para Agendamento\tNULL\tNULL\n30003\tPaciente para Anamnese\tNULL\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 878
+}

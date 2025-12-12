@@ -135,3 +135,13 @@
 - [x] Implementar página que lista todos os pacientes para acessar prontuários
 - [x] Adicionar busca por nome na listagem
 - [x] Testar navegação para a aba Prontuários
+
+## Remoção de Dados Mock
+- [x] Identificar dados mock de pacientes no banco
+- [x] Remover pacientes de teste do banco de dados
+- [x] Limpar agendamentos relacionados aos pacientes mock
+- [x] Limpar registros de sessão relacionados
+- [x] Limpar documentos relacionados
+- [x] Limpar notificações relacionadas
+- [x] Limpar anamnese relacionada
+- [x] Verificar se sistema funciona com banco vazio
