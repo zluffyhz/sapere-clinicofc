@@ -166,3 +166,10 @@
 - [x] Verificar implementação do botão nas ações rápidas da dashboard
 - [x] Corrigir navegação do botão (de /pacientes/novo para /pacientes)
 - [x] Testar clique no botão de novo paciente
+
+## Contador de Notificações Não Lidas
+- [x] Query tRPC para contar notificações não lidas já existe
+- [x] Badge de contador no ícone de sino do SapereLayout já implementado
+- [x] Atualização automática a cada 30 segundos já configurada
+- [x] Estilizar badge com cor laranja da identidade visual Sapere
+- [x] Badge aparece apenas quando há notificações não lidas

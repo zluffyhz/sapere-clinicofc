@@ -110,7 +110,7 @@ export default function SapereLayout({ children }: { children: React.ReactNode }
                 <Button variant="ghost" size="icon">
                   <Bell className="h-5 w-5" />
                   {notificationData && notificationData.count > 0 && (
-                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-orange-500 hover:bg-orange-600 border-0">
                       {notificationData.count}
                     </Badge>
                   )}
