@@ -43,6 +43,7 @@ export default function PacientesPage() {
 
   const utils = trpc.useUtils();
   const { data: patients, isLoading } = trpc.patients.list.useQuery();
+  const { data: familyUsers } = trpc.admin.listUsers.useQuery();
   
   // Get appointments for the last year to determine therapy types
   const startDate = new Date();
@@ -172,22 +173,31 @@ export default function PacientesPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="familyUserId">ID do Usuário da Família *</Label>
-                  <Input
-                    id="familyUserId"
-                    type="number"
-                    value={newPatient.familyUserId || ""}
-                    onChange={(e) =>
+                  <Label htmlFor="familyUserId">Responsável (Família) *</Label>
+                  <Select
+                    value={newPatient.familyUserId.toString()}
+                    onValueChange={(value) =>
                       setNewPatient({
                         ...newPatient,
-                        familyUserId: parseInt(e.target.value) || 0,
+                        familyUserId: parseInt(value),
                       })
                     }
-                    placeholder="ID do responsável"
-                    required
-                  />
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o responsável" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {familyUsers
+                        ?.filter((u) => u.role === "family")
+                        .map((user) => (
+                          <SelectItem key={user.id} value={user.id.toString()}>
+                            {user.name} ({user.email}) - ID: {user.id}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                   <p className="text-xs text-muted-foreground">
-                    ID do usuário responsável pelo paciente
+                    Selecione o usuário responsável pelo paciente
                   </p>
                 </div>
 

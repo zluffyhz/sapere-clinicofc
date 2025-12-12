@@ -145,3 +145,11 @@
 - [x] Limpar notificações relacionadas
 - [x] Limpar anamnese relacionada
 - [x] Verificar se sistema funciona com banco vazio
+
+## Melhoria na Vinculação de Pacientes a Usuários
+- [x] Adicionar coluna ID na tabela de usuários do admin
+- [x] Substituir campo de input manual por dropdown na página de pacientes
+- [x] Criar query para listar usuários do tipo "family"
+- [x] Implementar Select com busca de usuários
+- [x] Mostrar nome, email e ID do usuário no dropdown
+- [x] Testar criação de paciente com novo dropdown
