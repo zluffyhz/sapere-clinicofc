@@ -161,3 +161,8 @@
 - [x] Adicionar opção "Todos os terapeutas" no filtro
 - [x] Contador de sessões já mostra sessões filtradas
 - [x] Testar filtro com múltiplos terapeutas
+
+## Correção do Botão de Novo Paciente
+- [x] Verificar implementação do botão nas ações rápidas da dashboard
+- [x] Corrigir navegação do botão (de /pacientes/novo para /pacientes)
+- [x] Testar clique no botão de novo paciente

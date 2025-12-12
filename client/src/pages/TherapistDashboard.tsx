@@ -213,7 +213,7 @@ export default function TherapistDashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3">
-            <Link href="/pacientes/novo">
+            <Link href="/pacientes">
               <Button variant="outline" className="w-full h-24 flex flex-col gap-2">
                 <Users className="h-6 w-6" />
                 <span>Novo Paciente</span>
