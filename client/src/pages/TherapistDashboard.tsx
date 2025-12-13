@@ -2,13 +2,42 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, FileText, Users, ClipboardList, Timer } from "lucide-react";
-import { Link } from "wouter";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
+// Quick Action Button Component
+function QuickActionButton({
+  href,
+  icon: Icon,
+  label,
+  variant = "outline",
+  className = "",
+}: {
+  href: string;
+  icon: any;
+  label: string;
+  variant?: "default" | "outline";
+  className?: string;
+}) {
+  const [, setLocation] = useLocation();
+
+  return (
+    <Button
+      variant={variant}
+      className={`w-full h-24 flex flex-col gap-2 ${className}`}
+      onClick={() => setLocation(href)}
+    >
+      <Icon className="h-6 w-6" />
+      <span>{label}</span>
+    </Button>
+  );
+}
+
 export default function TherapistDashboard() {
   const { user } = useAuth();
+  const [, setLocation] = useLocation();
   const { data: patients, isLoading: patientsLoading } = trpc.patients.list.useQuery();
 
   // Get today's appointments
@@ -149,11 +178,13 @@ export default function TherapistDashboard() {
                       </div>
                     );
                   })}
-                <Link href="/agenda">
-                  <Button variant="outline" className="w-full">
-                    Ver Agenda Completa
-                  </Button>
-                </Link>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => setLocation("/agenda")}
+                >
+                  Ver Agenda Completa
+                </Button>
               </div>
             )}
           </CardContent>
@@ -187,18 +218,22 @@ export default function TherapistDashboard() {
                         </p>
                       )}
                     </div>
-                    <Link href={`/prontuarios/${patient.id}`}>
-                      <Button variant="ghost" size="sm">
-                        Ver Prontuário
-                      </Button>
-                    </Link>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setLocation(`/prontuarios/${patient.id}`)}
+                    >
+                      Ver Prontuário
+                    </Button>
                   </div>
                 ))}
-                <Link href="/pacientes">
-                  <Button variant="outline" className="w-full">
-                    Ver Todos os Pacientes
-                  </Button>
-                </Link>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => setLocation("/pacientes")}
+                >
+                  Ver Todos os Pacientes
+                </Button>
               </div>
             )}
           </CardContent>
@@ -213,30 +248,28 @@ export default function TherapistDashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-4">
-            <Link href="/session">
-              <Button variant="default" className="w-full h-24 flex flex-col gap-2 bg-orange-500 hover:bg-orange-600">
-                <Timer className="h-6 w-6" />
-                <span>Iniciar Sessão</span>
-              </Button>
-            </Link>
-            <Link href="/pacientes">
-              <Button variant="outline" className="w-full h-24 flex flex-col gap-2">
-                <Users className="h-6 w-6" />
-                <span>Novo Paciente</span>
-              </Button>
-            </Link>
-            <Link href="/agenda">
-              <Button variant="outline" className="w-full h-24 flex flex-col gap-2">
-                <Calendar className="h-6 w-6" />
-                <span>Gerenciar Agenda</span>
-              </Button>
-            </Link>
-            <Link href="/prontuarios">
-              <Button variant="outline" className="w-full h-24 flex flex-col gap-2">
-                <ClipboardList className="h-6 w-6" />
-                <span>Prontuários</span>
-              </Button>
-            </Link>
+            <QuickActionButton
+              href="/session"
+              icon={Timer}
+              label="Iniciar Sessão"
+              variant="default"
+              className="bg-orange-500 hover:bg-orange-600"
+            />
+            <QuickActionButton
+              href="/pacientes"
+              icon={Users}
+              label="Novo Paciente"
+            />
+            <QuickActionButton
+              href="/agenda"
+              icon={Calendar}
+              label="Gerenciar Agenda"
+            />
+            <QuickActionButton
+              href="/prontuarios"
+              icon={ClipboardList}
+              label="Prontuários"
+            />
           </div>
         </CardContent>
       </Card>

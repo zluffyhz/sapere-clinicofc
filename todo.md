@@ -194,3 +194,10 @@
 - [x] Mostrar histórico de sessões no prontuário
 - [x] Adicionar rotas /session e /session/:patientId
 - [x] Testar fluxo completo de iniciar e finalizar sessão
+
+## Correção de Tag <a> Aninhada nas Ações Rápidas
+- [x] Verificar TherapistDashboard nas ações rápidas
+- [x] Substituir Link+Button por Button com onClick
+- [x] Criar componente QuickActionButton para ações rápidas
+- [x] Adicionar useLocation para navegação programada
+- [x] Testar se erro foi eliminado
