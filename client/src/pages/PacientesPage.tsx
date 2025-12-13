@@ -33,10 +33,16 @@ export default function PacientesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [therapyTypeFilter, setTherapyTypeFilter] = useState<string>("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [newPatient, setNewPatient] = useState({
+  const [newPatient, setNewPatient] = useState<{
+    name: string;
+    dateOfBirth: string;
+    familyUserId: number | undefined;
+    diagnosis: string;
+    notes: string;
+  }>({
     name: "",
     dateOfBirth: "",
-    familyUserId: 0,
+    familyUserId: undefined,
     diagnosis: "",
     notes: "",
   });
@@ -63,7 +69,7 @@ export default function PacientesPage() {
       setNewPatient({
         name: "",
         dateOfBirth: "",
-        familyUserId: 0,
+        familyUserId: undefined,
         diagnosis: "",
         notes: "",
       });
@@ -175,11 +181,11 @@ export default function PacientesPage() {
                 <div className="space-y-2">
                   <Label htmlFor="familyUserId">Responsável (Família) *</Label>
                   <Select
-                    value={newPatient.familyUserId.toString()}
+                    value={newPatient.familyUserId?.toString() || ""}
                     onValueChange={(value) =>
                       setNewPatient({
                         ...newPatient,
-                        familyUserId: parseInt(value),
+                        familyUserId: value ? parseInt(value) : undefined,
                       })
                     }
                   >

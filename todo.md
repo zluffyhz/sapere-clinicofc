@@ -201,3 +201,9 @@
 - [x] Criar componente QuickActionButton para ações rápidas
 - [x] Adicionar useLocation para navegação programada
 - [x] Testar se erro foi eliminado
+
+## Correção do Select de Usuário Responsável
+- [x] Verificar implementação do Select na PacientesPage
+- [x] Corrigir bug mudando valor inicial de 0 para undefined
+- [x] Ajustar lógica do Select para aceitar valor vazio
+- [x] Testar cadastro de paciente com seleção de responsável
