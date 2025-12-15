@@ -19,6 +19,8 @@ import AdminUsersPage from "./pages/AdminUsersPage";
 import LoginPage from "./pages/LoginPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import SessionPage from "./pages/SessionPage";
+import AttendancePage from "./pages/AttendancePage";
+import FamilyFrequencyPage from "./pages/FamilyFrequencyPage";
 
 function DashboardRouter() {
   const { user, loading } = useAuth();
@@ -86,6 +88,12 @@ function Router() {
       </Route>
       <Route path="/session/:patientId">
         {(params) => <ProtectedRoute component={SessionPage} />}
+      </Route>
+      <Route path="/presenca">
+        {() => <ProtectedRoute component={AttendancePage} />}
+      </Route>
+      <Route path="/frequencia">
+        {() => <ProtectedRoute component={FamilyFrequencyPage} />}
       </Route>
     </Switch>
   );

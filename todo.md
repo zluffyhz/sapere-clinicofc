@@ -207,3 +207,13 @@
 - [x] Corrigir bug mudando valor inicial de 0 para undefined
 - [x] Ajustar lógica do Select para aceitar valor vazio
 - [x] Testar cadastro de paciente com seleção de responsável
+
+## Sistema de Frequência/Presença
+- [x] Criar tabela de presenças no schema (attendance)
+- [x] Executar migração do banco de dados
+- [x] Implementar rotas backend para CRUD de presenças
+- [x] Criar interface de marcação de presença para admin/recepção
+- [x] Desenvolver dashboard de frequência para portal da família
+- [x] Adicionar estatísticas visuais (gráficos, calendário)
+- [x] Escrever testes vitest para validar funcionalidade (13 novos testes)
+- [x] Testar fluxo completo (admin marca → família visualiza)

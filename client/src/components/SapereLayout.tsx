@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { trpc } from "@/lib/trpc";
-import { Bell, Calendar, FileText, Home, Users, ClipboardList, LogOut, Menu, X, Key } from "lucide-react";
+import { Bell, Calendar, FileText, Home, Users, ClipboardList, LogOut, Menu, X, Key, ClipboardCheck, BarChart3 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -26,9 +26,11 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: "Início", href: "/", icon: <Home className="h-5 w-5" />, roles: ["family", "therapist", "admin"] },
   { label: "Agenda", href: "/agenda", icon: <Calendar className="h-5 w-5" />, roles: ["family", "therapist", "admin"] },
+  { label: "Frequência", href: "/frequencia", icon: <BarChart3 className="h-5 w-5" />, roles: ["family"] },
   { label: "Documentos", href: "/documentos", icon: <FileText className="h-5 w-5" />, roles: ["family", "therapist", "admin"] },
   { label: "Pacientes", href: "/pacientes", icon: <Users className="h-5 w-5" />, roles: ["therapist", "admin"] },
   { label: "Prontuários", href: "/prontuarios", icon: <ClipboardList className="h-5 w-5" />, roles: ["therapist", "admin"] },
+  { label: "Presença", href: "/presenca", icon: <ClipboardCheck className="h-5 w-5" />, roles: ["admin"] },
   { label: "Usuários", href: "/admin/usuarios", icon: <Users className="h-5 w-5" />, roles: ["admin"] },
 ];
 

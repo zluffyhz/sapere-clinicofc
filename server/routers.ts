@@ -553,6 +553,123 @@ export const appRouter = router({
     }),
   }),
 
+  // ============ ATTENDANCE ROUTER ============
+  attendance: router({
+    // Mark attendance (admin/reception only)
+    mark: adminProcedure
+      .input(z.object({
+        appointmentId: z.number(),
+        patientId: z.number(),
+        familyUserId: z.number(),
+        therapistUserId: z.number(),
+        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "neuropsicologia", "outro"]),
+        scheduledDate: z.date(),
+        status: z.enum(["present", "absent", "late", "excused"]).default("present"),
+        notes: z.string().optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        // Check if attendance already exists for this appointment
+        const existing = await db.getAttendanceByAppointment(input.appointmentId);
+        if (existing) {
+          // Update existing attendance
+          await db.updateAttendance(existing.id, {
+            status: input.status,
+            notes: input.notes,
+            markedByUserId: ctx.user.id,
+          });
+          return { success: true, id: existing.id, updated: true };
+        }
+        
+        const result = await db.createAttendance({
+          ...input,
+          markedByUserId: ctx.user.id,
+        });
+        return { success: true, id: result[0].insertId, updated: false };
+      }),
+
+    // Update attendance status
+    update: adminProcedure
+      .input(z.object({
+        id: z.number(),
+        status: z.enum(["present", "absent", "late", "excused"]),
+        notes: z.string().optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        await db.updateAttendance(input.id, {
+          status: input.status,
+          notes: input.notes,
+          markedByUserId: ctx.user.id,
+        });
+        return { success: true };
+      }),
+
+    // Get today's appointments for attendance marking (admin)
+    todayAppointments: adminProcedure.query(async () => {
+      const appointments = await db.getTodayAppointmentsForAttendance();
+      
+      // Enrich with patient and attendance info
+      const enriched = await Promise.all(
+        appointments.map(async (apt) => {
+          const patient = await db.getPatientById(apt.patientId);
+          const existingAttendance = await db.getAttendanceByAppointment(apt.id);
+          return {
+            ...apt,
+            patientName: patient?.name || 'Paciente não encontrado',
+            familyUserId: patient?.familyUserId || 0,
+            attendance: existingAttendance,
+          };
+        })
+      );
+      
+      return enriched;
+    }),
+
+    // Get attendance by patient (for therapists/admin)
+    byPatient: protectedProcedure
+      .input(z.object({ patientId: z.number() }))
+      .query(async ({ input }) => {
+        return await db.getAttendanceByPatient(input.patientId);
+      }),
+
+    // Get attendance for family portal (family sees their children's attendance)
+    myFamilyAttendance: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role === 'family') {
+        return await db.getAttendanceByFamily(ctx.user.id);
+      }
+      // Admin can see all
+      if (ctx.user.role === 'admin') {
+        const today = new Date();
+        const thirtyDaysAgo = new Date(today);
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        return await db.getAttendanceByDateRange(thirtyDaysAgo, today);
+      }
+      return [];
+    }),
+
+    // Get attendance statistics for family dashboard
+    familyStats: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== 'family' && ctx.user.role !== 'admin') {
+        return { total: 0, present: 0, absent: 0, late: 0, excused: 0, attendanceRate: 0 };
+      }
+      
+      const records = ctx.user.role === 'family' 
+        ? await db.getAttendanceByFamily(ctx.user.id)
+        : await db.getAttendanceByDateRange(
+            new Date(new Date().setDate(new Date().getDate() - 90)),
+            new Date()
+          );
+      
+      const total = records.length;
+      const present = records.filter(r => r.status === 'present').length;
+      const absent = records.filter(r => r.status === 'absent').length;
+      const late = records.filter(r => r.status === 'late').length;
+      const excused = records.filter(r => r.status === 'excused').length;
+      const attendanceRate = total > 0 ? Math.round(((present + late) / total) * 100) : 0;
+      
+      return { total, present, absent, late, excused, attendanceRate };
+    }),
+  }),
+
   // ============ ADMIN ROUTER ============
   admin: router({
     listUsers: adminProcedure.query(async () => {

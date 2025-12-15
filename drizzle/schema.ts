@@ -144,3 +144,25 @@ export const notifications = mysqlTable("notifications", {
 
 export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = typeof notifications.$inferInsert;
+
+/**
+ * Attendance table - stores patient attendance records for sessions
+ * Marked by reception/admin when patient arrives for appointment
+ */
+export const attendance = mysqlTable("attendance", {
+  id: int("id").autoincrement().primaryKey(),
+  appointmentId: int("appointmentId").notNull(),
+  patientId: int("patientId").notNull(),
+  familyUserId: int("familyUserId").notNull(), // For family portal queries
+  therapistUserId: int("therapistUserId").notNull(),
+  therapyType: mysqlEnum("therapyType", ["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "neuropsicologia", "outro"]).notNull(),
+  scheduledDate: timestamp("scheduledDate").notNull(),
+  status: mysqlEnum("status", ["present", "absent", "late", "excused"]).default("present").notNull(),
+  markedByUserId: int("markedByUserId").notNull(), // Admin/reception who marked
+  notes: text("notes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Attendance = typeof attendance.$inferSelect;
+export type InsertAttendance = typeof attendance.$inferInsert;

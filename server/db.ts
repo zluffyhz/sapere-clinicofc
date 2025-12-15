@@ -7,7 +7,8 @@ import {
   documents, InsertDocument,
   anamnesis, InsertAnamnesis,
   sessionRecords, InsertSessionRecord,
-  notifications, InsertNotification
+  notifications, InsertNotification,
+  attendance, InsertAttendance
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -441,4 +442,90 @@ export async function updateUserPassword(userId: number, newPasswordHash: string
   if (!db) throw new Error("Database not available");
   
   await db.update(users).set({ passwordHash: newPasswordHash }).where(eq(users.id, userId));
+}
+
+// ============ ATTENDANCE OPERATIONS ============
+
+export async function createAttendance(attendanceData: InsertAttendance) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return await db.insert(attendance).values(attendanceData);
+}
+
+export async function getAttendanceById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(attendance).where(eq(attendance.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getAttendanceByPatient(patientId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(attendance)
+    .where(eq(attendance.patientId, patientId))
+    .orderBy(desc(attendance.scheduledDate));
+}
+
+export async function getAttendanceByFamily(familyUserId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(attendance)
+    .where(eq(attendance.familyUserId, familyUserId))
+    .orderBy(desc(attendance.scheduledDate));
+}
+
+export async function getAttendanceByAppointment(appointmentId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(attendance)
+    .where(eq(attendance.appointmentId, appointmentId))
+    .limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function updateAttendance(id: number, data: Partial<InsertAttendance>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return await db.update(attendance).set(data).where(eq(attendance.id, id));
+}
+
+export async function getAttendanceByDateRange(startDate: Date, endDate: Date) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(attendance)
+    .where(
+      and(
+        gte(attendance.scheduledDate, startDate),
+        lte(attendance.scheduledDate, endDate)
+      )
+    )
+    .orderBy(desc(attendance.scheduledDate));
+}
+
+export async function getTodayAppointmentsForAttendance() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  
+  return await db.select().from(appointments)
+    .where(
+      and(
+        gte(appointments.startTime, today),
+        lte(appointments.startTime, tomorrow),
+        eq(appointments.status, 'scheduled')
+      )
+    )
+    .orderBy(appointments.startTime);
 }
