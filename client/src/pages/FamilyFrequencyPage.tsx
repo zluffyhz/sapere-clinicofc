@@ -2,6 +2,7 @@ import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { AchievementGrid } from "@/components/AchievementBadge";
 import { 
   CheckCircle2, 
   XCircle, 
@@ -10,7 +11,9 @@ import {
   TrendingUp,
   Calendar,
   Award,
-  BarChart3
+  BarChart3,
+  Trophy,
+  Flame
 } from "lucide-react";
 
 type AttendanceStatus = "present" | "absent" | "late" | "excused";
@@ -63,9 +66,10 @@ const therapyTypeColors: Record<string, string> = {
 export default function FamilyFrequencyPage() {
   const { data: stats, isLoading: statsLoading } = trpc.attendance.familyStats.useQuery();
   const { data: attendanceRecords, isLoading: recordsLoading } = trpc.attendance.myFamilyAttendance.useQuery();
+  const { data: achievements, isLoading: achievementsLoading } = trpc.attendance.achievements.useQuery();
   const { data: patients } = trpc.patients.list.useQuery();
 
-  const isLoading = statsLoading || recordsLoading;
+  const isLoading = statsLoading || recordsLoading || achievementsLoading;
 
   // Group attendance by month for the calendar view
   const groupedByMonth = attendanceRecords?.reduce((acc, record) => {
@@ -215,17 +219,32 @@ export default function FamilyFrequencyPage() {
       </Card>
 
       {/* Streak and Total */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="bg-gradient-to-br from-amber-50 to-yellow-100 border-yellow-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-amber-700 font-medium mb-1">Sequência Atual</p>
-                <p className="text-4xl font-bold text-amber-900">{streak}</p>
+                <p className="text-4xl font-bold text-amber-900">{achievements?.streak || streak}</p>
                 <p className="text-sm text-amber-600 mt-1">sessões consecutivas</p>
               </div>
               <div className="p-4 bg-amber-200/50 rounded-full">
-                <Award className="w-10 h-10 text-amber-600" />
+                <Flame className="w-10 h-10 text-amber-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-purple-700 font-medium mb-1">Maior Sequência</p>
+                <p className="text-4xl font-bold text-purple-900">{achievements?.longestStreak || 0}</p>
+                <p className="text-sm text-purple-600 mt-1">recorde pessoal</p>
+              </div>
+              <div className="p-4 bg-purple-200/50 rounded-full">
+                <Trophy className="w-10 h-10 text-purple-600" />
               </div>
             </div>
           </CardContent>
@@ -235,17 +254,35 @@ export default function FamilyFrequencyPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-indigo-700 font-medium mb-1">Total de Sessões</p>
-                <p className="text-4xl font-bold text-indigo-900">{stats?.total || 0}</p>
-                <p className="text-sm text-indigo-600 mt-1">registradas</p>
+                <p className="text-sm text-indigo-700 font-medium mb-1">Meses Perfeitos</p>
+                <p className="text-4xl font-bold text-indigo-900">{achievements?.perfectMonths || 0}</p>
+                <p className="text-sm text-indigo-600 mt-1">100% presença</p>
               </div>
               <div className="p-4 bg-indigo-200/50 rounded-full">
-                <TrendingUp className="w-10 h-10 text-indigo-600" />
+                <Award className="w-10 h-10 text-indigo-600" />
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Achievements/Badges Section */}
+      {achievements && achievements.badges && achievements.badges.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Trophy className="w-5 h-5 text-yellow-500" />
+              Conquistas e Medalhas
+            </CardTitle>
+            <CardDescription>
+              Desbloqueie medalhas mantendo sua frequência nas sessões
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AchievementGrid badges={achievements.badges as any} />
+          </CardContent>
+        </Card>
+      )}
 
       {/* Recent Attendance History */}
       <Card>

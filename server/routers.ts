@@ -668,6 +668,113 @@ export const appRouter = router({
       
       return { total, present, absent, late, excused, attendanceRate };
     }),
+
+    // Get achievements/badges for gamification
+    achievements: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== 'family' && ctx.user.role !== 'admin') {
+        return { badges: [], streak: 0, longestStreak: 0, totalSessions: 0, perfectMonths: 0 };
+      }
+      
+      const records = ctx.user.role === 'family' 
+        ? await db.getAttendanceByFamily(ctx.user.id)
+        : [];
+      
+      // Sort records by date (newest first)
+      const sortedRecords = [...records].sort(
+        (a, b) => new Date(b.scheduledDate).getTime() - new Date(a.scheduledDate).getTime()
+      );
+      
+      // Calculate current streak
+      let currentStreak = 0;
+      for (const record of sortedRecords) {
+        if (record.status === 'present' || record.status === 'late') {
+          currentStreak++;
+        } else {
+          break;
+        }
+      }
+      
+      // Calculate longest streak
+      let longestStreak = 0;
+      let tempStreak = 0;
+      const chronologicalRecords = [...records].sort(
+        (a, b) => new Date(a.scheduledDate).getTime() - new Date(b.scheduledDate).getTime()
+      );
+      
+      for (const record of chronologicalRecords) {
+        if (record.status === 'present' || record.status === 'late') {
+          tempStreak++;
+          longestStreak = Math.max(longestStreak, tempStreak);
+        } else {
+          tempStreak = 0;
+        }
+      }
+      
+      // Calculate perfect months (100% attendance in a month)
+      const monthlyRecords: Record<string, { present: number; total: number }> = {};
+      for (const record of records) {
+        const monthKey = new Date(record.scheduledDate).toISOString().slice(0, 7);
+        if (!monthlyRecords[monthKey]) {
+          monthlyRecords[monthKey] = { present: 0, total: 0 };
+        }
+        monthlyRecords[monthKey].total++;
+        if (record.status === 'present' || record.status === 'late') {
+          monthlyRecords[monthKey].present++;
+        }
+      }
+      
+      const perfectMonths = Object.values(monthlyRecords).filter(
+        m => m.total > 0 && m.present === m.total
+      ).length;
+      
+      const totalSessions = records.filter(
+        r => r.status === 'present' || r.status === 'late'
+      ).length;
+      
+      // Define badges
+      const badges = [];
+      
+      // Streak badges
+      if (currentStreak >= 5) badges.push({ id: 'streak_5', name: 'Iniciante Dedicado', description: '5 sessões consecutivas', icon: 'flame', tier: 'bronze', unlocked: true });
+      if (currentStreak >= 10) badges.push({ id: 'streak_10', name: 'Comprometido', description: '10 sessões consecutivas', icon: 'flame', tier: 'silver', unlocked: true });
+      if (currentStreak >= 25) badges.push({ id: 'streak_25', name: 'Super Dedicado', description: '25 sessões consecutivas', icon: 'flame', tier: 'gold', unlocked: true });
+      if (currentStreak >= 50) badges.push({ id: 'streak_50', name: 'Campeão da Consistência', description: '50 sessões consecutivas', icon: 'trophy', tier: 'platinum', unlocked: true });
+      if (currentStreak >= 100) badges.push({ id: 'streak_100', name: 'Lendário', description: '100 sessões consecutivas', icon: 'crown', tier: 'diamond', unlocked: true });
+      
+      // Total sessions badges
+      if (totalSessions >= 1) badges.push({ id: 'first_session', name: 'Primeiro Passo', description: 'Primeira sessão comparecida', icon: 'star', tier: 'bronze', unlocked: true });
+      if (totalSessions >= 10) badges.push({ id: 'sessions_10', name: 'Progresso Constante', description: '10 sessões no total', icon: 'target', tier: 'bronze', unlocked: true });
+      if (totalSessions >= 25) badges.push({ id: 'sessions_25', name: 'Evolução Notável', description: '25 sessões no total', icon: 'trending-up', tier: 'silver', unlocked: true });
+      if (totalSessions >= 50) badges.push({ id: 'sessions_50', name: 'Marco Importante', description: '50 sessões no total', icon: 'award', tier: 'gold', unlocked: true });
+      if (totalSessions >= 100) badges.push({ id: 'sessions_100', name: 'Centenário', description: '100 sessões no total', icon: 'medal', tier: 'platinum', unlocked: true });
+      
+      // Perfect month badges
+      if (perfectMonths >= 1) badges.push({ id: 'perfect_month_1', name: 'Mês Perfeito', description: '1 mês com 100% de presença', icon: 'calendar-check', tier: 'silver', unlocked: true });
+      if (perfectMonths >= 3) badges.push({ id: 'perfect_month_3', name: 'Trimestre de Ouro', description: '3 meses perfeitos', icon: 'calendar-check', tier: 'gold', unlocked: true });
+      if (perfectMonths >= 6) badges.push({ id: 'perfect_month_6', name: 'Semestre Impecável', description: '6 meses perfeitos', icon: 'calendar-check', tier: 'platinum', unlocked: true });
+      if (perfectMonths >= 12) badges.push({ id: 'perfect_month_12', name: 'Ano de Excelência', description: '12 meses perfeitos', icon: 'calendar-check', tier: 'diamond', unlocked: true });
+      
+      // Locked badges (show what can be achieved)
+      const lockedBadges = [];
+      if (currentStreak < 5) lockedBadges.push({ id: 'streak_5', name: 'Iniciante Dedicado', description: '5 sessões consecutivas', icon: 'flame', tier: 'bronze', unlocked: false, progress: currentStreak, target: 5 });
+      else if (currentStreak < 10) lockedBadges.push({ id: 'streak_10', name: 'Comprometido', description: '10 sessões consecutivas', icon: 'flame', tier: 'silver', unlocked: false, progress: currentStreak, target: 10 });
+      else if (currentStreak < 25) lockedBadges.push({ id: 'streak_25', name: 'Super Dedicado', description: '25 sessões consecutivas', icon: 'flame', tier: 'gold', unlocked: false, progress: currentStreak, target: 25 });
+      else if (currentStreak < 50) lockedBadges.push({ id: 'streak_50', name: 'Campeão da Consistência', description: '50 sessões consecutivas', icon: 'trophy', tier: 'platinum', unlocked: false, progress: currentStreak, target: 50 });
+      else if (currentStreak < 100) lockedBadges.push({ id: 'streak_100', name: 'Lendário', description: '100 sessões consecutivas', icon: 'crown', tier: 'diamond', unlocked: false, progress: currentStreak, target: 100 });
+      
+      if (totalSessions < 10) lockedBadges.push({ id: 'sessions_10', name: 'Progresso Constante', description: '10 sessões no total', icon: 'target', tier: 'bronze', unlocked: false, progress: totalSessions, target: 10 });
+      else if (totalSessions < 25) lockedBadges.push({ id: 'sessions_25', name: 'Evolução Notável', description: '25 sessões no total', icon: 'trending-up', tier: 'silver', unlocked: false, progress: totalSessions, target: 25 });
+      else if (totalSessions < 50) lockedBadges.push({ id: 'sessions_50', name: 'Marco Importante', description: '50 sessões no total', icon: 'award', tier: 'gold', unlocked: false, progress: totalSessions, target: 50 });
+      else if (totalSessions < 100) lockedBadges.push({ id: 'sessions_100', name: 'Centenário', description: '100 sessões no total', icon: 'medal', tier: 'platinum', unlocked: false, progress: totalSessions, target: 100 });
+      
+      return { 
+        badges: [...badges, ...lockedBadges],
+        streak: currentStreak, 
+        longestStreak, 
+        totalSessions, 
+        perfectMonths 
+      };
+    }),
   }),
 
   // ============ ADMIN ROUTER ============

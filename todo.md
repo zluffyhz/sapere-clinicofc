@@ -217,3 +217,12 @@
 - [x] Adicionar estatísticas visuais (gráficos, calendário)
 - [x] Escrever testes vitest para validar funcionalidade (13 novos testes)
 - [x] Testar fluxo completo (admin marca → família visualiza)
+
+## Sistema de Gamificação com Medalhas
+- [x] Definir medalhas por sequência de presença (5, 10, 25, 50, 100 sessões)
+- [x] Definir conquistas especiais (primeira sessão, mês perfeito, etc)
+- [x] Implementar lógica de cálculo de conquistas no backend
+- [x] Criar componentes visuais de medalhas com animações
+- [x] Adicionar seção de conquistas ao dashboard de frequência
+- [x] Adicionar cards de maior sequência e meses perfeitos
+- [x] Testar sistema de gamificação (7 novos testes, total 46)

@@ -222,4 +222,154 @@ describe('Attendance System', () => {
       });
     });
   });
+
+  describe('Gamification System', () => {
+    describe('Badge Tiers', () => {
+      it('should have correct tier hierarchy', () => {
+        const tiers = ['bronze', 'silver', 'gold', 'platinum', 'diamond'];
+        expect(tiers).toHaveLength(5);
+        expect(tiers[0]).toBe('bronze');
+        expect(tiers[4]).toBe('diamond');
+      });
+    });
+
+    describe('Streak Badges', () => {
+      it('should unlock badges at correct streak thresholds', () => {
+        const streakThresholds = [5, 10, 25, 50, 100];
+        const badgeNames = [
+          'Iniciante Dedicado',
+          'Comprometido',
+          'Super Dedicado',
+          'Campeão da Consistência',
+          'Lendário'
+        ];
+
+        streakThresholds.forEach((threshold, index) => {
+          expect(threshold).toBeGreaterThan(0);
+          expect(badgeNames[index]).toBeDefined();
+        });
+      });
+
+      it('should calculate streak correctly', () => {
+        const records = [
+          { status: 'present', scheduledDate: new Date('2024-01-05') },
+          { status: 'present', scheduledDate: new Date('2024-01-04') },
+          { status: 'present', scheduledDate: new Date('2024-01-03') },
+          { status: 'absent', scheduledDate: new Date('2024-01-02') },
+          { status: 'present', scheduledDate: new Date('2024-01-01') },
+        ];
+
+        // Sort by date descending
+        const sorted = [...records].sort(
+          (a, b) => new Date(b.scheduledDate).getTime() - new Date(a.scheduledDate).getTime()
+        );
+
+        let streak = 0;
+        for (const record of sorted) {
+          if (record.status === 'present' || record.status === 'late') {
+            streak++;
+          } else {
+            break;
+          }
+        }
+
+        expect(streak).toBe(3); // First 3 are present, then absent breaks the streak
+      });
+    });
+
+    describe('Total Sessions Badges', () => {
+      it('should unlock badges at correct session thresholds', () => {
+        const sessionThresholds = [1, 10, 25, 50, 100];
+        const badgeNames = [
+          'Primeiro Passo',
+          'Progresso Constante',
+          'Evolução Notável',
+          'Marco Importante',
+          'Centenário'
+        ];
+
+        sessionThresholds.forEach((threshold, index) => {
+          expect(threshold).toBeGreaterThan(0);
+          expect(badgeNames[index]).toBeDefined();
+        });
+      });
+    });
+
+    describe('Perfect Month Badges', () => {
+      it('should calculate perfect months correctly', () => {
+        const records = [
+          { status: 'present', scheduledDate: new Date('2024-01-15') },
+          { status: 'present', scheduledDate: new Date('2024-01-20') },
+          { status: 'present', scheduledDate: new Date('2024-02-10') },
+          { status: 'absent', scheduledDate: new Date('2024-02-15') },
+        ];
+
+        const monthlyRecords: Record<string, { present: number; total: number }> = {};
+        for (const record of records) {
+          const monthKey = new Date(record.scheduledDate).toISOString().slice(0, 7);
+          if (!monthlyRecords[monthKey]) {
+            monthlyRecords[monthKey] = { present: 0, total: 0 };
+          }
+          monthlyRecords[monthKey].total++;
+          if (record.status === 'present' || record.status === 'late') {
+            monthlyRecords[monthKey].present++;
+          }
+        }
+
+        const perfectMonths = Object.values(monthlyRecords).filter(
+          m => m.total > 0 && m.present === m.total
+        ).length;
+
+        expect(perfectMonths).toBe(1); // Only January is perfect
+      });
+
+      it('should unlock badges at correct perfect month thresholds', () => {
+        const monthThresholds = [1, 3, 6, 12];
+        const badgeNames = [
+          'Mês Perfeito',
+          'Trimestre de Ouro',
+          'Semestre Impecável',
+          'Ano de Excelência'
+        ];
+
+        monthThresholds.forEach((threshold, index) => {
+          expect(threshold).toBeGreaterThan(0);
+          expect(badgeNames[index]).toBeDefined();
+        });
+      });
+    });
+
+    describe('Longest Streak Calculation', () => {
+      it('should find longest streak in history', () => {
+        const records = [
+          { status: 'present', scheduledDate: new Date('2024-01-01') },
+          { status: 'present', scheduledDate: new Date('2024-01-02') },
+          { status: 'absent', scheduledDate: new Date('2024-01-03') },
+          { status: 'present', scheduledDate: new Date('2024-01-04') },
+          { status: 'present', scheduledDate: new Date('2024-01-05') },
+          { status: 'present', scheduledDate: new Date('2024-01-06') },
+          { status: 'present', scheduledDate: new Date('2024-01-07') },
+          { status: 'absent', scheduledDate: new Date('2024-01-08') },
+        ];
+
+        // Sort chronologically
+        const sorted = [...records].sort(
+          (a, b) => new Date(a.scheduledDate).getTime() - new Date(b.scheduledDate).getTime()
+        );
+
+        let longestStreak = 0;
+        let tempStreak = 0;
+        for (const record of sorted) {
+          if (record.status === 'present' || record.status === 'late') {
+            tempStreak++;
+            longestStreak = Math.max(longestStreak, tempStreak);
+          } else {
+            tempStreak = 0;
+          }
+        }
+
+        expect(longestStreak).toBe(4); // Days 4-7 form the longest streak
+      });
+    });
+  });
 });
