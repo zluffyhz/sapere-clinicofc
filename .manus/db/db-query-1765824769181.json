@@ -1,0 +1,46 @@
+{
+  "query": "SELECT id, email, name, role FROM users ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, email, name, role FROM users ORDER BY id;",
+  "rows": [
+    {
+      "id": "1",
+      "email": "lucashenriqueas05@gmail.com",
+      "name": "Lucas Henrique",
+      "role": "admin"
+    },
+    {
+      "id": "2147",
+      "email": "novo@teste.com",
+      "name": "Novo Usuário Teste",
+      "role": "therapist"
+    },
+    {
+      "id": "124682",
+      "email": "cml.cesar@outlook.com",
+      "name": "Cesar Henrique Santos ",
+      "role": "admin"
+    },
+    {
+      "id": "468419",
+      "email": "celyneuro@gmail.com",
+      "name": "Marcely Almeida Silva",
+      "role": "therapist"
+    },
+    {
+      "id": "468847",
+      "email": "paciente0familia@sapere.com",
+      "name": "Paciente0",
+      "role": "family"
+    },
+    {
+      "id": "676224",
+      "email": "sapere.recepcao@gmail.com",
+      "name": "Recepção 1 ",
+      "role": "admin"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\tname\trole\n1\tlucashenriqueas05@gmail.com\tLucas Henrique\tadmin\n2147\tnovo@teste.com\tNovo Usuário Teste\ttherapist\n124682\tcml.cesar@outlook.com\tCesar Henrique Santos \tadmin\n468419\tcelyneuro@gmail.com\tMarcely Almeida Silva\ttherapist\n468847\tpaciente0familia@sapere.com\tPaciente0\tfamily\n676224\tsapere.recepcao@gmail.com\tRecepção 1 \tadmin\n",
+  "stderr": "",
+  "execution_time_ms": 49
+}
