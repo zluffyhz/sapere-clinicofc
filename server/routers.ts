@@ -564,7 +564,7 @@ export const appRouter = router({
         therapistUserId: z.number(),
         therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "neuropsicologia", "outro"]),
         scheduledDate: z.date(),
-        status: z.enum(["present", "absent", "late", "excused"]).default("present"),
+        status: z.enum(["present", "absent"]).default("present"),
         notes: z.string().optional(),
       }))
       .mutation(async ({ input, ctx }) => {
@@ -591,7 +591,7 @@ export const appRouter = router({
     update: adminProcedure
       .input(z.object({
         id: z.number(),
-        status: z.enum(["present", "absent", "late", "excused"]),
+        status: z.enum(["present", "absent"]),
         notes: z.string().optional(),
       }))
       .mutation(async ({ input, ctx }) => {
@@ -649,7 +649,7 @@ export const appRouter = router({
     // Get attendance statistics for family dashboard
     familyStats: protectedProcedure.query(async ({ ctx }) => {
       if (ctx.user.role !== 'family' && ctx.user.role !== 'admin') {
-        return { total: 0, present: 0, absent: 0, late: 0, excused: 0, attendanceRate: 0 };
+        return { total: 0, present: 0, absent: 0, attendanceRate: 0 };
       }
       
       const records = ctx.user.role === 'family' 
@@ -662,11 +662,9 @@ export const appRouter = router({
       const total = records.length;
       const present = records.filter(r => r.status === 'present').length;
       const absent = records.filter(r => r.status === 'absent').length;
-      const late = records.filter(r => r.status === 'late').length;
-      const excused = records.filter(r => r.status === 'excused').length;
-      const attendanceRate = total > 0 ? Math.round(((present + late) / total) * 100) : 0;
+      const attendanceRate = total > 0 ? Math.round((present / total) * 100) : 0;
       
-      return { total, present, absent, late, excused, attendanceRate };
+      return { total, present, absent, attendanceRate };
     }),
 
     // Get achievements/badges for gamification
@@ -687,7 +685,7 @@ export const appRouter = router({
       // Calculate current streak
       let currentStreak = 0;
       for (const record of sortedRecords) {
-        if (record.status === 'present' || record.status === 'late') {
+        if (record.status === 'present') {
           currentStreak++;
         } else {
           break;
@@ -702,7 +700,7 @@ export const appRouter = router({
       );
       
       for (const record of chronologicalRecords) {
-        if (record.status === 'present' || record.status === 'late') {
+        if (record.status === 'present') {
           tempStreak++;
           longestStreak = Math.max(longestStreak, tempStreak);
         } else {
@@ -718,7 +716,7 @@ export const appRouter = router({
           monthlyRecords[monthKey] = { present: 0, total: 0 };
         }
         monthlyRecords[monthKey].total++;
-        if (record.status === 'present' || record.status === 'late') {
+        if (record.status === 'present') {
           monthlyRecords[monthKey].present++;
         }
       }
@@ -728,7 +726,7 @@ export const appRouter = router({
       ).length;
       
       const totalSessions = records.filter(
-        r => r.status === 'present' || r.status === 'late'
+        r => r.status === 'present'
       ).length;
       
       // Define badges

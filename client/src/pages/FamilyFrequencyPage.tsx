@@ -6,8 +6,6 @@ import { OwlBadgeGrid } from "@/components/OwlBadge";
 import { 
   CheckCircle2, 
   XCircle, 
-  Clock, 
-  AlertCircle, 
   TrendingUp,
   Calendar,
   Award,
@@ -16,7 +14,7 @@ import {
   Flame
 } from "lucide-react";
 
-type AttendanceStatus = "present" | "absent" | "late" | "excused";
+type AttendanceStatus = "present" | "absent";
 
 const statusConfig: Record<AttendanceStatus, { label: string; color: string; bgColor: string; icon: React.ReactNode }> = {
   present: { 
@@ -30,18 +28,6 @@ const statusConfig: Record<AttendanceStatus, { label: string; color: string; bgC
     color: "text-red-600", 
     bgColor: "bg-red-100",
     icon: <XCircle className="w-4 h-4" /> 
-  },
-  late: { 
-    label: "Atrasado", 
-    color: "text-yellow-600", 
-    bgColor: "bg-yellow-100",
-    icon: <Clock className="w-4 h-4" /> 
-  },
-  excused: { 
-    label: "Justificado", 
-    color: "text-blue-600", 
-    bgColor: "bg-blue-100",
-    icon: <AlertCircle className="w-4 h-4" /> 
   },
 };
 
@@ -198,21 +184,7 @@ export default function FamilyFrequencyPage() {
                 <p className="text-3xl font-bold text-gray-900">{stats?.absent || 0}</p>
               </div>
               
-              <div className="bg-white/80 rounded-xl p-4 border border-yellow-100">
-                <div className="flex items-center gap-2 text-yellow-600 mb-1">
-                  <Clock className="w-5 h-5" />
-                  <span className="text-sm font-medium">Atrasos</span>
-                </div>
-                <p className="text-3xl font-bold text-gray-900">{stats?.late || 0}</p>
-              </div>
-              
-              <div className="bg-white/80 rounded-xl p-4 border border-blue-100">
-                <div className="flex items-center gap-2 text-blue-600 mb-1">
-                  <AlertCircle className="w-5 h-5" />
-                  <span className="text-sm font-medium">Justificadas</span>
-                </div>
-                <p className="text-3xl font-bold text-gray-900">{stats?.excused || 0}</p>
-              </div>
+
             </div>
           </div>
         </CardContent>
