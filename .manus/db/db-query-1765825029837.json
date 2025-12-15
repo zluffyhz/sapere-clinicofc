@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO users (id, email, name, role, passwordHash, openId) VALUES (468847, 'paciente0familia@sapere.com', 'Paciente0', 'family', '$2b$10$K7L1OJ45/4Y2nIvhRVpCe.FSmhDdWoXehVzJptJ/op0lSsvqNu/1u', 'paciente0-test-openid');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute INSERT INTO users (id, email, name, role, passwordHash, openId) VALUES (468847, 'paciente0familia@sapere.com', 'Paciente0', 'family', '$2b$10$K7L1OJ45/4Y2nIvhRVpCe.FSmhDdWoXehVzJptJ/op0lSsvqNu/1u', 'paciente0-test-openid');",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 56
+}

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isSameDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -15,12 +15,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 export default function AgendaPage() {
   const { user } = useAuth();
+  
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [viewMode, setViewMode] = useState<"month" | "week">("month");
   const [selectedTherapistId, setSelectedTherapistId] = useState<number | null>(null);
+  
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newAppointment, setNewAppointment] = useState({
+    patientId: 0,
+    therapistId: 0,
+    therapyType: "psicologia" as "fonoaudiologia" | "psicologia" | "terapia_ocupacional" | "psicopedagogia" | "outro",
+    date: format(new Date(), "yyyy-MM-dd"),
+    startTime: "09:00",
+    endTime: "09:50",
+    notes: "",
+  });
 
   // Calculate date range based on view mode
   const { startDate, endDate } = useMemo(() => {
@@ -37,6 +63,8 @@ export default function AgendaPage() {
     }
   }, [selectedDate, viewMode]);
 
+  const utils = trpc.useUtils();
+  
   const { data: appointments, isLoading } = trpc.appointments.listByDateRange.useQuery({
     startDate,
     endDate,
@@ -44,6 +72,46 @@ export default function AgendaPage() {
 
   const { data: patients } = trpc.patients.list.useQuery();
   const { data: therapists } = trpc.admin.listUsers.useQuery();
+
+  const createAppointmentMutation = trpc.appointments.create.useMutation({
+    onSuccess: () => {
+      toast.success("Agendamento criado e adicionado ao calendário!");
+      setIsModalOpen(false);
+      // Reset form
+      setNewAppointment({
+        patientId: 0,
+        therapistId: 0,
+        therapyType: "psicologia",
+        date: format(new Date(), "yyyy-MM-dd"),
+        startTime: "09:00",
+        endTime: "09:50",
+        notes: "",
+      });
+      // Invalidate and refetch appointments
+      utils.appointments.listByDateRange.invalidate();
+    },
+    onError: (error) => {
+      toast.error(`Erro ao criar agendamento: ${error.message}`);
+    },
+  });
+
+  const handleCreateAppointment = () => {
+    if (!newAppointment.patientId || !newAppointment.therapistId) {
+      toast.error("Selecione o paciente e o terapeuta.");
+      return;
+    }
+
+    const startDateTime = new Date(`${newAppointment.date}T${newAppointment.startTime}:00`);
+    const endDateTime = new Date(`${newAppointment.date}T${newAppointment.endTime}:00`);
+
+    createAppointmentMutation.mutate({
+      patientId: newAppointment.patientId,
+      therapyType: newAppointment.therapyType,
+      startTime: startDateTime,
+      endTime: endDateTime,
+      notes: newAppointment.notes || undefined,
+    });
+  };
 
   // Get appointments for selected date
   const selectedDateAppointments = useMemo(() => {
@@ -70,6 +138,7 @@ export default function AgendaPage() {
     psicologia: "Psicologia",
     terapia_ocupacional: "Terapia Ocupacional",
     psicopedagogia: "Psicopedagogia",
+    neuropsicologia: "Neuropsicologia",
     outro: "Outro",
   };
 
@@ -79,6 +148,8 @@ export default function AgendaPage() {
     cancelled: "Cancelada",
     rescheduled: "Remarcada",
   };
+
+  const isAdmin = user?.role === "admin";
 
   return (
     <div className="space-y-6">
@@ -90,6 +161,160 @@ export default function AgendaPage() {
           </p>
         </div>
         <div className="flex gap-2 items-center">
+          {/* New Appointment Button - Admin Only */}
+          {isAdmin && (
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-orange-500 hover:bg-orange-600">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Novo Agendamento
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                  <DialogTitle>Novo Agendamento</DialogTitle>
+                  <DialogDescription>
+                    Preencha os dados para criar um novo agendamento.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  {/* Patient Selection */}
+                  <div className="grid gap-2">
+                    <Label htmlFor="patient">Paciente *</Label>
+                    <Select
+                      value={newAppointment.patientId ? newAppointment.patientId.toString() : ""}
+                      onValueChange={(value) =>
+                        setNewAppointment({ ...newAppointment, patientId: parseInt(value) })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione o paciente" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {patients?.map((patient) => (
+                          <SelectItem key={patient.id} value={patient.id.toString()}>
+                            {patient.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Therapist Selection */}
+                  <div className="grid gap-2">
+                    <Label htmlFor="therapist">Terapeuta *</Label>
+                    <Select
+                      value={newAppointment.therapistId ? newAppointment.therapistId.toString() : ""}
+                      onValueChange={(value) =>
+                        setNewAppointment({ ...newAppointment, therapistId: parseInt(value) })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione o terapeuta" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {therapists
+                          ?.filter((u) => u.role === "therapist" || u.role === "admin")
+                          .map((therapist) => (
+                            <SelectItem key={therapist.id} value={therapist.id.toString()}>
+                              {therapist.name}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Therapy Type */}
+                  <div className="grid gap-2">
+                    <Label htmlFor="therapyType">Tipo de Terapia *</Label>
+                    <Select
+                      value={newAppointment.therapyType}
+                      onValueChange={(value: any) =>
+                        setNewAppointment({ ...newAppointment, therapyType: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione o tipo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="fonoaudiologia">Fonoaudiologia</SelectItem>
+                        <SelectItem value="psicologia">Psicologia</SelectItem>
+                        <SelectItem value="terapia_ocupacional">Terapia Ocupacional</SelectItem>
+                        <SelectItem value="psicopedagogia">Psicopedagogia</SelectItem>
+                        
+                        <SelectItem value="outro">Outro</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Date */}
+                  <div className="grid gap-2">
+                    <Label htmlFor="date">Data *</Label>
+                    <Input
+                      id="date"
+                      type="date"
+                      value={newAppointment.date}
+                      onChange={(e) =>
+                        setNewAppointment({ ...newAppointment, date: e.target.value })
+                      }
+                    />
+                  </div>
+
+                  {/* Time Range */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="startTime">Horário Início *</Label>
+                      <Input
+                        id="startTime"
+                        type="time"
+                        value={newAppointment.startTime}
+                        onChange={(e) =>
+                          setNewAppointment({ ...newAppointment, startTime: e.target.value })
+                        }
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="endTime">Horário Fim *</Label>
+                      <Input
+                        id="endTime"
+                        type="time"
+                        value={newAppointment.endTime}
+                        onChange={(e) =>
+                          setNewAppointment({ ...newAppointment, endTime: e.target.value })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  {/* Notes */}
+                  <div className="grid gap-2">
+                    <Label htmlFor="notes">Observações</Label>
+                    <Textarea
+                      id="notes"
+                      placeholder="Observações adicionais (opcional)"
+                      value={newAppointment.notes}
+                      onChange={(e) =>
+                        setNewAppointment({ ...newAppointment, notes: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+                    Cancelar
+                  </Button>
+                  <Button 
+                    onClick={handleCreateAppointment}
+                    disabled={createAppointmentMutation.isPending}
+                    className="bg-orange-500 hover:bg-orange-600"
+                  >
+                    {createAppointmentMutation.isPending ? "Salvando..." : "Salvar Agendamento"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
+          
           {/* Therapist Filter */}
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -211,11 +436,27 @@ export default function AgendaPage() {
                 <p className="text-muted-foreground">
                   Nenhuma sessão agendada para esta data
                 </p>
+                {isAdmin && (
+                  <Button 
+                    className="mt-4 bg-orange-500 hover:bg-orange-600"
+                    onClick={() => {
+                      setNewAppointment({
+                        ...newAppointment,
+                        date: format(selectedDate, "yyyy-MM-dd"),
+                      });
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Agendar para este dia
+                  </Button>
+                )}
               </div>
             ) : (
               <div className="space-y-4">
                 {selectedDateAppointments.map((apt) => {
                   const patient = patients?.find((p) => p.id === apt.patientId);
+                  const therapist = therapists?.find((t) => t.id === apt.therapistUserId);
                   return (
                     <div
                       key={apt.id}
@@ -242,6 +483,11 @@ export default function AgendaPage() {
                           <p className="text-sm text-muted-foreground">
                             Paciente: {patient?.name || "Não identificado"}
                           </p>
+                          {therapist && (
+                            <p className="text-sm text-muted-foreground">
+                              Terapeuta: {therapist.name}
+                            </p>
+                          )}
                           <div className="flex items-center gap-4 text-sm">
                             <span className="text-muted-foreground">
                               {format(new Date(apt.startTime), "HH:mm")} -{" "}

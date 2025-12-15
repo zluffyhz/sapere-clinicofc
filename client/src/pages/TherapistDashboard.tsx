@@ -65,7 +65,7 @@ export default function TherapistDashboard() {
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-foreground">
-          Bem-vindo, Dr(a). {user?.name || "Terapeuta"}
+          Bem-vindo{user?.role === 'therapist' ? ', Dr(a).' : ','} {user?.name || "Terapeuta"}
         </h1>
         <p className="text-muted-foreground mt-2">
           Gerencie seus pacientes, agendamentos e prontuários
