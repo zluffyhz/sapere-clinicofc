@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isSameDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -24,10 +24,31 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+
+type AppointmentFormData = {
+  patientId: number;
+  therapistId: number;
+  therapyType: "fonoaudiologia" | "psicologia" | "terapia_ocupacional" | "psicopedagogia" | "outro";
+  date: string;
+  startTime: string;
+  endTime: string;
+  notes: string;
+  status?: "scheduled" | "completed" | "cancelled" | "rescheduled";
+};
 
 export default function AgendaPage() {
   const { user } = useAuth();
@@ -36,16 +57,26 @@ export default function AgendaPage() {
   const [viewMode, setViewMode] = useState<"month" | "week">("month");
   const [selectedTherapistId, setSelectedTherapistId] = useState<number | null>(null);
   
-  // Modal state
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newAppointment, setNewAppointment] = useState({
+  // Modal state for creating
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  
+  // Modal state for editing
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingAppointmentId, setEditingAppointmentId] = useState<number | null>(null);
+  
+  // Delete confirmation dialog
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [deletingAppointmentId, setDeletingAppointmentId] = useState<number | null>(null);
+  
+  const [formData, setFormData] = useState<AppointmentFormData>({
     patientId: 0,
     therapistId: 0,
-    therapyType: "psicologia" as "fonoaudiologia" | "psicologia" | "terapia_ocupacional" | "psicopedagogia" | "outro",
+    therapyType: "psicologia",
     date: format(new Date(), "yyyy-MM-dd"),
     startTime: "09:00",
     endTime: "09:50",
     notes: "",
+    status: "scheduled",
   });
 
   // Calculate date range based on view mode
@@ -73,21 +104,12 @@ export default function AgendaPage() {
   const { data: patients } = trpc.patients.list.useQuery();
   const { data: therapists } = trpc.admin.listUsers.useQuery();
 
+  // Create mutation
   const createAppointmentMutation = trpc.appointments.create.useMutation({
     onSuccess: () => {
       toast.success("Agendamento criado e adicionado ao calendário!");
-      setIsModalOpen(false);
-      // Reset form
-      setNewAppointment({
-        patientId: 0,
-        therapistId: 0,
-        therapyType: "psicologia",
-        date: format(new Date(), "yyyy-MM-dd"),
-        startTime: "09:00",
-        endTime: "09:50",
-        notes: "",
-      });
-      // Invalidate and refetch appointments
+      setIsCreateModalOpen(false);
+      resetForm();
       utils.appointments.listByDateRange.invalidate();
     },
     onError: (error) => {
@@ -95,22 +117,104 @@ export default function AgendaPage() {
     },
   });
 
+  // Update mutation
+  const updateAppointmentMutation = trpc.appointments.update.useMutation({
+    onSuccess: () => {
+      toast.success("Agendamento atualizado com sucesso!");
+      setIsEditModalOpen(false);
+      setEditingAppointmentId(null);
+      resetForm();
+      utils.appointments.listByDateRange.invalidate();
+    },
+    onError: (error) => {
+      toast.error(`Erro ao atualizar agendamento: ${error.message}`);
+    },
+  });
+
+  // Delete mutation
+  const deleteAppointmentMutation = trpc.appointments.delete.useMutation({
+    onSuccess: () => {
+      toast.success("Agendamento excluído com sucesso!");
+      setIsDeleteDialogOpen(false);
+      setDeletingAppointmentId(null);
+      utils.appointments.listByDateRange.invalidate();
+    },
+    onError: (error) => {
+      toast.error(`Erro ao excluir agendamento: ${error.message}`);
+    },
+  });
+
+  const resetForm = () => {
+    setFormData({
+      patientId: 0,
+      therapistId: 0,
+      therapyType: "psicologia",
+      date: format(new Date(), "yyyy-MM-dd"),
+      startTime: "09:00",
+      endTime: "09:50",
+      notes: "",
+      status: "scheduled",
+    });
+  };
+
   const handleCreateAppointment = () => {
-    if (!newAppointment.patientId || !newAppointment.therapistId) {
+    if (!formData.patientId || !formData.therapistId) {
       toast.error("Selecione o paciente e o terapeuta.");
       return;
     }
 
-    const startDateTime = new Date(`${newAppointment.date}T${newAppointment.startTime}:00`);
-    const endDateTime = new Date(`${newAppointment.date}T${newAppointment.endTime}:00`);
+    const startDateTime = new Date(`${formData.date}T${formData.startTime}:00`);
+    const endDateTime = new Date(`${formData.date}T${formData.endTime}:00`);
 
     createAppointmentMutation.mutate({
-      patientId: newAppointment.patientId,
-      therapyType: newAppointment.therapyType,
+      patientId: formData.patientId,
+      therapyType: formData.therapyType,
       startTime: startDateTime,
       endTime: endDateTime,
-      notes: newAppointment.notes || undefined,
+      notes: formData.notes || undefined,
     });
+  };
+
+  const handleEditAppointment = () => {
+    if (!editingAppointmentId) return;
+
+    const startDateTime = new Date(`${formData.date}T${formData.startTime}:00`);
+    const endDateTime = new Date(`${formData.date}T${formData.endTime}:00`);
+
+    updateAppointmentMutation.mutate({
+      id: editingAppointmentId,
+      therapyType: formData.therapyType,
+      startTime: startDateTime,
+      endTime: endDateTime,
+      status: formData.status,
+      notes: formData.notes || undefined,
+    });
+  };
+
+  const openEditModal = (apt: any) => {
+    setEditingAppointmentId(apt.id);
+    setFormData({
+      patientId: apt.patientId,
+      therapistId: apt.therapistUserId,
+      therapyType: apt.therapyType,
+      date: format(new Date(apt.startTime), "yyyy-MM-dd"),
+      startTime: format(new Date(apt.startTime), "HH:mm"),
+      endTime: format(new Date(apt.endTime), "HH:mm"),
+      notes: apt.notes || "",
+      status: apt.status,
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const openDeleteDialog = (aptId: number) => {
+    setDeletingAppointmentId(aptId);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteAppointment = () => {
+    if (deletingAppointmentId) {
+      deleteAppointmentMutation.mutate({ id: deletingAppointmentId });
+    }
   };
 
   // Get appointments for selected date
@@ -138,7 +242,6 @@ export default function AgendaPage() {
     psicologia: "Psicologia",
     terapia_ocupacional: "Terapia Ocupacional",
     psicopedagogia: "Psicopedagogia",
-    neuropsicologia: "Neuropsicologia",
     outro: "Outro",
   };
 
@@ -150,6 +253,157 @@ export default function AgendaPage() {
   };
 
   const isAdmin = user?.role === "admin";
+
+  // Appointment Form Component (reused for create and edit)
+  const AppointmentForm = ({ isEdit = false }: { isEdit?: boolean }) => (
+    <div className="grid gap-4 py-4">
+      {/* Patient Selection - disabled in edit mode */}
+      <div className="grid gap-2">
+        <Label htmlFor="patient">Paciente *</Label>
+        <Select
+          value={formData.patientId ? formData.patientId.toString() : ""}
+          onValueChange={(value) =>
+            setFormData({ ...formData, patientId: parseInt(value) })
+          }
+          disabled={isEdit}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Selecione o paciente" />
+          </SelectTrigger>
+          <SelectContent>
+            {patients?.map((patient) => (
+              <SelectItem key={patient.id} value={patient.id.toString()}>
+                {patient.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Therapist Selection - disabled in edit mode */}
+      {!isEdit && (
+        <div className="grid gap-2">
+          <Label htmlFor="therapist">Terapeuta *</Label>
+          <Select
+            value={formData.therapistId ? formData.therapistId.toString() : ""}
+            onValueChange={(value) =>
+              setFormData({ ...formData, therapistId: parseInt(value) })
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Selecione o terapeuta" />
+            </SelectTrigger>
+            <SelectContent>
+              {therapists
+                ?.filter((u) => u.role === "therapist" || u.role === "admin")
+                .map((therapist) => (
+                  <SelectItem key={therapist.id} value={therapist.id.toString()}>
+                    {therapist.name}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      {/* Therapy Type */}
+      <div className="grid gap-2">
+        <Label htmlFor="therapyType">Tipo de Terapia *</Label>
+        <Select
+          value={formData.therapyType}
+          onValueChange={(value: any) =>
+            setFormData({ ...formData, therapyType: value })
+          }
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Selecione o tipo" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="fonoaudiologia">Fonoaudiologia</SelectItem>
+            <SelectItem value="psicologia">Psicologia</SelectItem>
+            <SelectItem value="terapia_ocupacional">Terapia Ocupacional</SelectItem>
+            <SelectItem value="psicopedagogia">Psicopedagogia</SelectItem>
+            <SelectItem value="outro">Outro</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Status - only in edit mode */}
+      {isEdit && (
+        <div className="grid gap-2">
+          <Label htmlFor="status">Status</Label>
+          <Select
+            value={formData.status}
+            onValueChange={(value: any) =>
+              setFormData({ ...formData, status: value })
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Selecione o status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="scheduled">Agendada</SelectItem>
+              <SelectItem value="completed">Concluída</SelectItem>
+              <SelectItem value="cancelled">Cancelada</SelectItem>
+              <SelectItem value="rescheduled">Remarcada</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      {/* Date */}
+      <div className="grid gap-2">
+        <Label htmlFor="date">Data *</Label>
+        <Input
+          id="date"
+          type="date"
+          value={formData.date}
+          onChange={(e) =>
+            setFormData({ ...formData, date: e.target.value })
+          }
+        />
+      </div>
+
+      {/* Time Range */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor="startTime">Horário Início *</Label>
+          <Input
+            id="startTime"
+            type="time"
+            value={formData.startTime}
+            onChange={(e) =>
+              setFormData({ ...formData, startTime: e.target.value })
+            }
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="endTime">Horário Fim *</Label>
+          <Input
+            id="endTime"
+            type="time"
+            value={formData.endTime}
+            onChange={(e) =>
+              setFormData({ ...formData, endTime: e.target.value })
+            }
+          />
+        </div>
+      </div>
+
+      {/* Notes */}
+      <div className="grid gap-2">
+        <Label htmlFor="notes">Observações</Label>
+        <Textarea
+          id="notes"
+          placeholder="Observações adicionais (opcional)"
+          value={formData.notes}
+          onChange={(e) =>
+            setFormData({ ...formData, notes: e.target.value })
+          }
+        />
+      </div>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -163,7 +417,10 @@ export default function AgendaPage() {
         <div className="flex gap-2 items-center">
           {/* New Appointment Button - Admin Only */}
           {isAdmin && (
-            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <Dialog open={isCreateModalOpen} onOpenChange={(open) => {
+              setIsCreateModalOpen(open);
+              if (!open) resetForm();
+            }}>
               <DialogTrigger asChild>
                 <Button className="bg-orange-500 hover:bg-orange-600">
                   <Plus className="h-4 w-4 mr-2" />
@@ -177,130 +434,9 @@ export default function AgendaPage() {
                     Preencha os dados para criar um novo agendamento.
                   </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  {/* Patient Selection */}
-                  <div className="grid gap-2">
-                    <Label htmlFor="patient">Paciente *</Label>
-                    <Select
-                      value={newAppointment.patientId ? newAppointment.patientId.toString() : ""}
-                      onValueChange={(value) =>
-                        setNewAppointment({ ...newAppointment, patientId: parseInt(value) })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o paciente" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {patients?.map((patient) => (
-                          <SelectItem key={patient.id} value={patient.id.toString()}>
-                            {patient.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Therapist Selection */}
-                  <div className="grid gap-2">
-                    <Label htmlFor="therapist">Terapeuta *</Label>
-                    <Select
-                      value={newAppointment.therapistId ? newAppointment.therapistId.toString() : ""}
-                      onValueChange={(value) =>
-                        setNewAppointment({ ...newAppointment, therapistId: parseInt(value) })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o terapeuta" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {therapists
-                          ?.filter((u) => u.role === "therapist" || u.role === "admin")
-                          .map((therapist) => (
-                            <SelectItem key={therapist.id} value={therapist.id.toString()}>
-                              {therapist.name}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Therapy Type */}
-                  <div className="grid gap-2">
-                    <Label htmlFor="therapyType">Tipo de Terapia *</Label>
-                    <Select
-                      value={newAppointment.therapyType}
-                      onValueChange={(value: any) =>
-                        setNewAppointment({ ...newAppointment, therapyType: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o tipo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="fonoaudiologia">Fonoaudiologia</SelectItem>
-                        <SelectItem value="psicologia">Psicologia</SelectItem>
-                        <SelectItem value="terapia_ocupacional">Terapia Ocupacional</SelectItem>
-                        <SelectItem value="psicopedagogia">Psicopedagogia</SelectItem>
-                        
-                        <SelectItem value="outro">Outro</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Date */}
-                  <div className="grid gap-2">
-                    <Label htmlFor="date">Data *</Label>
-                    <Input
-                      id="date"
-                      type="date"
-                      value={newAppointment.date}
-                      onChange={(e) =>
-                        setNewAppointment({ ...newAppointment, date: e.target.value })
-                      }
-                    />
-                  </div>
-
-                  {/* Time Range */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="startTime">Horário Início *</Label>
-                      <Input
-                        id="startTime"
-                        type="time"
-                        value={newAppointment.startTime}
-                        onChange={(e) =>
-                          setNewAppointment({ ...newAppointment, startTime: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="endTime">Horário Fim *</Label>
-                      <Input
-                        id="endTime"
-                        type="time"
-                        value={newAppointment.endTime}
-                        onChange={(e) =>
-                          setNewAppointment({ ...newAppointment, endTime: e.target.value })
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  {/* Notes */}
-                  <div className="grid gap-2">
-                    <Label htmlFor="notes">Observações</Label>
-                    <Textarea
-                      id="notes"
-                      placeholder="Observações adicionais (opcional)"
-                      value={newAppointment.notes}
-                      onChange={(e) =>
-                        setNewAppointment({ ...newAppointment, notes: e.target.value })
-                      }
-                    />
-                  </div>
-                </div>
+                <AppointmentForm isEdit={false} />
                 <DialogFooter>
-                  <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+                  <Button variant="outline" onClick={() => setIsCreateModalOpen(false)}>
                     Cancelar
                   </Button>
                   <Button 
@@ -440,11 +576,11 @@ export default function AgendaPage() {
                   <Button 
                     className="mt-4 bg-orange-500 hover:bg-orange-600"
                     onClick={() => {
-                      setNewAppointment({
-                        ...newAppointment,
+                      setFormData({
+                        ...formData,
                         date: format(selectedDate, "yyyy-MM-dd"),
                       });
-                      setIsModalOpen(true);
+                      setIsCreateModalOpen(true);
                     }}
                   >
                     <Plus className="h-4 w-4 mr-2" />
@@ -500,6 +636,29 @@ export default function AgendaPage() {
                             </p>
                           )}
                         </div>
+                        
+                        {/* Action Buttons - Admin Only */}
+                        {isAdmin && (
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() => openEditModal(apt)}
+                              title="Editar agendamento"
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() => openDeleteDialog(apt.id)}
+                              className="text-destructive hover:text-destructive"
+                              title="Excluir agendamento"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -540,6 +699,58 @@ export default function AgendaPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Edit Modal */}
+      <Dialog open={isEditModalOpen} onOpenChange={(open) => {
+        setIsEditModalOpen(open);
+        if (!open) {
+          setEditingAppointmentId(null);
+          resetForm();
+        }
+      }}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Editar Agendamento</DialogTitle>
+            <DialogDescription>
+              Altere os dados do agendamento.
+            </DialogDescription>
+          </DialogHeader>
+          <AppointmentForm isEdit={true} />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>
+              Cancelar
+            </Button>
+            <Button 
+              onClick={handleEditAppointment}
+              disabled={updateAppointmentMutation.isPending}
+              className="bg-orange-500 hover:bg-orange-600"
+            >
+              {updateAppointmentMutation.isPending ? "Salvando..." : "Salvar Alterações"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir este agendamento? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAppointment}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleteAppointmentMutation.isPending ? "Excluindo..." : "Excluir"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
