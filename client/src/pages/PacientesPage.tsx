@@ -281,7 +281,10 @@ export default function PacientesPage() {
                   <SelectItem value="psicologia">Psicologia</SelectItem>
                   <SelectItem value="terapia_ocupacional">Terapia Ocupacional</SelectItem>
                   <SelectItem value="psicopedagogia">Psicopedagogia</SelectItem>
-                  <SelectItem value="neuropsicologia">Neuropsicologia</SelectItem>
+                  <SelectItem value="musicoterapia">Musicoterapia</SelectItem>
+                  <SelectItem value="fisioterapia">Fisioterapia</SelectItem>
+                  <SelectItem value="neuropsicopedagogia">Neuropsicopedagogia</SelectItem>
+                  <SelectItem value="nutricao">Nutrição</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -306,7 +309,10 @@ export default function PacientesPage() {
                   {therapyTypeFilter === "psicologia" && "Psicologia"}
                   {therapyTypeFilter === "terapia_ocupacional" && "Terapia Ocupacional"}
                   {therapyTypeFilter === "psicopedagogia" && "Psicopedagogia"}
-                  {therapyTypeFilter === "neuropsicologia" && "Neuropsicologia"}
+                  {therapyTypeFilter === "musicoterapia" && "Musicoterapia"}
+                  {therapyTypeFilter === "fisioterapia" && "Fisioterapia"}
+                  {therapyTypeFilter === "neuropsicopedagogia" && "Neuropsicopedagogia"}
+                  {therapyTypeFilter === "nutricao" && "Nutrição"}
                   <X
                     className="h-3 w-3 cursor-pointer"
                     onClick={() => setTherapyTypeFilter("all")}

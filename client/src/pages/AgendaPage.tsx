@@ -42,7 +42,7 @@ import { toast } from "sonner";
 type AppointmentFormData = {
   patientId: number;
   therapistId: number;
-  therapyType: "fonoaudiologia" | "psicologia" | "terapia_ocupacional" | "psicopedagogia" | "outro";
+  therapyType: "fonoaudiologia" | "psicologia" | "terapia_ocupacional" | "psicopedagogia" | "musicoterapia" | "fisioterapia" | "neuropsicopedagogia" | "nutricao" | "outro";
   date: string;
   startTime: string;
   endTime: string;
@@ -242,6 +242,10 @@ export default function AgendaPage() {
     psicologia: "Psicologia",
     terapia_ocupacional: "Terapia Ocupacional",
     psicopedagogia: "Psicopedagogia",
+    musicoterapia: "Musicoterapia",
+    fisioterapia: "Fisioterapia",
+    neuropsicopedagogia: "Neuropsicopedagogia",
+    nutricao: "Nutrição",
     outro: "Outro",
   };
 
@@ -323,6 +327,10 @@ export default function AgendaPage() {
             <SelectItem value="psicologia">Psicologia</SelectItem>
             <SelectItem value="terapia_ocupacional">Terapia Ocupacional</SelectItem>
             <SelectItem value="psicopedagogia">Psicopedagogia</SelectItem>
+            <SelectItem value="musicoterapia">Musicoterapia</SelectItem>
+            <SelectItem value="fisioterapia">Fisioterapia</SelectItem>
+            <SelectItem value="neuropsicopedagogia">Neuropsicopedagogia</SelectItem>
+            <SelectItem value="nutricao">Nutrição</SelectItem>
             <SelectItem value="outro">Outro</SelectItem>
           </SelectContent>
         </Select>

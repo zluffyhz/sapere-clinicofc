@@ -27,7 +27,10 @@ const therapyTypeLabels: Record<string, string> = {
   psicologia: "Psicologia",
   terapia_ocupacional: "Terapia Ocupacional",
   psicopedagogia: "Psicopedagogia",
-  neuropsicologia: "Neuropsicologia",
+  musicoterapia: "Musicoterapia",
+  fisioterapia: "Fisioterapia",
+  neuropsicopedagogia: "Neuropsicopedagogia",
+  nutricao: "Nutrição",
   outro: "Outro",
 };
 
@@ -74,7 +77,7 @@ export default function AttendancePage() {
       patientId: appointment.patientId,
       familyUserId: appointment.familyUserId,
       therapistUserId: appointment.therapistUserId,
-      therapyType: appointment.therapyType as "fonoaudiologia" | "psicologia" | "terapia_ocupacional" | "psicopedagogia" | "neuropsicologia" | "outro",
+      therapyType: appointment.therapyType as "fonoaudiologia" | "psicologia" | "terapia_ocupacional" | "psicopedagogia" | "musicoterapia" | "fisioterapia" | "neuropsicopedagogia" | "nutricao" | "outro",
       scheduledDate: new Date(appointment.startTime),
       status,
       notes: notes[appointment.id],

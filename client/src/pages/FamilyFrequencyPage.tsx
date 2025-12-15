@@ -36,7 +36,10 @@ const therapyTypeLabels: Record<string, string> = {
   psicologia: "Psicologia",
   terapia_ocupacional: "Terapia Ocupacional",
   psicopedagogia: "Psicopedagogia",
-  neuropsicologia: "Neuropsicologia",
+  musicoterapia: "Musicoterapia",
+  fisioterapia: "Fisioterapia",
+  neuropsicopedagogia: "Neuropsicopedagogia",
+  nutricao: "Nutrição",
   outro: "Outro",
 };
 
@@ -45,7 +48,10 @@ const therapyTypeColors: Record<string, string> = {
   psicologia: "bg-blue-100 text-blue-700 border-blue-200",
   terapia_ocupacional: "bg-green-100 text-green-700 border-green-200",
   psicopedagogia: "bg-orange-100 text-orange-700 border-orange-200",
-  neuropsicologia: "bg-pink-100 text-pink-700 border-pink-200",
+  musicoterapia: "bg-pink-100 text-pink-700 border-pink-200",
+  fisioterapia: "bg-teal-100 text-teal-700 border-teal-200",
+  neuropsicopedagogia: "bg-indigo-100 text-indigo-700 border-indigo-200",
+  nutricao: "bg-lime-100 text-lime-700 border-lime-200",
   outro: "bg-gray-100 text-gray-700 border-gray-200",
 };
 
