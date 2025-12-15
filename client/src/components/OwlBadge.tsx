@@ -56,42 +56,64 @@ const BronzeOwl = ({ className }: { className?: string }) => (
 
 const SilverOwl = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Glow effect for silver shine */}
+    <circle cx="50" cy="50" r="48" fill="url(#silverGlow)" opacity="0.4" />
     {/* Body */}
     <ellipse cx="50" cy="58" rx="28" ry="32" fill="url(#silverGradient)" />
+    {/* Metallic shine lines on body */}
+    <ellipse cx="35" cy="50" rx="3" ry="15" fill="white" opacity="0.3" transform="rotate(-10 35 50)" />
     {/* Chest pattern */}
-    <ellipse cx="50" cy="65" rx="18" ry="20" fill="#E8E8E8" opacity="0.7" />
-    <path d="M40 60 Q50 75 60 60" stroke="#708090" strokeWidth="1.5" fill="none" />
-    <path d="M42 67 Q50 80 58 67" stroke="#708090" strokeWidth="1.5" fill="none" />
+    <ellipse cx="50" cy="65" rx="18" ry="20" fill="#F0F8FF" opacity="0.8" />
+    <path d="M40 60 Q50 75 60 60" stroke="#6B8E9F" strokeWidth="1.5" fill="none" />
+    <path d="M42 67 Q50 80 58 67" stroke="#6B8E9F" strokeWidth="1.5" fill="none" />
+    {/* Sparkle effects */}
+    <circle cx="30" cy="45" r="1.5" fill="white" opacity="0.9" />
+    <circle cx="70" cy="50" r="1" fill="white" opacity="0.8" />
+    <circle cx="55" cy="72" r="1.2" fill="white" opacity="0.7" />
     {/* Head */}
     <circle cx="50" cy="32" r="22" fill="url(#silverGradient)" />
-    {/* Ears/Tufts */}
-    <path d="M30 18 Q28 8 35 15 Q32 12 30 18" fill="#C0C0C0" />
-    <path d="M70 18 Q72 8 65 15 Q68 12 70 18" fill="#C0C0C0" />
-    {/* Eye circles */}
-    <circle cx="40" cy="30" r="10" fill="#F5F5F5" stroke="#708090" strokeWidth="1.5" />
-    <circle cx="60" cy="30" r="10" fill="#F5F5F5" stroke="#708090" strokeWidth="1.5" />
+    {/* Metallic shine on head */}
+    <ellipse cx="40" cy="25" rx="5" ry="8" fill="white" opacity="0.25" />
+    {/* Ears/Tufts with blue tint */}
+    <path d="M30 18 Q28 8 35 15 Q32 12 30 18" fill="#B8D4E8" />
+    <path d="M70 18 Q72 8 65 15 Q68 12 70 18" fill="#B8D4E8" />
+    {/* Eye circles with bright fill */}
+    <circle cx="40" cy="30" r="10" fill="#F8FCFF" stroke="#5B8BA0" strokeWidth="2" />
+    <circle cx="60" cy="30" r="10" fill="#F8FCFF" stroke="#5B8BA0" strokeWidth="2" />
     {/* Pupils */}
     <circle cx="40" cy="30" r="5" fill="#1a1a2e" />
     <circle cx="60" cy="30" r="5" fill="#1a1a2e" />
-    {/* Eye shine */}
-    <circle cx="42" cy="28" r="2" fill="white" />
-    <circle cx="62" cy="28" r="2" fill="white" />
-    {/* Beak */}
-    <path d="M50 38 L46 44 L50 48 L54 44 Z" fill="#A9A9A9" stroke="#708090" strokeWidth="1" />
-    {/* Wings */}
-    <ellipse cx="25" cy="55" rx="8" ry="18" fill="#A9A9A9" transform="rotate(-15 25 55)" />
-    <ellipse cx="75" cy="55" rx="8" ry="18" fill="#A9A9A9" transform="rotate(15 75 55)" />
-    {/* Star decoration */}
-    <path d="M50 12 L51.5 16 L56 16 L52.5 18.5 L54 23 L50 20 L46 23 L47.5 18.5 L44 16 L48.5 16 Z" fill="#E8E8E8" />
+    {/* Eye shine - multiple for sparkle */}
+    <circle cx="42" cy="28" r="2.5" fill="white" />
+    <circle cx="62" cy="28" r="2.5" fill="white" />
+    <circle cx="38" cy="32" r="1" fill="white" opacity="0.6" />
+    <circle cx="58" cy="32" r="1" fill="white" opacity="0.6" />
+    {/* Beak with blue-silver tint */}
+    <path d="M50 38 L46 44 L50 48 L54 44 Z" fill="#A8C8D8" stroke="#5B8BA0" strokeWidth="1" />
+    {/* Wings with gradient */}
+    <ellipse cx="25" cy="55" rx="8" ry="18" fill="url(#silverWingGradient)" transform="rotate(-15 25 55)" />
+    <ellipse cx="75" cy="55" rx="8" ry="18" fill="url(#silverWingGradient)" transform="rotate(15 75 55)" />
+    {/* Star decoration - brighter */}
+    <path d="M50 10 L52 15 L57 15 L53 18.5 L55 24 L50 20.5 L45 24 L47 18.5 L43 15 L48 15 Z" fill="#E8F4FC" stroke="#5B8BA0" strokeWidth="0.5" />
     {/* Feet */}
-    <path d="M40 88 L38 95 M40 88 L40 95 M40 88 L42 95" stroke="#A9A9A9" strokeWidth="2" strokeLinecap="round" />
-    <path d="M60 88 L58 95 M60 88 L60 95 M60 88 L62 95" stroke="#A9A9A9" strokeWidth="2" strokeLinecap="round" />
+    <path d="M40 88 L38 95 M40 88 L40 95 M40 88 L42 95" stroke="#A8C8D8" strokeWidth="2" strokeLinecap="round" />
+    <path d="M60 88 L58 95 M60 88 L60 95 M60 88 L62 95" stroke="#A8C8D8" strokeWidth="2" strokeLinecap="round" />
     <defs>
       <linearGradient id="silverGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#E8E8E8" />
-        <stop offset="50%" stopColor="#C0C0C0" />
-        <stop offset="100%" stopColor="#A9A9A9" />
+        <stop offset="0%" stopColor="#E8F4FC" />
+        <stop offset="30%" stopColor="#C8DFF0" />
+        <stop offset="60%" stopColor="#A8C8E0" />
+        <stop offset="100%" stopColor="#7BA8C8" />
       </linearGradient>
+      <linearGradient id="silverWingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#C8DFF0" />
+        <stop offset="100%" stopColor="#7BA8C8" />
+      </linearGradient>
+      <radialGradient id="silverGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stopColor="#E8F4FC" />
+        <stop offset="70%" stopColor="#A8C8E0" stopOpacity="0.3" />
+        <stop offset="100%" stopColor="transparent" />
+      </radialGradient>
     </defs>
   </svg>
 );
@@ -299,11 +321,11 @@ const tierConfig = {
     labelBg: "bg-amber-100 text-amber-800",
   },
   silver: {
-    bg: "bg-gradient-to-br from-gray-100 to-gray-200",
-    border: "border-gray-400",
-    shadow: "shadow-gray-200",
+    bg: "bg-gradient-to-br from-sky-50 via-blue-100 to-slate-200",
+    border: "border-sky-400",
+    shadow: "shadow-sky-200",
     label: "Prata",
-    labelBg: "bg-gray-100 text-gray-700",
+    labelBg: "bg-sky-100 text-sky-800",
   },
   gold: {
     bg: "bg-gradient-to-br from-yellow-100 to-amber-200",

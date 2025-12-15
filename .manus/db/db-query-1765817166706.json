@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, name, email, role FROM users WHERE email = 'paciente0familia@sapere.com';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, email, role FROM users WHERE email = 'paciente0familia@sapere.com';",
+  "rows": [
+    {
+      "id": "468847",
+      "name": "Paciente0",
+      "email": "paciente0familia@sapere.com",
+      "role": "family"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\n468847\tPaciente0\tpaciente0familia@sapere.com\tfamily\n",
+  "stderr": "",
+  "execution_time_ms": 45
+}
