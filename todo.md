@@ -226,3 +226,10 @@
 - [x] Adicionar seção de conquistas ao dashboard de frequência
 - [x] Adicionar cards de maior sequência e meses perfeitos
 - [x] Testar sistema de gamificação (7 novos testes, total 46)
+
+## Redesign das Insígnias com Corujas
+- [x] Criar SVGs de corujas estilizadas para cada tier (Bronze, Prata, Ouro, Platina, Diamante)
+- [x] Implementar componente OwlBadge com visual elaborado
+- [x] Adicionar animações e efeitos visuais nas insígnias (brilho, hover, sparkles)
+- [x] Integrar novas insígnias ao dashboard de frequência
+- [x] Testar visual em diferentes tamanhos de tela

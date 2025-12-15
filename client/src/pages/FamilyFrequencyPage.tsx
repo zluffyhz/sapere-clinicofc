@@ -2,7 +2,7 @@ import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { AchievementGrid } from "@/components/AchievementBadge";
+import { OwlBadgeGrid } from "@/components/OwlBadge";
 import { 
   CheckCircle2, 
   XCircle, 
@@ -279,7 +279,7 @@ export default function FamilyFrequencyPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <AchievementGrid badges={achievements.badges as any} />
+            <OwlBadgeGrid badges={achievements.badges as any} />
           </CardContent>
         </Card>
       )}
