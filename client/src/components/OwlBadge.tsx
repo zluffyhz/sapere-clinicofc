@@ -380,16 +380,16 @@ export function OwlBadge({ badge }: { badge: Badge }) {
 
   if (!badge.unlocked) {
     return (
-      <div className="relative group">
-        <div className="flex flex-col items-center p-4 rounded-2xl bg-gray-100 border-2 border-dashed border-gray-300 opacity-50 hover:opacity-70 transition-all duration-300">
-          <div className="relative w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mb-3">
+      <div className="relative group h-full">
+        <div className="flex flex-col items-center p-4 rounded-2xl bg-gray-100 border-2 border-dashed border-gray-300 opacity-50 hover:opacity-70 transition-all duration-300 h-full min-h-[220px]">
+          <div className="relative w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mb-3 flex-shrink-0">
             <Lock className="w-8 h-8 text-gray-400" />
           </div>
-          <span className="text-sm font-semibold text-gray-500 text-center">{badge.name}</span>
-          <span className="text-xs text-gray-400 text-center mt-1 px-2">{badge.description}</span>
+          <span className="text-sm font-semibold text-gray-500 text-center line-clamp-2">{badge.name}</span>
+          <span className="text-xs text-gray-400 text-center mt-1 px-2 line-clamp-2 flex-grow">{badge.description}</span>
           
           {badge.progress !== undefined && badge.target !== undefined && (
-            <div className="w-full mt-3 px-2">
+            <div className="w-full mt-auto pt-3 px-2">
               <Progress 
                 value={(badge.progress / badge.target) * 100} 
                 className="h-2"
@@ -405,10 +405,10 @@ export function OwlBadge({ badge }: { badge: Badge }) {
   }
 
   return (
-    <div className="relative group">
+    <div className="relative group h-full">
       <div 
         className={cn(
-          "flex flex-col items-center p-4 rounded-2xl border-2 transition-all duration-300",
+          "flex flex-col items-center p-4 rounded-2xl border-2 transition-all duration-300 h-full min-h-[220px]",
           "hover:scale-105 hover:shadow-xl",
           config.bg,
           config.border,
@@ -417,23 +417,23 @@ export function OwlBadge({ badge }: { badge: Badge }) {
         )}
       >
         {/* Owl Badge */}
-        <div className="relative w-20 h-20 mb-3 transform transition-transform duration-300 group-hover:scale-110">
+        <div className="relative w-20 h-20 mb-3 transform transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
           <OwlComponent className="w-full h-full drop-shadow-lg" />
         </div>
 
         {/* Badge Name */}
-        <span className="text-sm font-bold text-gray-800 text-center leading-tight">
+        <span className="text-sm font-bold text-gray-800 text-center leading-tight line-clamp-2">
           {badge.name}
         </span>
         
         {/* Badge Description */}
-        <span className="text-xs text-gray-600 text-center mt-1 px-2 leading-tight">
+        <span className="text-xs text-gray-600 text-center mt-1 px-2 leading-tight line-clamp-2 flex-grow">
           {badge.description}
         </span>
 
         {/* Tier Label */}
         <div className={cn(
-          "mt-3 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide",
+          "mt-auto pt-3 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide",
           config.labelBg
         )}>
           {config.label}
