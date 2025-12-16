@@ -256,6 +256,19 @@ export default function AgendaPage() {
     rescheduled: "Remarcada",
   };
 
+  // Cores por tipo de terapia
+  const therapyTypeColors: Record<string, { bg: string; border: string; accent: string }> = {
+    fonoaudiologia: { bg: "bg-purple-50", border: "border-purple-300", accent: "bg-purple-500" },
+    psicologia: { bg: "bg-blue-50", border: "border-blue-300", accent: "bg-blue-500" },
+    terapia_ocupacional: { bg: "bg-green-50", border: "border-green-300", accent: "bg-green-500" },
+    psicopedagogia: { bg: "bg-orange-50", border: "border-orange-300", accent: "bg-orange-500" },
+    musicoterapia: { bg: "bg-pink-50", border: "border-pink-300", accent: "bg-pink-500" },
+    fisioterapia: { bg: "bg-teal-50", border: "border-teal-300", accent: "bg-teal-500" },
+    neuropsicopedagogia: { bg: "bg-indigo-50", border: "border-indigo-300", accent: "bg-indigo-500" },
+    nutricao: { bg: "bg-lime-50", border: "border-lime-300", accent: "bg-lime-600" },
+    outro: { bg: "bg-gray-50", border: "border-gray-300", accent: "bg-gray-500" },
+  };
+
   const isAdmin = user?.role === "admin";
 
   // Appointment Form Component (reused for create and edit)
@@ -604,7 +617,11 @@ export default function AgendaPage() {
                   return (
                     <div
                       key={apt.id}
-                      className="p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                      className={`p-4 rounded-lg border-l-4 transition-colors ${
+                        therapyTypeColors[apt.therapyType]?.bg || "bg-gray-50"
+                      } ${
+                        therapyTypeColors[apt.therapyType]?.border || "border-gray-300"
+                      } hover:shadow-md`}
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1 space-y-2">
@@ -695,8 +712,11 @@ export default function AgendaPage() {
                   return acc;
                 }, {} as Record<string, number>)
               ).map(([type, count]) => (
-                <div key={type} className="p-4 rounded-lg border">
-                  <p className="text-sm font-medium text-muted-foreground">
+                <div 
+                  key={type} 
+                  className={`p-4 rounded-lg border-l-4 ${therapyTypeColors[type]?.bg || "bg-gray-50"} ${therapyTypeColors[type]?.border || "border-gray-300"}`}
+                >
+                  <p className="text-sm font-medium text-foreground">
                     {therapyTypeLabels[type] || type}
                   </p>
                   <p className="text-2xl font-bold mt-2">{count}</p>
