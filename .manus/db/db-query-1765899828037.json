@@ -1,0 +1,226 @@
+{
+  "query": "SELECT id, name, email, role FROM users ORDER BY id",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, email, role FROM users ORDER BY id",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Lucas Henrique",
+      "email": "lucashenriqueas05@gmail.com",
+      "role": "admin"
+    },
+    {
+      "id": "124682",
+      "name": "Cesar Henrique Santos ",
+      "email": "cml.cesar@outlook.com",
+      "role": "admin"
+    },
+    {
+      "id": "468419",
+      "name": "Marcely Almeida Silva",
+      "email": "celyneuro@gmail.com",
+      "role": "therapist"
+    },
+    {
+      "id": "468847",
+      "name": "Paciente0",
+      "email": "paciente0familia@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "676224",
+      "name": "Recepção 1 ",
+      "email": "sapere.recepcao@gmail.com",
+      "role": "admin"
+    },
+    {
+      "id": "727087",
+      "name": "Test User",
+      "email": "test-1765829313376@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "727088",
+      "name": "Novo Usuário Teste",
+      "email": "novo@teste.com",
+      "role": "family"
+    },
+    {
+      "id": "727089",
+      "name": "Login Test User",
+      "email": "login-test-1765829313569@sapere.com",
+      "role": "therapist"
+    },
+    {
+      "id": "727090",
+      "name": "Usuário para Atualizar",
+      "email": "atualizar@teste.com",
+      "role": "therapist"
+    },
+    {
+      "id": "727094",
+      "name": "Wrong Password Test",
+      "email": "wrong-pass-1765829313866@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "727096",
+      "name": "Change Password Test",
+      "email": "change-pass-1765829314013@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "727099",
+      "name": "Wrong Current Password Test",
+      "email": "wrong-current-1765829314390@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "729354",
+      "name": "Test User",
+      "email": "test-1765829896658@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "729355",
+      "name": "Novo Usuário Teste",
+      "email": "novo@teste.com",
+      "role": "family"
+    },
+    {
+      "id": "729356",
+      "name": "Login Test User",
+      "email": "login-test-1765829896863@sapere.com",
+      "role": "therapist"
+    },
+    {
+      "id": "729357",
+      "name": "Usuário para Atualizar",
+      "email": "atualizar@teste.com",
+      "role": "therapist"
+    },
+    {
+      "id": "729361",
+      "name": "Wrong Password Test",
+      "email": "wrong-pass-1765829897163@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "729362",
+      "name": "Change Password Test",
+      "email": "change-pass-1765829897366@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "729367",
+      "name": "Wrong Current Password Test",
+      "email": "wrong-current-1765829898056@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "729369",
+      "name": "Short Password Test",
+      "email": "short-pass-1765829898261@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "733016",
+      "name": "Test User",
+      "email": "test-1765830809502@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "733017",
+      "name": "Novo Usuário Teste",
+      "email": "novo@teste.com",
+      "role": "family"
+    },
+    {
+      "id": "733018",
+      "name": "Login Test User",
+      "email": "login-test-1765830809695@sapere.com",
+      "role": "therapist"
+    },
+    {
+      "id": "733019",
+      "name": "Usuário para Atualizar",
+      "email": "atualizar@teste.com",
+      "role": "therapist"
+    },
+    {
+      "id": "733023",
+      "name": "Wrong Password Test",
+      "email": "wrong-pass-1765830809995@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "733024",
+      "name": "Change Password Test",
+      "email": "change-pass-1765830810151@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "733028",
+      "name": "Wrong Current Password Test",
+      "email": "wrong-current-1765830810447@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "733029",
+      "name": "Short Password Test",
+      "email": "short-pass-1765830810588@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "751173",
+      "name": "Test User",
+      "email": "test-1765899616625@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "751174",
+      "name": "Login Test User",
+      "email": "login-test-1765899616865@sapere.com",
+      "role": "therapist"
+    },
+    {
+      "id": "751175",
+      "name": "Novo Usuário Teste",
+      "email": "novo@teste.com",
+      "role": "family"
+    },
+    {
+      "id": "751177",
+      "name": "Usuário para Atualizar",
+      "email": "atualizar@teste.com",
+      "role": "therapist"
+    },
+    {
+      "id": "751179",
+      "name": "Wrong Password Test",
+      "email": "wrong-pass-1765899617189@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "751180",
+      "name": "Change Password Test",
+      "email": "change-pass-1765899617339@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "751182",
+      "name": "Wrong Current Password Test",
+      "email": "wrong-current-1765899617643@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "751183",
+      "name": "Short Password Test",
+      "email": "short-pass-1765899617787@sapere.com",
+      "role": "family"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\n1\tLucas Henrique\tlucashenriqueas05@gmail.com\tadmin\n124682\tCesar Henrique Santos \tcml.cesar@outlook.com\tadmin\n468419\tMarcely Almeida Silva\tcelyneuro@gmail.com\ttherapist\n468847\tPaciente0\tpaciente0familia@sapere.com\tfamily\n676224\tRecepção 1 \tsapere.recepcao@gmail.com\tadmin\n727087\tTest User\ttest-1765829313376@sapere.com\tfamily\n727088\tNovo Usuário Teste\tnovo@teste.com\tfamily\n727089\tLogin Test User\tlogin-test-1765829313569@sapere.com\ttherapist\n727090\tUsuário para Atualizar\tatualizar@teste.com\ttherapist\n727094\tWrong Password Test\twrong-pass-1765829313866@sapere.com\tfamily\n727096\tChange Password Test\tchange-pass-1765829314013@sapere.com\tfamily\n727099\tWrong Current Password Test\twrong-current-1765829314390@sapere.com\tfamily\n729354\tTest User\ttest-1765829896658@sapere.com\tfamily\n729355\tNovo Usuário Teste\tnovo@teste.com\tfamily\n729356\tLogin Test User\tlogin-test-1765829896863@sapere.com\ttherapist\n729357\tUsuário para Atualizar\tatualizar@teste.com\ttherapist\n729361\tWrong Password Test\twrong-pass-1765829897163@sapere.com\tfamily\n729362\tChange Password Test\tchange-pass-1765829897366@sapere.com\tfamily\n729367\tWrong Current Password Test\twrong-current-1765829898056@sapere.com\tfamily\n729369\tShort Password Test\tshort-pass-1765829898261@sapere.com\tfamily\n733016\tTest User\ttest-1765830809502@sapere.com\tfamily\n733017\tNovo Usuário Teste\tnovo@teste.com\tfamily\n733018\tLogin Test User\tlogin-test-1765830809695@sapere.com\ttherapist\n733019\tUsuário para Atualizar\tatualizar@teste.com\ttherapist\n733023\tWrong Password Test\twrong-pass-1765830809995@sapere.com\tfamily\n733024\tChange Password Test\tchange-pass-1765830810151@sapere.com\tfamily\n733028\tWrong Current Password Test\twrong-current-1765830810447@sapere.com\tfamily\n733029\tShort Password Test\tshort-pass-1765830810588@sapere.com\tfamily\n751173\tTest User\ttest-1765899616625@sapere.com\tfamily\n751174\tLogin Test User\tlogin-test-1765899616865@sapere.com\ttherapist\n751175\tNovo Usuário Teste\tnovo@teste.com\tfamily\n751177\tUsuário para Atualizar\tatualizar@teste.com\ttherapist\n751179\tWrong Password Test\twrong-pass-1765899617189@sapere.com\tfamily\n751180\tChange Password Test\tchange-pass-1765899617339@sapere.com\tfamily\n751182\tWrong Current Password Test\twrong-current-1765899617643@sapere.com\tfamily\n751183\tShort Password Test\tshort-pass-1765899617787@sapere.com\tfamily\n",
+  "stderr": "",
+  "execution_time_ms": 61
+}

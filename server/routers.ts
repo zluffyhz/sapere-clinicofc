@@ -152,8 +152,10 @@ export const appRouter = router({
       }),
 
     list: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user.role === 'therapist' || ctx.user.role === 'admin') {
-        return await db.getPatientsByTherapist(ctx.user.id);
+      if (ctx.user.role === 'admin') {
+        return await db.getAllPatients();
+      } else if (ctx.user.role === 'therapist') {
+        return await db.getAllPatients(); // Terapeutas veem todos os pacientes
       } else {
         return await db.getPatientsByFamily(ctx.user.id);
       }
@@ -243,8 +245,10 @@ export const appRouter = router({
         patientId: z.number().optional(),
       }))
       .query(async ({ input, ctx }) => {
-        if (ctx.user.role === 'therapist' || ctx.user.role === 'admin') {
-          return await db.getAppointmentsByTherapist(ctx.user.id, input.startDate, input.endDate);
+        if (ctx.user.role === 'admin') {
+          return await db.getAppointmentsByDateRange(input.startDate, input.endDate);
+        } else if (ctx.user.role === 'therapist') {
+          return await db.getAppointmentsByDateRange(input.startDate, input.endDate); // Terapeutas veem todos os agendamentos
         } else {
           // For families, get appointments for their patients
           const patients = await db.getPatientsByFamily(ctx.user.id);

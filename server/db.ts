@@ -138,6 +138,13 @@ export async function getPatientsByTherapist(therapistUserId: number) {
   return await db.select().from(patients).where(eq(patients.therapistUserId, therapistUserId));
 }
 
+export async function getAllPatients() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(patients);
+}
+
 export async function updatePatient(id: number, data: Partial<InsertPatient>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");

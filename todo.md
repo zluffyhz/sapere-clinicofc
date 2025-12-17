@@ -233,3 +233,10 @@
 - [x] Adicionar animações e efeitos visuais nas insígnias (brilho, hover, sparkles)
 - [x] Integrar novas insígnias ao dashboard de frequência
 - [x] Testar visual em diferentes tamanhos de tela
+
+## Bug: Terapeutas não visualizam dados criados por admin
+- [x] Investigar queries de listagem de pacientes
+- [x] Investigar queries de listagem de agendamentos
+- [x] Corrigir filtros de permissão para terapeutas (agora todos veem todos)
+- [x] Adicionar função getAllPatients no db.ts
+- [x] Testar visualização de dados entre diferentes perfis (46 testes passando)
