@@ -134,7 +134,7 @@ export type InsertSessionRecord = typeof sessionRecords.$inferInsert;
 export const notifications = mysqlTable("notifications", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(),
-  type: mysqlEnum("type", ["new_document", "schedule_change", "new_session_record", "general"]).notNull(),
+  type: mysqlEnum("type", ["new_document", "schedule_change", "new_session_record", "attendance", "general"]).notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   message: text("message").notNull(),
   relatedId: int("relatedId"), // ID of related entity (document, appointment, etc.)

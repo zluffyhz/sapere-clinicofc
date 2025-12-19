@@ -574,6 +574,11 @@ export const appRouter = router({
       .mutation(async ({ input, ctx }) => {
         // Check if attendance already exists for this appointment
         const existing = await db.getAttendanceByAppointment(input.appointmentId);
+        
+        // Get appointment and patient info for notification
+        const appointment = await db.getAppointmentById(input.appointmentId);
+        const patient = appointment ? await db.getPatientById(appointment.patientId) : null;
+        
         if (existing) {
           // Update existing attendance
           await db.updateAttendance(existing.id, {
@@ -581,14 +586,27 @@ export const appRouter = router({
             notes: input.notes,
             markedByUserId: ctx.user.id,
           });
-          return { success: true, id: existing.id, updated: true };
+        } else {
+          // Create new attendance
+          await db.createAttendance({
+            ...input,
+            markedByUserId: ctx.user.id,
+          });
         }
         
-        const result = await db.createAttendance({
-          ...input,
-          markedByUserId: ctx.user.id,
-        });
-        return { success: true, id: result[0].insertId, updated: false };
+        // Send notification to therapist
+        if (appointment && patient) {
+          const statusText = input.status === 'present' ? 'presente' : 'ausente';
+          await db.createNotification({
+            userId: appointment.therapistUserId,
+            title: `Presença marcada: ${patient.name}`,
+            message: `O paciente ${patient.name} foi marcado como ${statusText} na sessão de hoje.`,
+            type: 'attendance',
+            isRead: false,
+          });
+        }
+        
+        return { success: true, id: existing?.id || 0, updated: !!existing };
       }),
 
     // Update attendance status

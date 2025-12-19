@@ -15,6 +15,7 @@ import { Bell, Calendar, FileText, Home, Users, ClipboardList, LogOut, Menu, X, 
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useNotificationSound } from "@/hooks/useNotificationSound";
 
 interface NavItem {
   label: string;
@@ -41,8 +42,11 @@ export default function SapereLayout({ children }: { children: React.ReactNode }
 
   const { data: notificationData } = trpc.notifications.unreadCount.useQuery(undefined, {
     enabled: !!user,
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 10000, // Refresh every 10 seconds for real-time notifications
   });
+
+  // Play sound when new notification arrives
+  useNotificationSound(notificationData?.count);
 
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: () => {

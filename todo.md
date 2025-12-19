@@ -240,3 +240,11 @@
 - [x] Corrigir filtros de permissão para terapeutas (agora todos veem todos)
 - [x] Adicionar função getAllPatients no db.ts
 - [x] Testar visualização de dados entre diferentes perfis (46 testes passando)
+
+## Notificações em Tempo Real para Terapeutas
+- [x] Criar notificação ao marcar presença de paciente
+- [x] Enviar notificação para terapeuta responsável
+- [x] Implementar polling mais frequente (a cada 10s)
+- [x] Adicionar alerta sonoro quando nova notificação chegar (Web Audio API)
+- [x] Adicionar tipo 'attendance' ao enum de notificações
+- [x] Testar fluxo completo (46 testes passando)

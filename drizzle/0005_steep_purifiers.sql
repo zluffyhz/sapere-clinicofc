@@ -1,0 +1,1 @@
+ALTER TABLE `notifications` MODIFY COLUMN `type` enum('new_document','schedule_change','new_session_record','attendance','general') NOT NULL;
