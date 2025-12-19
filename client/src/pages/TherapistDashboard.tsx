@@ -255,11 +255,13 @@ export default function TherapistDashboard() {
               variant="default"
               className="bg-orange-500 hover:bg-orange-600"
             />
-            <QuickActionButton
-              href="/pacientes"
-              icon={Users}
-              label="Novo Paciente"
-            />
+            {user?.role === 'admin' && (
+              <QuickActionButton
+                href="/pacientes"
+                icon={Users}
+                label="Novo Paciente"
+              />
+            )}
             <QuickActionButton
               href="/agenda"
               icon={Calendar}

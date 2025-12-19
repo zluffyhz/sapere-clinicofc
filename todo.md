@@ -248,3 +248,8 @@
 - [x] Adicionar alerta sonoro quando nova notificação chegar (Web Audio API)
 - [x] Adicionar tipo 'attendance' ao enum de notificações
 - [x] Testar fluxo completo (46 testes passando)
+
+## Remover "Novo Paciente" para Terapeutas
+- [x] Localizar componente de ações rápidas no dashboard
+- [x] Adicionar verificação de role para mostrar "Novo Paciente" apenas para admins
+- [x] Aplicada condição {user?.role === 'admin'} no TherapistDashboard
