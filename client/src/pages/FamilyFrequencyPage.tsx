@@ -1,3 +1,4 @@
+import React from "react";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,8 +12,12 @@ import {
   Award,
   BarChart3,
   Trophy,
-  Flame
+  Flame,
+  Download
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
 
 type AttendanceStatus = "present" | "absent";
 
@@ -56,10 +61,40 @@ const therapyTypeColors: Record<string, string> = {
 };
 
 export default function FamilyFrequencyPage() {
+  const [selectedMonth, setSelectedMonth] = React.useState(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = React.useState(new Date().getFullYear());
+  const [isGeneratingPDF, setIsGeneratingPDF] = React.useState(false);
+  
   const { data: stats, isLoading: statsLoading } = trpc.attendance.familyStats.useQuery();
   const { data: attendanceRecords, isLoading: recordsLoading } = trpc.attendance.myFamilyAttendance.useQuery();
   const { data: achievements, isLoading: achievementsLoading } = trpc.attendance.achievements.useQuery();
   const { data: patients } = trpc.patients.list.useQuery();
+  
+  const generateReport = trpc.attendance.generateReport.useMutation({
+    onSuccess: (data) => {
+      toast.success('Relatório gerado com sucesso!');
+      window.open(data.url, '_blank');
+      setIsGeneratingPDF(false);
+    },
+    onError: (error) => {
+      toast.error('Erro ao gerar relatório: ' + error.message);
+      setIsGeneratingPDF(false);
+    },
+  });
+  
+  const handleGenerateReport = () => {
+    if (!patients || patients.length === 0) {
+      toast.error('Nenhum paciente encontrado');
+      return;
+    }
+    
+    setIsGeneratingPDF(true);
+    generateReport.mutate({
+      patientId: patients[0].id,
+      month: selectedMonth,
+      year: selectedYear,
+    });
+  };
 
   const isLoading = statsLoading || recordsLoading || achievementsLoading;
 
@@ -125,9 +160,44 @@ export default function FamilyFrequencyPage() {
           <div className="p-3 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl shadow-lg">
             <BarChart3 className="w-7 h-7 text-white" />
           </div>
-          <div>
+          <div className="flex-1">
             <h1 className="text-2xl font-bold text-gray-900">Frequência</h1>
             <p className="text-gray-500">Acompanhe a presença nas sessões de terapia</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Select value={selectedMonth.toString()} onValueChange={(v) => setSelectedMonth(parseInt(v))}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">Janeiro</SelectItem>
+                <SelectItem value="2">Fevereiro</SelectItem>
+                <SelectItem value="3">Março</SelectItem>
+                <SelectItem value="4">Abril</SelectItem>
+                <SelectItem value="5">Maio</SelectItem>
+                <SelectItem value="6">Junho</SelectItem>
+                <SelectItem value="7">Julho</SelectItem>
+                <SelectItem value="8">Agosto</SelectItem>
+                <SelectItem value="9">Setembro</SelectItem>
+                <SelectItem value="10">Outubro</SelectItem>
+                <SelectItem value="11">Novembro</SelectItem>
+                <SelectItem value="12">Dezembro</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={selectedYear.toString()} onValueChange={(v) => setSelectedYear(parseInt(v))}>
+              <SelectTrigger className="w-[100px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="2024">2024</SelectItem>
+                <SelectItem value="2025">2025</SelectItem>
+                <SelectItem value="2026">2026</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button onClick={handleGenerateReport} disabled={isGeneratingPDF}>
+              <Download className="w-4 h-4 mr-2" />
+              {isGeneratingPDF ? 'Gerando...' : 'Exportar PDF'}
+            </Button>
           </div>
         </div>
       </div>

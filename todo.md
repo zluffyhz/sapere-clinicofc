@@ -258,3 +258,13 @@
 - [x] Modificar PacientesPage para ocultar botão "Novo Paciente" para terapeutas
 - [x] Alterada condição de {isTherapist} para {isAdmin}
 - [x] Terapeutas podem visualizar lista e detalhes, mas não cadastrar
+
+## Relatório de Frequência em PDF
+- [x] Instalar biblioteca PDF (pdfkit)
+- [x] Criar helper generateFrequencyReportPDF
+- [x] Criar rota backend attendance.generateReport
+- [x] Implementar geração de PDF com estatísticas e histórico
+- [x] Upload automático para S3
+- [x] Adicionar botão de exportação na página de frequência da família
+- [x] Adicionar seletores de mês e ano
+- [x] Testes passando (46 testes)

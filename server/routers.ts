@@ -795,6 +795,67 @@ export const appRouter = router({
         perfectMonths 
       };
     }),
+
+    // Generate frequency report PDF
+    generateReport: protectedProcedure
+      .input(z.object({
+        patientId: z.number(),
+        month: z.number().min(1).max(12),
+        year: z.number(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const { generateFrequencyReportPDF } = await import('./generateFrequencyReport');
+        
+        // Get patient info
+        const patient = await db.getPatientById(input.patientId);
+        if (!patient) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Paciente não encontrado' });
+        }
+        
+        // Check permissions
+        if (ctx.user.role === 'family' && patient.familyUserId !== ctx.user.id) {
+          throw new TRPCError({ code: 'FORBIDDEN' });
+        }
+        
+        // Get attendance records for the specified month
+        const startDate = new Date(input.year, input.month - 1, 1);
+        const endDate = new Date(input.year, input.month, 0, 23, 59, 59);
+        
+        const allRecords = await db.getAttendanceByDateRange(startDate, endDate);
+        const records = allRecords.filter(r => r.patientId === input.patientId);
+        
+        const totalSessions = records.length;
+        const presentSessions = records.filter(r => r.status === 'present').length;
+        const absentSessions = records.filter(r => r.status === 'absent').length;
+        const attendanceRate = totalSessions > 0 ? (presentSessions / totalSessions) * 100 : 0;
+        
+        // Generate PDF
+        const pdfBuffer = await generateFrequencyReportPDF({
+          patientName: patient.name,
+          month: input.month,
+          year: input.year,
+          totalSessions,
+          presentSessions,
+          absentSessions,
+          attendanceRate,
+          records: records.map(r => ({
+            id: r.id,
+            date: new Date(r.scheduledDate),
+            status: r.status,
+            therapyType: r.therapyType,
+          })),
+        });
+        
+        // Upload to S3
+        const fileName = `relatorio-frequencia-${patient.name.replace(/\s+/g, '-')}-${input.month}-${input.year}.pdf`;
+        const { url } = await storagePut(
+          `reports/${input.patientId}/${fileName}`,
+          pdfBuffer,
+          'application/pdf'
+        );
+        
+        return { success: true, url };
+      }),
   }),
 
   // ============ ADMIN ROUTER ============
