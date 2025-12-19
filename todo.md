@@ -253,3 +253,8 @@
 - [x] Localizar componente de ações rápidas no dashboard
 - [x] Adicionar verificação de role para mostrar "Novo Paciente" apenas para admins
 - [x] Aplicada condição {user?.role === 'admin'} no TherapistDashboard
+
+## Permitir Visualização de Pacientes para Terapeutas
+- [x] Modificar PacientesPage para ocultar botão "Novo Paciente" para terapeutas
+- [x] Alterada condição de {isTherapist} para {isAdmin}
+- [x] Terapeutas podem visualizar lista e detalhes, mas não cadastrar

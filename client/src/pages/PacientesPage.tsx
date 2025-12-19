@@ -120,6 +120,7 @@ export default function PacientesPage() {
   });
 
   const isTherapist = user?.role === "therapist" || user?.role === "admin";
+  const isAdmin = user?.role === "admin";
 
   const hasActiveFilters = searchTerm !== "" || therapyTypeFilter !== "all";
 
@@ -137,7 +138,7 @@ export default function PacientesPage() {
             Gerencie os pacientes sob seus cuidados
           </p>
         </div>
-        {isTherapist && (
+        {isAdmin && (
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button>
