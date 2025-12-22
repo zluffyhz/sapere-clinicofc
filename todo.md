@@ -268,3 +268,9 @@
 - [x] Adicionar botão de exportação na página de frequência da família
 - [x] Adicionar seletores de mês e ano
 - [x] Testes passando (46 testes)
+
+## Exportação PDF para Administradores
+- [x] Adicionar botão de exportação PDF na página de Presença (admin)
+- [x] Adicionar seletor de paciente para escolher qual relatório gerar
+- [x] Adicionar seletores de mês e ano
+- [x] Testes passando (46 testes)

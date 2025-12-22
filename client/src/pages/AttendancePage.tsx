@@ -12,7 +12,8 @@ import {
   Clock, 
   Calendar,
   User,
-  ClipboardCheck
+  ClipboardCheck,
+  Download
 } from "lucide-react";
 
 type AttendanceStatus = "present" | "absent";
@@ -37,9 +38,40 @@ const therapyTypeLabels: Record<string, string> = {
 export default function AttendancePage() {
   const [selectedStatus, setSelectedStatus] = useState<Record<number, AttendanceStatus>>({});
   const [notes, setNotes] = useState<Record<number, string>>({});
+  const [selectedPatientId, setSelectedPatientId] = useState<number | null>(null);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   const utils = trpc.useUtils();
   const { data: todayAppointments, isLoading } = trpc.attendance.todayAppointments.useQuery();
+  const { data: patients } = trpc.patients.list.useQuery();
+  
+  const generateReport = trpc.attendance.generateReport.useMutation({
+    onSuccess: (data) => {
+      toast.success('Relatório gerado com sucesso!');
+      window.open(data.url, '_blank');
+      setIsGeneratingPDF(false);
+    },
+    onError: (error) => {
+      toast.error('Erro ao gerar relatório: ' + error.message);
+      setIsGeneratingPDF(false);
+    },
+  });
+  
+  const handleGenerateReport = () => {
+    if (!selectedPatientId) {
+      toast.error('Selecione um paciente');
+      return;
+    }
+    
+    setIsGeneratingPDF(true);
+    generateReport.mutate({
+      patientId: selectedPatientId,
+      month: selectedMonth,
+      year: selectedYear,
+    });
+  };
 
   const markAttendanceMutation = trpc.attendance.mark.useMutation({
     onSuccess: (_, variables) => {
@@ -118,9 +150,56 @@ export default function AttendancePage() {
           <div className="p-2 bg-orange-100 rounded-lg">
             <ClipboardCheck className="w-6 h-6 text-orange-600" />
           </div>
-          <div>
+          <div className="flex-1">
             <h1 className="text-2xl font-bold text-gray-900">Controle de Presença</h1>
             <p className="text-gray-500 capitalize">{today}</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Select value={selectedPatientId?.toString() || ""} onValueChange={(v) => setSelectedPatientId(parseInt(v))}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Selecione o paciente" />
+              </SelectTrigger>
+              <SelectContent>
+                {patients?.map(patient => (
+                  <SelectItem key={patient.id} value={patient.id.toString()}>
+                    {patient.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={selectedMonth.toString()} onValueChange={(v) => setSelectedMonth(parseInt(v))}>
+              <SelectTrigger className="w-[120px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">Janeiro</SelectItem>
+                <SelectItem value="2">Fevereiro</SelectItem>
+                <SelectItem value="3">Março</SelectItem>
+                <SelectItem value="4">Abril</SelectItem>
+                <SelectItem value="5">Maio</SelectItem>
+                <SelectItem value="6">Junho</SelectItem>
+                <SelectItem value="7">Julho</SelectItem>
+                <SelectItem value="8">Agosto</SelectItem>
+                <SelectItem value="9">Setembro</SelectItem>
+                <SelectItem value="10">Outubro</SelectItem>
+                <SelectItem value="11">Novembro</SelectItem>
+                <SelectItem value="12">Dezembro</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={selectedYear.toString()} onValueChange={(v) => setSelectedYear(parseInt(v))}>
+              <SelectTrigger className="w-[90px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="2024">2024</SelectItem>
+                <SelectItem value="2025">2025</SelectItem>
+                <SelectItem value="2026">2026</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button onClick={handleGenerateReport} disabled={isGeneratingPDF || !selectedPatientId}>
+              <Download className="w-4 h-4 mr-2" />
+              {isGeneratingPDF ? 'Gerando...' : 'Exportar PDF'}
+            </Button>
           </div>
         </div>
       </div>

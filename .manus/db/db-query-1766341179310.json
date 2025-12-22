@@ -1,0 +1,9 @@
+{
+  "query": "DELETE FROM users WHERE id IN (1322011, 1426608, 1426609, 1426611, 1426613, 1426618, 1426620, 1426625, 1426628);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute DELETE FROM users WHERE id IN (1322011, 1426608, 1426609, 1426611, 1426613, 1426618, 1426620, 1426625, 1426628);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 948
+}

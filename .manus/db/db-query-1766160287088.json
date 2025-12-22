@@ -1,0 +1,88 @@
+{
+  "query": "SELECT id, name, email, role FROM users ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, email, role FROM users ORDER BY id;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Lucas Henrique",
+      "email": "lucashenriqueas05@gmail.com",
+      "role": "admin"
+    },
+    {
+      "id": "124682",
+      "name": "Cesar Henrique Santos ",
+      "email": "cml.cesar@outlook.com",
+      "role": "admin"
+    },
+    {
+      "id": "468419",
+      "name": "Marcely Almeida Silva",
+      "email": "celyneuro@gmail.com",
+      "role": "therapist"
+    },
+    {
+      "id": "468847",
+      "name": "Paciente0",
+      "email": "paciente0familia@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "1322011",
+      "name": "Wrong Current Password Test",
+      "email": "wrong-current-1766153349463@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "1426608",
+      "name": "Test User",
+      "email": "test-1766160080125@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "1426609",
+      "name": "Novo Usuário Teste",
+      "email": "novo@teste.com",
+      "role": "family"
+    },
+    {
+      "id": "1426611",
+      "name": "Login Test User",
+      "email": "login-test-1766160080324@sapere.com",
+      "role": "therapist"
+    },
+    {
+      "id": "1426613",
+      "name": "Usuário para Atualizar",
+      "email": "atualizar@teste.com",
+      "role": "therapist"
+    },
+    {
+      "id": "1426618",
+      "name": "Wrong Password Test",
+      "email": "wrong-pass-1766160080657@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "1426620",
+      "name": "Change Password Test",
+      "email": "change-pass-1766160080815@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "1426625",
+      "name": "Wrong Current Password Test",
+      "email": "wrong-current-1766160081129@sapere.com",
+      "role": "family"
+    },
+    {
+      "id": "1426628",
+      "name": "Short Password Test",
+      "email": "short-pass-1766160081278@sapere.com",
+      "role": "family"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\n1\tLucas Henrique\tlucashenriqueas05@gmail.com\tadmin\n124682\tCesar Henrique Santos \tcml.cesar@outlook.com\tadmin\n468419\tMarcely Almeida Silva\tcelyneuro@gmail.com\ttherapist\n468847\tPaciente0\tpaciente0familia@sapere.com\tfamily\n1322011\tWrong Current Password Test\twrong-current-1766153349463@sapere.com\tfamily\n1426608\tTest User\ttest-1766160080125@sapere.com\tfamily\n1426609\tNovo Usuário Teste\tnovo@teste.com\tfamily\n1426611\tLogin Test User\tlogin-test-1766160080324@sapere.com\ttherapist\n1426613\tUsuário para Atualizar\tatualizar@teste.com\ttherapist\n1426618\tWrong Password Test\twrong-pass-1766160080657@sapere.com\tfamily\n1426620\tChange Password Test\tchange-pass-1766160080815@sapere.com\tfamily\n1426625\tWrong Current Password Test\twrong-current-1766160081129@sapere.com\tfamily\n1426628\tShort Password Test\tshort-pass-1766160081278@sapere.com\tfamily\n",
+  "stderr": "",
+  "execution_time_ms": 50
+}
