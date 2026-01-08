@@ -5,7 +5,7 @@ import {
   patients, InsertPatient,
   appointments, InsertAppointment,
   documents, InsertDocument,
-  anamnesis, InsertAnamnesis,
+  patientData, InsertPatientData,
   sessionRecords, InsertSessionRecord,
   notifications, InsertNotification,
   attendance, InsertAttendance
@@ -270,29 +270,37 @@ export async function deleteDocument(id: number) {
   return await db.delete(documents).where(eq(documents.id, id));
 }
 
-// ============ ANAMNESIS OPERATIONS ============
+// ============ PATIENT DATA OPERATIONS ============
 
-export async function createAnamnesis(anamnesisData: InsertAnamnesis) {
+export async function createPatientData(data: InsertPatientData) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  return await db.insert(anamnesis).values(anamnesisData);
+  return await db.insert(patientData).values(data);
 }
 
-export async function getAnamnesisByPatient(patientId: number) {
+// Legacy alias
+export const createAnamnesis = createPatientData;
+
+export async function getPatientDataForPatient(patientId: number) {
   const db = await getDb();
   if (!db) return undefined;
   
-  const result = await db.select().from(anamnesis).where(eq(anamnesis.patientId, patientId)).limit(1);
+  const result = await db.select().from(patientData).where(eq(patientData.patientId, patientId)).limit(1);
   return result.length > 0 ? result[0] : undefined;
 }
 
-export async function updateAnamnesis(patientId: number, data: Partial<InsertAnamnesis>) {
+// Legacy alias
+export const getAnamnesisForPatient = getPatientDataForPatient;
+export async function updatePatientData(patientId: number, data: Partial<InsertPatientData>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  return await db.update(anamnesis).set(data).where(eq(anamnesis.patientId, patientId));
+  return await db.update(patientData).set(data).where(eq(patientData.patientId, patientId));
 }
+
+// Legacy alias
+export const updateAnamnesis = updatePatientData;
 
 // ============ SESSION RECORD OPERATIONS ============
 

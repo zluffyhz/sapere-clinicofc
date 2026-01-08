@@ -274,3 +274,14 @@
 - [x] Adicionar seletor de paciente para escolher qual relatório gerar
 - [x] Adicionar seletores de mês e ano
 - [x] Testes passando (46 testes)
+
+## Substituir Anamnese por Dados do Paciente
+- [x] Renomear tabela anamnesis para patient_data no schema
+- [x] Atualizar campos: mainComplaints, allergies, currentMedications, therapyGoals, additionalNotes
+- [x] Executar migração do banco de dados (rename table + alter columns)
+- [x] Atualizar rotas backend (criar aliases legacy)
+- [x] Atualizar interface frontend: renomear aba para "Dados do Paciente"
+- [x] Simplificar formulário com apenas 5 campos
+- [x] Atualizar testes para usar novos campos
+- [x] Todos os 46 testes passando
+- [x] Limpar 32 usuários de teste

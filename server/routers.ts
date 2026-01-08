@@ -434,7 +434,7 @@ export const appRouter = router({
           throw new TRPCError({ code: 'FORBIDDEN' });
         }
         
-        return await db.getAnamnesisByPatient(input.patientId);
+        return await db.getAnamnesisForPatient(input.patientId);
       }),
 
     update: therapistProcedure

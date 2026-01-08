@@ -175,8 +175,11 @@ describe("Anamnesis Router", () => {
 
     const result = await caller.anamnesis.create({
       patientId: patientResult.id,
-      mainComplaint: "Queixa principal de teste",
+      mainComplaints: "Queixas principais de teste",
+      allergies: "Nenhuma alergia conhecida",
+      currentMedications: "Medicamento X",
       therapyGoals: "Objetivos terapêuticos de teste",
+      additionalNotes: "Observações adicionais",
     });
 
     expect(result.success).toBe(true);

@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE patient_data \nCHANGE mainComplaint mainComplaints TEXT,\nCHANGE therapyGoals therapyGoals TEXT,\nDROP COLUMN medicalHistory,\nDROP COLUMN familyHistory,\nDROP COLUMN developmentHistory,\nDROP COLUMN previousTherapies;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute ALTER TABLE patient_data \nCHANGE mainComplaint mainComplaints TEXT,\nCHANGE therapyGoals therapyGoals TEXT,\nDROP COLUMN medicalHistory,\nDROP COLUMN familyHistory,\nDROP COLUMN developmentHistory,\nDROP COLUMN previousTherapies;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1417
+}

@@ -79,31 +79,30 @@ export type Document = typeof documents.$inferSelect;
 export type InsertDocument = typeof documents.$inferInsert;
 
 /**
- * Anamnesis table - stores detailed patient intake forms
+ * Patient Data table - stores simplified patient information
+ * (Anamneses completas são feitas via upload de documentos)
  */
-export const anamnesis = mysqlTable("anamnesis", {
+export const patientData = mysqlTable("patient_data", {
   id: int("id").autoincrement().primaryKey(),
-  patientId: int("patientId").notNull().unique(), // One anamnesis per patient
+  patientId: int("patientId").notNull().unique(), // One record per patient
   therapistUserId: int("therapistUserId").notNull(),
-  // Patient Information
-  mainComplaint: text("mainComplaint"),
-  medicalHistory: text("medicalHistory"),
-  familyHistory: text("familyHistory"),
-  developmentHistory: text("developmentHistory"),
-  // Current Status
-  currentMedications: text("currentMedications"),
-  allergies: text("allergies"),
-  previousTherapies: text("previousTherapies"),
-  // Goals and Observations
-  therapyGoals: text("therapyGoals"),
-  additionalNotes: text("additionalNotes"),
+  // Simplified fields
+  mainComplaints: text("mainComplaints"), // Queixas principais
+  allergies: text("allergies"), // Alergias
+  currentMedications: text("currentMedications"), // Medicação atual
+  therapyGoals: text("therapyGoals"), // Objetivos terapêuticos
+  additionalNotes: text("additionalNotes"), // Observações adicionais
   // Metadata
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
 
-export type Anamnesis = typeof anamnesis.$inferSelect;
-export type InsertAnamnesis = typeof anamnesis.$inferInsert;
+export type PatientData = typeof patientData.$inferSelect;
+export type InsertPatientData = typeof patientData.$inferInsert;
+
+// Legacy types for backward compatibility during migration
+export type Anamnesis = PatientData;
+export type InsertAnamnesis = InsertPatientData;
 
 /**
  * Session Records table - stores evolution notes for each therapy session

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRoute } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,14 +31,10 @@ export default function ProntuarioPage() {
   const [, params] = useRoute("/prontuarios/:id");
   const patientId = params?.id ? parseInt(params.id) : null;
 
-  const [anamnesisData, setAnamnesisData] = useState({
-    mainComplaint: "",
-    medicalHistory: "",
-    familyHistory: "",
-    developmentHistory: "",
-    currentMedications: "",
+  const [patientData, setPatientData] = useState({
+    mainComplaints: "",
     allergies: "",
-    previousTherapies: "",
+    currentMedications: "",
     therapyGoals: "",
     additionalNotes: "",
   });
@@ -48,38 +44,37 @@ export default function ProntuarioPage() {
     sessionDate: new Date().toISOString().split("T")[0],
     sessionSummary: "",
     patientMood: "" as any,
-    patientBehavior: "",
-    goalsAchieved: "",
-    nextSessionPlan: "",
+    activitiesPerformed: "",
+    progressNotes: "",
+    nextSessionGoals: "",
   });
 
-  const [isSessionDialogOpen, setIsSessionDialogOpen] = useState(false);
-  const [isDocumentDialogOpen, setIsDocumentDialogOpen] = useState(false);
-  const [documentData, setDocumentData] = useState({
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [uploadData, setUploadData] = useState({
     title: "",
     description: "",
-    documentType: "relatorio_evolucao" as any,
+    documentType: "outros" as any,
     file: null as File | null,
   });
 
   const utils = trpc.useUtils();
-
-  const { data: patient } = trpc.patients.getById.useQuery(
+  const { data: patient, isLoading: patientLoading } = trpc.patients.getById.useQuery(
     { id: patientId! },
     { enabled: !!patientId }
   );
 
-  const { data: anamnesis } = trpc.anamnesis.getByPatient.useQuery(
+  const { data: anamnesis, isLoading: anamnesisLoading } = trpc.anamnesis.getByPatient.useQuery(
     { patientId: patientId! },
     { enabled: !!patientId }
   );
 
-  const { data: sessionRecords } = trpc.sessionRecords.listByPatient.useQuery(
-    { patientId: patientId! },
-    { enabled: !!patientId }
-  );
+  const { data: sessionRecords, isLoading: sessionRecordsLoading } =
+    trpc.sessionRecords.listByPatient.useQuery(
+      { patientId: patientId! },
+      { enabled: !!patientId }
+    );
 
-  const { data: documents } = trpc.documents.listByPatient.useQuery(
+  const { data: documents, isLoading: documentsLoading } = trpc.documents.listByPatient.useQuery(
     { patientId: patientId! },
     { enabled: !!patientId }
   );
@@ -89,260 +84,194 @@ export default function ProntuarioPage() {
     { enabled: !!patientId }
   );
 
-  // Load anamnesis data when available
-  useEffect(() => {
-    if (anamnesis) {
-      setAnamnesisData({
-        mainComplaint: anamnesis.mainComplaint || "",
-        medicalHistory: anamnesis.medicalHistory || "",
-        familyHistory: anamnesis.familyHistory || "",
-        developmentHistory: anamnesis.developmentHistory || "",
-        currentMedications: anamnesis.currentMedications || "",
-        allergies: anamnesis.allergies || "",
-        previousTherapies: anamnesis.previousTherapies || "",
-        therapyGoals: anamnesis.therapyGoals || "",
-        additionalNotes: anamnesis.additionalNotes || "",
-      });
-    }
-  }, [anamnesis]);
-
   const createAnamnesisMutation = trpc.anamnesis.create.useMutation({
     onSuccess: () => {
       utils.anamnesis.getByPatient.invalidate({ patientId: patientId! });
-      toast.success("Anamnese criada com sucesso");
+      toast.success("Dados do paciente salvos com sucesso!");
+    },
+    onError: (error) => {
+      toast.error("Erro ao salvar dados: " + error.message);
     },
   });
 
   const updateAnamnesisMutation = trpc.anamnesis.update.useMutation({
     onSuccess: () => {
       utils.anamnesis.getByPatient.invalidate({ patientId: patientId! });
-      toast.success("Anamnese atualizada com sucesso");
+      toast.success("Dados do paciente atualizados com sucesso!");
+    },
+    onError: (error) => {
+      toast.error("Erro ao atualizar dados: " + error.message);
     },
   });
 
   const createSessionRecordMutation = trpc.sessionRecords.create.useMutation({
     onSuccess: () => {
       utils.sessionRecords.listByPatient.invalidate({ patientId: patientId! });
-      setIsSessionDialogOpen(false);
+      toast.success("Registro de sessão salvo com sucesso!");
       setSessionRecordData({
         appointmentId: 0,
         sessionDate: new Date().toISOString().split("T")[0],
         sessionSummary: "",
         patientMood: "",
-        patientBehavior: "",
-        goalsAchieved: "",
-        nextSessionPlan: "",
+        activitiesPerformed: "",
+        progressNotes: "",
+        nextSessionGoals: "",
       });
-      toast.success("Registro de sessão criado com sucesso");
+    },
+    onError: (error) => {
+      toast.error("Erro ao salvar registro: " + error.message);
     },
   });
 
   const uploadDocumentMutation = trpc.documents.upload.useMutation({
     onSuccess: () => {
       utils.documents.listByPatient.invalidate({ patientId: patientId! });
-      setIsDocumentDialogOpen(false);
-      setDocumentData({
+      toast.success("Documento enviado com sucesso!");
+      setUploadDialogOpen(false);
+      setUploadData({
         title: "",
         description: "",
-        documentType: "relatorio_evolucao",
+        documentType: "outros",
         file: null,
       });
-      toast.success("Documento enviado com sucesso");
+    },
+    onError: (error) => {
+      toast.error("Erro ao enviar documento: " + error.message);
     },
   });
 
-  const handleSaveAnamnesis = () => {
+  // Load existing anamnesis data
+  useState(() => {
+    if (anamnesis) {
+      setPatientData({
+        mainComplaints: anamnesis.mainComplaints || "",
+        allergies: anamnesis.allergies || "",
+        currentMedications: anamnesis.currentMedications || "",
+        therapyGoals: anamnesis.therapyGoals || "",
+        additionalNotes: anamnesis.additionalNotes || "",
+      });
+    }
+  });
+
+  const handleSavePatientData = () => {
     if (!patientId) return;
 
     if (anamnesis) {
       updateAnamnesisMutation.mutate({
         patientId,
-        ...anamnesisData,
+        ...patientData,
       });
     } else {
       createAnamnesisMutation.mutate({
         patientId,
-        ...anamnesisData,
+        ...patientData,
       });
     }
   };
 
-  const handleCreateSessionRecord = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!patientId) return;
+  const handleSaveSessionRecord = () => {
+    if (!patientId || !sessionRecordData.appointmentId) {
+      toast.error("Selecione uma sessão");
+      return;
+    }
 
     createSessionRecordMutation.mutate({
       ...sessionRecordData,
       patientId,
       sessionDate: new Date(sessionRecordData.sessionDate),
-      patientMood: sessionRecordData.patientMood || undefined,
     });
   };
 
-  const handleUploadDocument = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!patientId || !documentData.file) {
+  const handleFileUpload = async () => {
+    if (!patientId || !uploadData.file) {
       toast.error("Selecione um arquivo");
       return;
     }
 
     const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = reader.result?.toString().split(",")[1];
-      if (base64) {
-        uploadDocumentMutation.mutate({
-          patientId,
-          title: documentData.title,
-          description: documentData.description,
-          documentType: documentData.documentType,
-          fileData: base64,
-          fileName: documentData.file!.name,
-          mimeType: documentData.file!.type,
-        });
-      }
+    reader.onload = async (e) => {
+      const base64 = e.target?.result as string;
+      uploadDocumentMutation.mutate({
+        patientId,
+        title: uploadData.title,
+        description: uploadData.description,
+        documentType: uploadData.documentType,
+        fileData: base64,
+        fileName: uploadData.file!.name,
+        mimeType: uploadData.file!.type,
+      });
     };
-    reader.readAsDataURL(documentData.file);
+    reader.readAsDataURL(uploadData.file);
   };
 
-  if (!patientId) {
-    return <div>Paciente não encontrado</div>;
+  if (patientLoading) {
+    return <div className="container py-8">Carregando...</div>;
   }
 
-  const moodLabels: Record<string, string> = {
-    muito_bem: "Muito Bem",
-    bem: "Bem",
-    neutro: "Neutro",
-    ansioso: "Ansioso",
-    irritado: "Irritado",
-    triste: "Triste",
-  };
+  if (!patient) {
+    return <div className="container py-8">Paciente não encontrado</div>;
+  }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">
-          Prontuário - {patient?.name}
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Anamnese, registros de sessão e documentos
+    <div className="container py-8">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Prontuário</h1>
+        <p className="text-gray-600">
+          Paciente: <span className="font-semibold">{patient.name}</span>
         </p>
       </div>
 
-      <Tabs defaultValue="anamnese" className="space-y-6">
+      <Tabs defaultValue="dados" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="anamnese">Anamnese</TabsTrigger>
-          <TabsTrigger value="sessoes">Registros de Sessão</TabsTrigger>
+          <TabsTrigger value="dados">Dados do Paciente</TabsTrigger>
+          <TabsTrigger value="sessoes">Registros de Sessões</TabsTrigger>
           <TabsTrigger value="documentos">Documentos</TabsTrigger>
         </TabsList>
 
-        {/* Anamnese Tab */}
-        <TabsContent value="anamnese" className="space-y-6">
+        {/* Dados do Paciente */}
+        <TabsContent value="dados">
           <Card>
             <CardHeader>
-              <CardTitle>Anamnese</CardTitle>
+              <CardTitle>Dados do Paciente</CardTitle>
               <CardDescription>
-                Formulário de avaliação inicial do paciente (com autosave)
+                Informações básicas sobre o paciente. Anamneses completas devem ser enviadas como documentos.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="mainComplaint">Queixa Principal</Label>
+                <Label htmlFor="mainComplaints">Queixas Principais</Label>
                 <Textarea
-                  id="mainComplaint"
-                  value={anamnesisData.mainComplaint}
+                  id="mainComplaints"
+                  value={patientData.mainComplaints}
                   onChange={(e) =>
-                    setAnamnesisData({ ...anamnesisData, mainComplaint: e.target.value })
+                    setPatientData({ ...patientData, mainComplaints: e.target.value })
                   }
-                  rows={3}
-                  placeholder="Descreva a queixa principal..."
-                />
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="medicalHistory">Histórico Médico</Label>
-                  <Textarea
-                    id="medicalHistory"
-                    value={anamnesisData.medicalHistory}
-                    onChange={(e) =>
-                      setAnamnesisData({
-                        ...anamnesisData,
-                        medicalHistory: e.target.value,
-                      })
-                    }
-                    rows={4}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="familyHistory">Histórico Familiar</Label>
-                  <Textarea
-                    id="familyHistory"
-                    value={anamnesisData.familyHistory}
-                    onChange={(e) =>
-                      setAnamnesisData({ ...anamnesisData, familyHistory: e.target.value })
-                    }
-                    rows={4}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="developmentHistory">Histórico de Desenvolvimento</Label>
-                <Textarea
-                  id="developmentHistory"
-                  value={anamnesisData.developmentHistory}
-                  onChange={(e) =>
-                    setAnamnesisData({
-                      ...anamnesisData,
-                      developmentHistory: e.target.value,
-                    })
-                  }
+                  placeholder="Descreva as queixas principais do paciente..."
                   rows={3}
                 />
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="currentMedications">Medicações Atuais</Label>
-                  <Textarea
-                    id="currentMedications"
-                    value={anamnesisData.currentMedications}
-                    onChange={(e) =>
-                      setAnamnesisData({
-                        ...anamnesisData,
-                        currentMedications: e.target.value,
-                      })
-                    }
-                    rows={3}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="allergies">Alergias</Label>
-                  <Textarea
-                    id="allergies"
-                    value={anamnesisData.allergies}
-                    onChange={(e) =>
-                      setAnamnesisData({ ...anamnesisData, allergies: e.target.value })
-                    }
-                    rows={3}
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="allergies">Alergias</Label>
+                <Textarea
+                  id="allergies"
+                  value={patientData.allergies}
+                  onChange={(e) => setPatientData({ ...patientData, allergies: e.target.value })}
+                  placeholder="Liste as alergias conhecidas..."
+                  rows={2}
+                />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="previousTherapies">Terapias Anteriores</Label>
+                <Label htmlFor="currentMedications">Medicação Atual</Label>
                 <Textarea
-                  id="previousTherapies"
-                  value={anamnesisData.previousTherapies}
+                  id="currentMedications"
+                  value={patientData.currentMedications}
                   onChange={(e) =>
-                    setAnamnesisData({
-                      ...anamnesisData,
-                      previousTherapies: e.target.value,
-                    })
+                    setPatientData({ ...patientData, currentMedications: e.target.value })
                   }
-                  rows={3}
+                  placeholder="Liste os medicamentos em uso..."
+                  rows={2}
                 />
               </div>
 
@@ -350,10 +279,11 @@ export default function ProntuarioPage() {
                 <Label htmlFor="therapyGoals">Objetivos Terapêuticos</Label>
                 <Textarea
                   id="therapyGoals"
-                  value={anamnesisData.therapyGoals}
+                  value={patientData.therapyGoals}
                   onChange={(e) =>
-                    setAnamnesisData({ ...anamnesisData, therapyGoals: e.target.value })
+                    setPatientData({ ...patientData, therapyGoals: e.target.value })
                   }
+                  placeholder="Defina os objetivos do tratamento..."
                   rows={3}
                 />
               </div>
@@ -362,403 +292,323 @@ export default function ProntuarioPage() {
                 <Label htmlFor="additionalNotes">Observações Adicionais</Label>
                 <Textarea
                   id="additionalNotes"
-                  value={anamnesisData.additionalNotes}
+                  value={patientData.additionalNotes}
                   onChange={(e) =>
-                    setAnamnesisData({
-                      ...anamnesisData,
-                      additionalNotes: e.target.value,
-                    })
+                    setPatientData({ ...patientData, additionalNotes: e.target.value })
                   }
+                  placeholder="Outras informações relevantes..."
                   rows={3}
                 />
               </div>
 
               <Button
-                onClick={handleSaveAnamnesis}
-                disabled={
-                  createAnamnesisMutation.isPending || updateAnamnesisMutation.isPending
-                }
+                onClick={handleSavePatientData}
+                disabled={createAnamnesisMutation.isPending || updateAnamnesisMutation.isPending}
+                className="w-full"
               >
-                <Save className="h-4 w-4 mr-2" />
-                {anamnesis ? "Atualizar Anamnese" : "Salvar Anamnese"}
+                <Save className="w-4 h-4 mr-2" />
+                {anamnesis ? "Atualizar Dados" : "Salvar Dados"}
               </Button>
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Session Records Tab */}
-        <TabsContent value="sessoes" className="space-y-6">
-          <div className="flex justify-end">
-            <Dialog open={isSessionDialogOpen} onOpenChange={setIsSessionDialogOpen}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Novo Registro
+        {/* Registros de Sessões */}
+        <TabsContent value="sessoes">
+          <div className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Novo Registro de Sessão</CardTitle>
+                <CardDescription>Registre o resumo de uma sessão realizada</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="appointment">Sessão</Label>
+                  <Select
+                    value={sessionRecordData.appointmentId.toString()}
+                    onValueChange={(value) =>
+                      setSessionRecordData({ ...sessionRecordData, appointmentId: parseInt(value) })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a sessão" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {appointments?.map((apt) => (
+                        <SelectItem key={apt.id} value={apt.id.toString()}>
+                          {format(new Date(apt.startTime), "dd/MM/yyyy HH:mm", { locale: ptBR })}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="sessionDate">Data da Sessão</Label>
+                  <Input
+                    id="sessionDate"
+                    type="date"
+                    value={sessionRecordData.sessionDate}
+                    onChange={(e) =>
+                      setSessionRecordData({ ...sessionRecordData, sessionDate: e.target.value })
+                    }
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="patientMood">Humor do Paciente</Label>
+                  <Select
+                    value={sessionRecordData.patientMood}
+                    onValueChange={(value) =>
+                      setSessionRecordData({ ...sessionRecordData, patientMood: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o humor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="happy">Feliz</SelectItem>
+                      <SelectItem value="calm">Calmo</SelectItem>
+                      <SelectItem value="anxious">Ansioso</SelectItem>
+                      <SelectItem value="irritated">Irritado</SelectItem>
+                      <SelectItem value="sad">Triste</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="sessionSummary">Resumo da Sessão</Label>
+                  <Textarea
+                    id="sessionSummary"
+                    value={sessionRecordData.sessionSummary}
+                    onChange={(e) =>
+                      setSessionRecordData({ ...sessionRecordData, sessionSummary: e.target.value })
+                    }
+                    placeholder="Descreva o que foi trabalhado na sessão..."
+                    rows={3}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="activitiesPerformed">Atividades Realizadas</Label>
+                  <Textarea
+                    id="activitiesPerformed"
+                    value={sessionRecordData.activitiesPerformed}
+                    onChange={(e) =>
+                      setSessionRecordData({
+                        ...sessionRecordData,
+                        activitiesPerformed: e.target.value,
+                      })
+                    }
+                    placeholder="Liste as atividades realizadas..."
+                    rows={2}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="progressNotes">Notas de Progresso</Label>
+                  <Textarea
+                    id="progressNotes"
+                    value={sessionRecordData.progressNotes}
+                    onChange={(e) =>
+                      setSessionRecordData({ ...sessionRecordData, progressNotes: e.target.value })
+                    }
+                    placeholder="Observações sobre o progresso do paciente..."
+                    rows={2}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="nextSessionGoals">Objetivos para Próxima Sessão</Label>
+                  <Textarea
+                    id="nextSessionGoals"
+                    value={sessionRecordData.nextSessionGoals}
+                    onChange={(e) =>
+                      setSessionRecordData({
+                        ...sessionRecordData,
+                        nextSessionGoals: e.target.value,
+                      })
+                    }
+                    placeholder="Defina os objetivos para a próxima sessão..."
+                    rows={2}
+                  />
+                </div>
+
+                <Button
+                  onClick={handleSaveSessionRecord}
+                  disabled={createSessionRecordMutation.isPending}
+                  className="w-full"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Salvar Registro
                 </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                  <DialogTitle>Novo Registro de Sessão</DialogTitle>
-                  <DialogDescription>
-                    Registre a evolução da sessão de terapia
-                  </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleCreateSessionRecord} className="space-y-4">
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="appointmentId">Agendamento</Label>
-                      <Select
-                        value={sessionRecordData.appointmentId.toString()}
-                        onValueChange={(value) =>
-                          setSessionRecordData({
-                            ...sessionRecordData,
-                            appointmentId: parseInt(value),
-                          })
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {appointments?.map((apt) => (
-                            <SelectItem key={apt.id} value={apt.id.toString()}>
-                              {format(new Date(apt.startTime), "PP", { locale: ptBR })}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+              </CardContent>
+            </Card>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="sessionDate">Data da Sessão</Label>
-                      <Input
-                        id="sessionDate"
-                        type="date"
-                        value={sessionRecordData.sessionDate}
-                        onChange={(e) =>
-                          setSessionRecordData({
-                            ...sessionRecordData,
-                            sessionDate: e.target.value,
-                          })
-                        }
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="sessionSummary">Resumo da Sessão *</Label>
-                    <Textarea
-                      id="sessionSummary"
-                      value={sessionRecordData.sessionSummary}
-                      onChange={(e) =>
-                        setSessionRecordData({
-                          ...sessionRecordData,
-                          sessionSummary: e.target.value,
-                        })
-                      }
-                      rows={4}
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="patientMood">Humor do Paciente</Label>
-                    <Select
-                      value={sessionRecordData.patientMood}
-                      onValueChange={(value) =>
-                        setSessionRecordData({ ...sessionRecordData, patientMood: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="muito_bem">Muito Bem</SelectItem>
-                        <SelectItem value="bem">Bem</SelectItem>
-                        <SelectItem value="neutro">Neutro</SelectItem>
-                        <SelectItem value="ansioso">Ansioso</SelectItem>
-                        <SelectItem value="irritado">Irritado</SelectItem>
-                        <SelectItem value="triste">Triste</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="patientBehavior">Comportamento</Label>
-                    <Textarea
-                      id="patientBehavior"
-                      value={sessionRecordData.patientBehavior}
-                      onChange={(e) =>
-                        setSessionRecordData({
-                          ...sessionRecordData,
-                          patientBehavior: e.target.value,
-                        })
-                      }
-                      rows={3}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="goalsAchieved">Metas Atingidas</Label>
-                    <Textarea
-                      id="goalsAchieved"
-                      value={sessionRecordData.goalsAchieved}
-                      onChange={(e) =>
-                        setSessionRecordData({
-                          ...sessionRecordData,
-                          goalsAchieved: e.target.value,
-                        })
-                      }
-                      rows={3}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="nextSessionPlan">Plano para Próxima Sessão</Label>
-                    <Textarea
-                      id="nextSessionPlan"
-                      value={sessionRecordData.nextSessionPlan}
-                      onChange={(e) =>
-                        setSessionRecordData({
-                          ...sessionRecordData,
-                          nextSessionPlan: e.target.value,
-                        })
-                      }
-                      rows={3}
-                    />
-                  </div>
-
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setIsSessionDialogOpen(false)}
-                    >
-                      Cancelar
-                    </Button>
-                    <Button
-                      type="submit"
-                      disabled={createSessionRecordMutation.isPending}
-                    >
-                      Salvar Registro
-                    </Button>
-                  </div>
-                </form>
-              </DialogContent>
-            </Dialog>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Registros de Sessão</CardTitle>
-              <CardDescription>Histórico de evoluções</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {!sessionRecords || sessionRecords.length === 0 ? (
-                <div className="text-center py-12">
-                  <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground">
-                    Nenhum registro de sessão encontrado
-                  </p>
-                </div>
+            {/* Lista de registros anteriores */}
+            <div className="space-y-3">
+              <h3 className="text-lg font-semibold">Registros Anteriores</h3>
+              {sessionRecordsLoading ? (
+                <p className="text-gray-500">Carregando registros...</p>
+              ) : sessionRecords && sessionRecords.length > 0 ? (
+                sessionRecords.map((record) => (
+                  <Card key={record.id}>
+                    <CardHeader>
+                      <CardTitle className="text-base">
+                        {format(new Date(record.sessionDate), "dd/MM/yyyy", { locale: ptBR })}
+                      </CardTitle>
+                      <CardDescription>
+                        Humor: {record.patientMood || "Não informado"}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-gray-700 whitespace-pre-wrap">
+                        {record.sessionSummary}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))
               ) : (
-                <div className="space-y-4">
-                  {sessionRecords.map((record) => (
-                    <div key={record.id} className="p-4 rounded-lg border">
-                      <div className="flex items-start justify-between mb-3">
-                        <div>
-                          <p className="font-semibold">
-                            {format(new Date(record.sessionDate), "PPP", {
-                              locale: ptBR,
-                            })}
-                          </p>
-                          {record.patientMood && (
-                            <p className="text-sm text-muted-foreground">
-                              Humor: {moodLabels[record.patientMood]}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="space-y-2 text-sm">
-                        <div>
-                          <p className="font-medium">Resumo:</p>
-                          <p className="text-muted-foreground">
-                            {record.sessionSummary}
-                          </p>
-                        </div>
-                        {record.patientBehavior && (
-                          <div>
-                            <p className="font-medium">Comportamento:</p>
-                            <p className="text-muted-foreground">
-                              {record.patientBehavior}
-                            </p>
-                          </div>
-                        )}
-                        {record.goalsAchieved && (
-                          <div>
-                            <p className="font-medium">Metas Atingidas:</p>
-                            <p className="text-muted-foreground">
-                              {record.goalsAchieved}
-                            </p>
-                          </div>
-                        )}
-                        {record.nextSessionPlan && (
-                          <div>
-                            <p className="font-medium">Próxima Sessão:</p>
-                            <p className="text-muted-foreground">
-                              {record.nextSessionPlan}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <p className="text-gray-500">Nenhum registro de sessão encontrado</p>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </TabsContent>
 
-        {/* Documents Tab */}
-        <TabsContent value="documentos" className="space-y-6">
-          <div className="flex justify-end">
-            <Dialog open={isDocumentDialogOpen} onOpenChange={setIsDocumentDialogOpen}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Upload className="h-4 w-4 mr-2" />
-                  Enviar Documento
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Enviar Documento</DialogTitle>
-                  <DialogDescription>
-                    Faça upload de relatórios, laudos ou outros documentos
-                  </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleUploadDocument} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="title">Título *</Label>
-                    <Input
-                      id="title"
-                      value={documentData.title}
-                      onChange={(e) =>
-                        setDocumentData({ ...documentData, title: e.target.value })
-                      }
-                      required
-                    />
+        {/* Documentos */}
+        <TabsContent value="documentos">
+          <div className="space-y-4">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Documentos</CardTitle>
+                    <CardDescription>
+                      Anamneses, laudos, relatórios e outros documentos
+                    </CardDescription>
                   </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="description">Descrição</Label>
-                    <Textarea
-                      id="description"
-                      value={documentData.description}
-                      onChange={(e) =>
-                        setDocumentData({
-                          ...documentData,
-                          description: e.target.value,
-                        })
-                      }
-                      rows={3}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="documentType">Tipo de Documento</Label>
-                    <Select
-                      value={documentData.documentType}
-                      onValueChange={(value: any) =>
-                        setDocumentData({ ...documentData, documentType: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="relatorio_evolucao">
-                          Relatório de Evolução
-                        </SelectItem>
-                        <SelectItem value="laudo">Laudo</SelectItem>
-                        <SelectItem value="anamnese">Anamnese</SelectItem>
-                        <SelectItem value="outros">Outros</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="file">Arquivo *</Label>
-                    <Input
-                      id="file"
-                      type="file"
-                      onChange={(e) =>
-                        setDocumentData({
-                          ...documentData,
-                          file: e.target.files?.[0] || null,
-                        })
-                      }
-                      required
-                    />
-                  </div>
-
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setIsDocumentDialogOpen(false)}
-                    >
-                      Cancelar
-                    </Button>
-                    <Button type="submit" disabled={uploadDocumentMutation.isPending}>
-                      Enviar
-                    </Button>
-                  </div>
-                </form>
-              </DialogContent>
-            </Dialog>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Documentos</CardTitle>
-              <CardDescription>Arquivos anexados ao prontuário</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {!documents || documents.length === 0 ? (
-                <div className="text-center py-12">
-                  <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground">Nenhum documento encontrado</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {documents.map((doc) => (
-                    <div
-                      key={doc.id}
-                      className="flex items-center justify-between p-3 rounded-lg border"
-                    >
-                      <div className="flex items-center gap-3">
-                        <FileText className="h-5 w-5 text-muted-foreground" />
-                        <div>
-                          <p className="font-medium">{doc.title}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {format(new Date(doc.createdAt), "PP", { locale: ptBR })}
-                          </p>
-                        </div>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => window.open(doc.fileUrl, "_blank")}
-                      >
-                        Baixar
+                  <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button>
+                        <Upload className="w-4 h-4 mr-2" />
+                        Enviar Documento
                       </Button>
-                    </div>
-                  ))}
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Enviar Documento</DialogTitle>
+                        <DialogDescription>
+                          Faça upload de um documento para o prontuário do paciente
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="title">Título</Label>
+                          <Input
+                            id="title"
+                            value={uploadData.title}
+                            onChange={(e) =>
+                              setUploadData({ ...uploadData, title: e.target.value })
+                            }
+                            placeholder="Ex: Anamnese Inicial"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="documentType">Tipo de Documento</Label>
+                          <Select
+                            value={uploadData.documentType}
+                            onValueChange={(value) =>
+                              setUploadData({ ...uploadData, documentType: value })
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="anamnese">Anamnese</SelectItem>
+                              <SelectItem value="relatorio_evolucao">Relatório de Evolução</SelectItem>
+                              <SelectItem value="laudo">Laudo</SelectItem>
+                              <SelectItem value="outros">Outros</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="description">Descrição</Label>
+                          <Textarea
+                            id="description"
+                            value={uploadData.description}
+                            onChange={(e) =>
+                              setUploadData({ ...uploadData, description: e.target.value })
+                            }
+                            placeholder="Descrição opcional do documento..."
+                            rows={2}
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="file">Arquivo</Label>
+                          <Input
+                            id="file"
+                            type="file"
+                            onChange={(e) =>
+                              setUploadData({
+                                ...uploadData,
+                                file: e.target.files?.[0] || null,
+                              })
+                            }
+                          />
+                        </div>
+
+                        <Button
+                          onClick={handleFileUpload}
+                          disabled={uploadDocumentMutation.isPending}
+                          className="w-full"
+                        >
+                          <Upload className="w-4 h-4 mr-2" />
+                          {uploadDocumentMutation.isPending ? "Enviando..." : "Enviar"}
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              </CardHeader>
+              <CardContent>
+                {documentsLoading ? (
+                  <p className="text-gray-500">Carregando documentos...</p>
+                ) : documents && documents.length > 0 ? (
+                  <div className="space-y-2">
+                    {documents.map((doc) => (
+                      <div
+                        key={doc.id}
+                        className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+                      >
+                        <div className="flex items-center gap-3">
+                          <FileText className="w-5 h-5 text-blue-600" />
+                          <div>
+                            <p className="font-medium">{doc.title}</p>
+                            <p className="text-sm text-gray-500">
+                              {format(new Date(doc.createdAt), "dd/MM/yyyy", { locale: ptBR })}
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(doc.fileUrl, "_blank")}
+                        >
+                          Abrir
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-center py-8">Nenhum documento enviado</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
