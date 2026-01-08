@@ -318,3 +318,12 @@
 - [x] Remover usuários mock (22 usuários removidos)
 - [x] Verificar que apenas 4 usuários reais permanecem
 - [x] Confirmar integridade do banco de dados (7 pacientes, 4 usuários)
+
+## Remover Pacientes "Paciente para Anamnese"
+- [x] Identificar pacientes com nome "Paciente para Anamnese" (6 pacientes encontrados)
+- [x] Remover agendamentos relacionados
+- [x] Remover registros de presença relacionados
+- [x] Remover dados de pacientes relacionados
+- [x] Remover documentos relacionados
+- [x] Remover os 6 pacientes
+- [x] Verificar integridade do banco (apenas 1 paciente real restante: Antonella Salles romanini)

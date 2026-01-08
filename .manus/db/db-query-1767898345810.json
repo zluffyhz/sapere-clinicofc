@@ -1,0 +1,46 @@
+{
+  "query": "SELECT id, name, dateOfBirth, familyUserId FROM patients WHERE name LIKE '%Anamnese%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, dateOfBirth, familyUserId FROM patients WHERE name LIKE '%Anamnese%'",
+  "rows": [
+    {
+      "id": "420003",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "420006",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "420009",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "420012",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "420015",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "420018",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "familyUserId": "2"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdateOfBirth\tfamilyUserId\n420003\tPaciente para Anamnese\tNULL\t2\n420006\tPaciente para Anamnese\tNULL\t2\n420009\tPaciente para Anamnese\tNULL\t2\n420012\tPaciente para Anamnese\tNULL\t2\n420015\tPaciente para Anamnese\tNULL\t2\n420018\tPaciente para Anamnese\tNULL\t2\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}
