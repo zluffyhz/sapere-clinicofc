@@ -1,4 +1,4 @@
-import { eq, and, gte, lte, desc } from "drizzle-orm";
+import { eq, and, gte, lte, desc, ne, or, lt, gt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { 
   InsertUser, users, 
@@ -543,4 +543,80 @@ export async function getTodayAppointmentsForAttendance() {
       )
     )
     .orderBy(appointments.startTime);
+}
+
+export async function checkScheduleConflicts(
+  startTime: Date,
+  endTime: Date,
+  therapistUserId: number,
+  patientId: number,
+  excludeAppointmentId?: number
+) {
+  const db = await getDb();
+  if (!db) return { therapistConflict: false, patientConflict: false };
+
+  // Check therapist conflicts
+  const therapistConditions = [
+    eq(appointments.therapistUserId, therapistUserId),
+    ne(appointments.status, 'cancelled'),
+    or(
+      // New appointment starts during existing appointment
+      and(
+        gte(appointments.startTime, startTime),
+        lt(appointments.startTime, endTime)
+      ),
+      // New appointment ends during existing appointment
+      and(
+        gt(appointments.endTime, startTime),
+        lte(appointments.endTime, endTime)
+      ),
+      // New appointment completely overlaps existing appointment
+      and(
+        lte(appointments.startTime, startTime),
+        gte(appointments.endTime, endTime)
+      )
+    )
+  ];
+  
+  if (excludeAppointmentId) {
+    therapistConditions.push(ne(appointments.id, excludeAppointmentId));
+  }
+  
+  const therapistConflicts = await db.select().from(appointments)
+    .where(and(...therapistConditions));
+
+  // Check patient conflicts
+  const patientConditions = [
+    eq(appointments.patientId, patientId),
+    ne(appointments.status, 'cancelled'),
+    or(
+      // New appointment starts during existing appointment
+      and(
+        gte(appointments.startTime, startTime),
+        lt(appointments.startTime, endTime)
+      ),
+      // New appointment ends during existing appointment
+      and(
+        gt(appointments.endTime, startTime),
+        lte(appointments.endTime, endTime)
+      ),
+      // New appointment completely overlaps existing appointment
+      and(
+        lte(appointments.startTime, startTime),
+        gte(appointments.endTime, endTime)
+      )
+    )
+  ];
+  
+  if (excludeAppointmentId) {
+    patientConditions.push(ne(appointments.id, excludeAppointmentId));
+  }
+  
+  const patientConflicts = await db.select().from(appointments)
+    .where(and(...patientConditions));
+
+  return {
+    therapistConflict: therapistConflicts.length > 0,
+    patientConflict: patientConflicts.length > 0,
+  };
 }

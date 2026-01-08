@@ -16,6 +16,7 @@ import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useNotificationSound } from "@/hooks/useNotificationSound";
+import { NotificationsModal } from "@/components/NotificationsModal";
 
 interface NavItem {
   label: string;
@@ -39,6 +40,7 @@ export default function SapereLayout({ children }: { children: React.ReactNode }
   const { user, loading, logout } = useAuth();
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   const { data: notificationData } = trpc.notifications.unreadCount.useQuery(undefined, {
     enabled: !!user,
@@ -109,16 +111,19 @@ export default function SapereLayout({ children }: { children: React.ReactNode }
 
           <div className="flex items-center gap-4">
             {/* Notifications */}
-            <Link href="/notificacoes">
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                {notificationData && notificationData.count > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-orange-500 hover:bg-orange-600 border-0">
-                    {notificationData.count}
-                  </Badge>
-                )}
-              </Button>
-            </Link>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="relative"
+              onClick={() => setNotificationsOpen(true)}
+            >
+              <Bell className="h-5 w-5" />
+              {notificationData && notificationData.count > 0 && (
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-orange-500 hover:bg-orange-600 border-0">
+                  {notificationData.count}
+                </Badge>
+              )}
+            </Button>
 
             {/* User Menu */}
             <DropdownMenu>
@@ -194,6 +199,12 @@ export default function SapereLayout({ children }: { children: React.ReactNode }
 
       {/* Main Content */}
       <main className="container py-6">{children}</main>
+
+      {/* Notifications Modal */}
+      <NotificationsModal 
+        open={notificationsOpen} 
+        onOpenChange={setNotificationsOpen} 
+      />
     </div>
   );
 }

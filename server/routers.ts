@@ -206,6 +206,28 @@ export const appRouter = router({
         notes: z.string().optional(),
       }))
       .mutation(async ({ input, ctx }) => {
+        // Check for scheduling conflicts
+        const conflicts = await db.checkScheduleConflicts(
+          input.startTime,
+          input.endTime,
+          ctx.user.id,
+          input.patientId
+        );
+
+        if (conflicts.therapistConflict) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Conflito de horário: O terapeuta já possui outro agendamento neste horário.',
+          });
+        }
+
+        if (conflicts.patientConflict) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Conflito de horário: O paciente já possui outro agendamento neste horário.',
+          });
+        }
+
         const result = await db.createAppointment({
           ...input,
           therapistUserId: ctx.user.id,
@@ -273,8 +295,37 @@ export const appRouter = router({
         status: z.enum(["scheduled", "completed", "cancelled", "rescheduled"]).optional(),
         notes: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ input, ctx }) => {
         const { id, ...data } = input;
+        
+        // Check for scheduling conflicts if time is being updated
+        if (data.startTime && data.endTime) {
+          const appointment = await db.getAppointmentById(id);
+          if (appointment) {
+            const conflicts = await db.checkScheduleConflicts(
+              data.startTime,
+              data.endTime,
+              appointment.therapistUserId,
+              appointment.patientId,
+              id // Exclude current appointment from conflict check
+            );
+
+            if (conflicts.therapistConflict) {
+              throw new TRPCError({
+                code: 'BAD_REQUEST',
+                message: 'Conflito de horário: O terapeuta já possui outro agendamento neste horário.',
+              });
+            }
+
+            if (conflicts.patientConflict) {
+              throw new TRPCError({
+                code: 'BAD_REQUEST',
+                message: 'Conflito de horário: O paciente já possui outro agendamento neste horário.',
+              });
+            }
+          }
+        }
+        
         await db.updateAppointment(id, data);
         
         // Notify family if schedule changed

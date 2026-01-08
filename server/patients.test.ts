@@ -109,8 +109,11 @@ describe("Appointments Router", () => {
       familyUserId: 2,
     });
 
-    const startTime = new Date();
-    startTime.setHours(startTime.getHours() + 1);
+    // Use unique timestamp to avoid conflicts with other tests
+    const uniqueTime = new Date();
+    uniqueTime.setFullYear(2030); // Far future to avoid conflicts
+    uniqueTime.setMilliseconds(Date.now() % 1000); // Add uniqueness
+    const startTime = uniqueTime;
     const endTime = new Date(startTime);
     endTime.setHours(endTime.getHours() + 1);
 

@@ -285,3 +285,23 @@
 - [x] Atualizar testes para usar novos campos
 - [x] Todos os 46 testes passando
 - [x] Limpar 32 usuários de teste
+
+## Modal de Notificações Completo
+- [x] Criar componente NotificationsModal com lista de notificações
+- [x] Adicionar filtros por tipo (attendance, appointment, document)
+- [x] Implementar botão de marcar como lida individualmente
+- [x] Rota backend notifications.markAsRead já existia
+- [x] Rota backend notifications.markAllAsRead já existia
+- [x] Integrar modal ao ícone de sininho no SapereLayout
+- [x] Testar fluxo completo de notificações
+
+## Validação de Conflitos de Horário
+- [x] Criar função backend checkScheduleConflicts no db.ts
+- [x] Validar conflitos ao criar novo agendamento
+- [x] Validar conflitos ao editar agendamento existente
+- [x] Bloquear criação/edição com mensagem de erro quando houver conflito
+- [x] Verificar conflitos de terapeuta e paciente separadamente
+- [x] Corrigir função checkScheduleConflicts para lidar corretamente com excludeAppointmentId opcional
+- [x] Criar 5 testes vitest para validação de conflitos (appointments.conflicts.test.ts)
+- [x] Ajustar testes existentes para usar horários únicos e evitar conflitos
+- [x] Testar validação com diferentes cenários (51 testes passando)
