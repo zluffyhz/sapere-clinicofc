@@ -337,3 +337,9 @@
 - [x] Reduzir tamanhos de fonte e espaçamentos para caber no dropdown
 - [x] Integrar dropdown ao SapereLayout substituindo modal
 - [x] Testar interação e usabilidade
+
+## Criar Usuário Administrador Recepção
+- [x] Gerar hash bcrypt da senha sapere0926S*
+- [x] Inserir usuário sapererecepcao@gmail.com com role admin
+- [x] Verificar criação no banco de dados
+- [x] Usuário criado: Recepção Sapere (sapererecepcao@gmail.com) - Admin
