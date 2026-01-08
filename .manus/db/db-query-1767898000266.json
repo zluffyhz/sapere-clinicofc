@@ -1,0 +1,9 @@
+{
+  "query": "DELETE FROM patients WHERE name LIKE '%Test%' OR name LIKE '%Mock%' OR name LIKE '%para Agendamento%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute DELETE FROM patients WHERE name LIKE '%Test%' OR name LIKE '%Mock%' OR name LIKE '%para Agendamento%'",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 74
+}

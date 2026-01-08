@@ -1,0 +1,34 @@
+{
+  "query": "SELECT id, name, email, role FROM users ORDER BY id",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, email, role FROM users ORDER BY id",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Lucas Henrique",
+      "email": "lucashenriqueas05@gmail.com",
+      "role": "admin"
+    },
+    {
+      "id": "124682",
+      "name": "Cesar Henrique Santos ",
+      "email": "cml.cesar@outlook.com",
+      "role": "admin"
+    },
+    {
+      "id": "468419",
+      "name": "Marcely Almeida Silva",
+      "email": "celyneuro@gmail.com",
+      "role": "therapist"
+    },
+    {
+      "id": "468847",
+      "name": "Paciente0",
+      "email": "paciente0familia@sapere.com",
+      "role": "family"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\n1\tLucas Henrique\tlucashenriqueas05@gmail.com\tadmin\n124682\tCesar Henrique Santos \tcml.cesar@outlook.com\tadmin\n468419\tMarcely Almeida Silva\tcelyneuro@gmail.com\ttherapist\n468847\tPaciente0\tpaciente0familia@sapere.com\tfamily\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

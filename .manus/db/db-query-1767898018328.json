@@ -1,0 +1,45 @@
+{
+  "query": "SELECT id, name, dateOfBirth FROM patients ORDER BY id",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, dateOfBirth FROM patients ORDER BY id",
+  "rows": [
+    {
+      "id": "270005",
+      "name": "Antonella Salles romanini",
+      "dateOfBirth": "2022-02-17 00:00:00"
+    },
+    {
+      "id": "420003",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL"
+    },
+    {
+      "id": "420006",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL"
+    },
+    {
+      "id": "420009",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL"
+    },
+    {
+      "id": "420012",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL"
+    },
+    {
+      "id": "420015",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL"
+    },
+    {
+      "id": "420018",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdateOfBirth\n270005\tAntonella Salles romanini\t2022-02-17 00:00:00\n420003\tPaciente para Anamnese\tNULL\n420006\tPaciente para Anamnese\tNULL\n420009\tPaciente para Anamnese\tNULL\n420012\tPaciente para Anamnese\tNULL\n420015\tPaciente para Anamnese\tNULL\n420018\tPaciente para Anamnese\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 51
+}

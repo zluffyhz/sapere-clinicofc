@@ -305,3 +305,16 @@
 - [x] Criar 5 testes vitest para validação de conflitos (appointments.conflicts.test.ts)
 - [x] Ajustar testes existentes para usar horários únicos e evitar conflitos
 - [x] Testar validação com diferentes cenários (51 testes passando)
+
+## Limpeza de Dados Mock dos Testes
+- [x] Identificar usuários mock criados pelos testes (22 usuários encontrados)
+- [x] Identificar pacientes mock criados pelos testes
+- [x] Remover agendamentos relacionados aos dados mock
+- [x] Remover 15 agendamentos de teste com datas em 2030
+- [x] Remover registros de presença relacionados
+- [x] Remover notificações relacionadas
+- [x] Remover dados de pacientes relacionados
+- [x] Remover documentos relacionados
+- [x] Remover usuários mock (22 usuários removidos)
+- [x] Verificar que apenas 4 usuários reais permanecem
+- [x] Confirmar integridade do banco de dados (7 pacientes, 4 usuários)

@@ -1,0 +1,164 @@
+{
+  "query": "SELECT id, name, email, role, createdAt FROM users WHERE email LIKE '%test%' OR email LIKE '%mock%' OR name LIKE '%Test%' OR name LIKE '%Mock%' ORDER BY id",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, email, role, createdAt FROM users WHERE email LIKE '%test%' OR email LIKE '%mock%' OR name LIKE '%Test%' OR name LIKE '%Mock%' ORDER BY id",
+  "rows": [
+    {
+      "id": "1864181",
+      "name": "Test Therapist",
+      "email": "therapist-1767897380382@test.com",
+      "role": "therapist",
+      "createdAt": "2026-01-08 18:36:20"
+    },
+    {
+      "id": "1864182",
+      "name": "Test Family",
+      "email": "family-1767897380556@test.com",
+      "role": "family",
+      "createdAt": "2026-01-08 18:36:20"
+    },
+    {
+      "id": "1864184",
+      "name": "Test Therapist",
+      "email": "therapist-1767897399394@test.com",
+      "role": "therapist",
+      "createdAt": "2026-01-08 18:36:39"
+    },
+    {
+      "id": "1864186",
+      "name": "Test Family",
+      "email": "family-1767897399560@test.com",
+      "role": "family",
+      "createdAt": "2026-01-08 18:36:39"
+    },
+    {
+      "id": "1864191",
+      "name": "Test Therapist",
+      "email": "therapist-1767897427638@test.com",
+      "role": "therapist",
+      "createdAt": "2026-01-08 18:37:07"
+    },
+    {
+      "id": "1864192",
+      "name": "Test Family",
+      "email": "family-1767897427812@test.com",
+      "role": "family",
+      "createdAt": "2026-01-08 18:37:07"
+    },
+    {
+      "id": "1864193",
+      "name": "Test User",
+      "email": "test-1767897586411@sapere.com",
+      "role": "family",
+      "createdAt": "2026-01-08 18:39:46"
+    },
+    {
+      "id": "1864194",
+      "name": "Novo Usuário Teste",
+      "email": "novo@teste.com",
+      "role": "family",
+      "createdAt": "2026-01-08 18:39:46"
+    },
+    {
+      "id": "1864195",
+      "name": "Usuário para Atualizar",
+      "email": "atualizar@teste.com",
+      "role": "therapist",
+      "createdAt": "2026-01-08 18:39:46"
+    },
+    {
+      "id": "1864196",
+      "name": "Login Test User",
+      "email": "login-test-1767897586632@sapere.com",
+      "role": "therapist",
+      "createdAt": "2026-01-08 18:39:46"
+    },
+    {
+      "id": "1864199",
+      "name": "Wrong Password Test",
+      "email": "wrong-pass-1767897586961@sapere.com",
+      "role": "family",
+      "createdAt": "2026-01-08 18:39:47"
+    },
+    {
+      "id": "1864200",
+      "name": "Change Password Test",
+      "email": "change-pass-1767897587119@sapere.com",
+      "role": "family",
+      "createdAt": "2026-01-08 18:39:47"
+    },
+    {
+      "id": "1864202",
+      "name": "Wrong Current Password Test",
+      "email": "wrong-current-1767897587427@sapere.com",
+      "role": "family",
+      "createdAt": "2026-01-08 18:39:47"
+    },
+    {
+      "id": "1864203",
+      "name": "Short Password Test",
+      "email": "short-pass-1767897587577@sapere.com",
+      "role": "family",
+      "createdAt": "2026-01-08 18:39:47"
+    },
+    {
+      "id": "1864214",
+      "name": "Test User",
+      "email": "test-1767897618942@sapere.com",
+      "role": "family",
+      "createdAt": "2026-01-08 18:40:19"
+    },
+    {
+      "id": "1864215",
+      "name": "Novo Usuário Teste",
+      "email": "novo@teste.com",
+      "role": "family",
+      "createdAt": "2026-01-08 18:40:19"
+    },
+    {
+      "id": "1864217",
+      "name": "Login Test User",
+      "email": "login-test-1767897619139@sapere.com",
+      "role": "therapist",
+      "createdAt": "2026-01-08 18:40:19"
+    },
+    {
+      "id": "1864218",
+      "name": "Usuário para Atualizar",
+      "email": "atualizar@teste.com",
+      "role": "therapist",
+      "createdAt": "2026-01-08 18:40:19"
+    },
+    {
+      "id": "1864222",
+      "name": "Wrong Password Test",
+      "email": "wrong-pass-1767897619466@sapere.com",
+      "role": "family",
+      "createdAt": "2026-01-08 18:40:19"
+    },
+    {
+      "id": "1864224",
+      "name": "Change Password Test",
+      "email": "change-pass-1767897619622@sapere.com",
+      "role": "family",
+      "createdAt": "2026-01-08 18:40:19"
+    },
+    {
+      "id": "1864227",
+      "name": "Wrong Current Password Test",
+      "email": "wrong-current-1767897619928@sapere.com",
+      "role": "family",
+      "createdAt": "2026-01-08 18:40:19"
+    },
+    {
+      "id": "1864228",
+      "name": "Short Password Test",
+      "email": "short-pass-1767897620083@sapere.com",
+      "role": "family",
+      "createdAt": "2026-01-08 18:40:20"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\tcreatedAt\n1864181\tTest Therapist\ttherapist-1767897380382@test.com\ttherapist\t2026-01-08 18:36:20\n1864182\tTest Family\tfamily-1767897380556@test.com\tfamily\t2026-01-08 18:36:20\n1864184\tTest Therapist\ttherapist-1767897399394@test.com\ttherapist\t2026-01-08 18:36:39\n1864186\tTest Family\tfamily-1767897399560@test.com\tfamily\t2026-01-08 18:36:39\n1864191\tTest Therapist\ttherapist-1767897427638@test.com\ttherapist\t2026-01-08 18:37:07\n1864192\tTest Family\tfamily-1767897427812@test.com\tfamily\t2026-01-08 18:37:07\n1864193\tTest User\ttest-1767897586411@sapere.com\tfamily\t2026-01-08 18:39:46\n1864194\tNovo Usuário Teste\tnovo@teste.com\tfamily\t2026-01-08 18:39:46\n1864195\tUsuário para Atualizar\tatualizar@teste.com\ttherapist\t2026-01-08 18:39:46\n1864196\tLogin Test User\tlogin-test-1767897586632@sapere.com\ttherapist\t2026-01-08 18:39:46\n1864199\tWrong Password Test\twrong-pass-1767897586961@sapere.com\tfamily\t2026-01-08 18:39:47\n1864200\tChange Password Test\tchange-pass-1767897587119@sapere.com\tfamily\t2026-01-08 18:39:47\n1864202\tWrong Current Password Test\twrong-current-1767897587427@sapere.com\tfamily\t2026-01-08 18:39:47\n1864203\tShort Password Test\tshort-pass-1767897587577@sapere.com\tfamily\t2026-01-08 18:39:47\n1864214\tTest User\ttest-1767897618942@sapere.com\tfamily\t2026-01-08 18:40:19\n1864215\tNovo Usuário Teste\tnovo@teste.com\tfamily\t2026-01-08 18:40:19\n1864217\tLogin Test User\tlogin-test-1767897619139@sapere.com\ttherapist\t2026-01-08 18:40:19\n1864218\tUsuário para Atualizar\tatualizar@teste.com\ttherapist\t2026-01-08 18:40:19\n1864222\tWrong Password Test\twrong-pass-1767897619466@sapere.com\tfamily\t2026-01-08 18:40:19\n1864224\tChange Password Test\tchange-pass-1767897619622@sapere.com\tfamily\t2026-01-08 18:40:19\n1864227\tWrong Current Password Test\twrong-current-1767897619928@sapere.com\tfamily\t2026-01-08 18:40:19\n1864228\tShort Password Test\tshort-pass-1767897620083@sapere.com\tfamily\t2026-01-08 18:40:20\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}
