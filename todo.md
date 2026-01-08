@@ -327,3 +327,13 @@
 - [x] Remover documentos relacionados
 - [x] Remover os 6 pacientes
 - [x] Verificar integridade do banco (apenas 1 paciente real restante: Antonella Salles romanini)
+
+## Transformar Modal de Notificações em Dropdown
+- [x] Criar novo componente NotificationsDropdown usando DropdownMenu
+- [x] Substituir Dialog por DropdownMenu com posicionamento align="end"
+- [x] Manter funcionalidades de filtros (Todas, Presença, Agenda, Docs)
+- [x] Manter botões de marcar como lida individual e todas
+- [x] Ajustar largura para 400px e altura para 400px com scroll
+- [x] Reduzir tamanhos de fonte e espaçamentos para caber no dropdown
+- [x] Integrar dropdown ao SapereLayout substituindo modal
+- [x] Testar interação e usabilidade
