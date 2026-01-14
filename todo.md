@@ -471,3 +471,15 @@
 - [x] Validar que notificações aparecem no dropdown da família
 - [x] Criar 3 novos testes vitest para validação completa
 - [x] Total: 54 testes vitest passando (7 arquivos)
+
+## Gráfico de Histórico de Colaboração - CONCLUÍDO
+- [x] Criar rota backend getCollaborationHistory
+- [x] Filtrar evoluções por pacientes da família (últimos 30 dias)
+- [x] Instalar recharts
+- [x] Criar componente CollaborationChart
+- [x] Implementar gráfico de linha com tooltips
+- [x] Adicionar legenda com cores (verde/amarelo/vermelho)
+- [x] Integrar ao FamilyDashboard
+- [x] Criar 3 testes vitest
+- [x] Remover dados mock
+- [x] Total: 57 testes passando (8 arquivos)
