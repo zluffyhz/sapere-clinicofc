@@ -365,3 +365,10 @@
 - [x] Criar painel informativo com 3 cards de funcionalidades
 - [x] Adicionar indicadores de segurança e links úteis
 - [x] Testar responsividade em diferentes dispositivos (layout split-screen funciona perfeitamente)
+
+## Textos Humanizados na Tela de Login
+- [x] Alterar título para "Bem-vindo ao App Sapere"
+- [x] Alterar descrição principal para foco em transformação do futuro das crianças
+- [x] Card 1: "Agendamentos" → "Acompanhamento" com texto sobre agenda na palma da mão
+- [x] Card 2: "Prontuários" → "Desenvolvimento" com texto sobre registro de especialistas
+- [x] Card 3: "Pacientes" → "Inovação" com texto sobre segurança e web app sob medida

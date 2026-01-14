@@ -47,10 +47,10 @@ export default function LoginPage() {
           {/* Welcome Message */}
           <div className="mb-12">
             <h1 className="text-4xl lg:text-5xl font-bold mb-4 leading-tight">
-              Bem-vindo ao Portal Sapere
+              Bem-vindo ao App Sapere
             </h1>
             <p className="text-lg text-white/90 font-light leading-relaxed">
-              Gerencie seus pacientes, acompanhe agendamentos e acesse prontuários de forma simples, segura e humanizada.
+              Onde o acolhimento da terapia encontra a tecnologia para transformar o futuro do seu filho.
             </p>
           </div>
 
@@ -61,9 +61,9 @@ export default function LoginPage() {
                 <Calendar className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg mb-1">Agendamentos</h3>
+                <h3 className="font-semibold text-lg mb-1">Acompanhamento</h3>
                 <p className="text-sm text-white/80 font-light">
-                  Visualize e gerencie todas as sessões de terapia
+                  Tenha a agenda de terapias do seu filho na palma da sua mão.
                 </p>
               </div>
             </div>
@@ -73,9 +73,9 @@ export default function LoginPage() {
                 <FileText className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg mb-1">Prontuários</h3>
+                <h3 className="font-semibold text-lg mb-1">Desenvolvimento</h3>
                 <p className="text-sm text-white/80 font-light">
-                  Acesse registros detalhados de evolução dos pacientes
+                  Um sistema exclusivo para que nossos especialistas registrem cada passo do desenvolvimento.
                 </p>
               </div>
             </div>
@@ -85,9 +85,9 @@ export default function LoginPage() {
                 <Users className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg mb-1">Pacientes</h3>
+                <h3 className="font-semibold text-lg mb-1">Inovação</h3>
                 <p className="text-sm text-white/80 font-light">
-                  Acompanhe o desenvolvimento de cada pessoa atendida
+                  Segurança de ponta em um web app desenvolvido sob medida para você.
                 </p>
               </div>
             </div>
