@@ -1,0 +1,17 @@
+{
+  "query": "SELECT \n  (SELECT COUNT(*) FROM patients) as patients,\n  (SELECT COUNT(*) FROM evolutions) as evolutions,\n  (SELECT COUNT(*) FROM appointments) as appointments,\n  (SELECT COUNT(*) FROM notifications) as notifications,\n  (SELECT COUNT(*) FROM users) as users;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT \n  (SELECT COUNT(*) FROM patients) as patients,\n  (SELECT COUNT(*) FROM evolutions) as evolutions,\n  (SELECT COUNT(*) FROM appointments) as appointments,\n  (SELECT COUNT(*) FROM notifications) as notifications,\n  (SELECT COUNT(*) FROM users) as users;",
+  "rows": [
+    {
+      "patients": "1",
+      "evolutions": "3",
+      "appointments": "1",
+      "notifications": "4",
+      "users": "102"
+    }
+  ],
+  "messages": [],
+  "stdout": "patients\tevolutions\tappointments\tnotifications\tusers\n1\t3\t1\t4\t102\n",
+  "stderr": "",
+  "execution_time_ms": 59
+}

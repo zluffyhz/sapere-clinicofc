@@ -1,0 +1,14 @@
+{
+  "query": "SELECT id, name FROM patients ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name FROM patients ORDER BY id;",
+  "rows": [
+    {
+      "id": "510026",
+      "name": "Paciente para Anamnese"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\n510026\tPaciente para Anamnese\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

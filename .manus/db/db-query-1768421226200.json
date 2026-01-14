@@ -1,0 +1,40 @@
+{
+  "query": "SELECT id, name, dateOfBirth, createdAt FROM patients ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, dateOfBirth, createdAt FROM patients ORDER BY id;",
+  "rows": [
+    {
+      "id": "510023",
+      "name": "Paciente Teste",
+      "dateOfBirth": "NULL",
+      "createdAt": "2026-01-14 20:06:32"
+    },
+    {
+      "id": "510024",
+      "name": "Paciente Teste Histórico",
+      "dateOfBirth": "2020-01-01 00:00:00",
+      "createdAt": "2026-01-14 20:06:32"
+    },
+    {
+      "id": "510025",
+      "name": "Paciente para Agendamento",
+      "dateOfBirth": "NULL",
+      "createdAt": "2026-01-14 20:06:32"
+    },
+    {
+      "id": "510026",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "createdAt": "2026-01-14 20:06:32"
+    },
+    {
+      "id": "510027",
+      "name": "Paciente Teste Notificação",
+      "dateOfBirth": "2020-01-01 00:00:00",
+      "createdAt": "2026-01-14 20:06:32"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdateOfBirth\tcreatedAt\n510023\tPaciente Teste\tNULL\t2026-01-14 20:06:32\n510024\tPaciente Teste Histórico\t2020-01-01 00:00:00\t2026-01-14 20:06:32\n510025\tPaciente para Agendamento\tNULL\t2026-01-14 20:06:32\n510026\tPaciente para Anamnese\tNULL\t2026-01-14 20:06:32\n510027\tPaciente Teste Notificação\t2020-01-01 00:00:00\t2026-01-14 20:06:32\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}
