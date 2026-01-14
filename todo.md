@@ -343,3 +343,25 @@
 - [x] Inserir usuário sapererecepcao@gmail.com com role admin
 - [x] Verificar criação no banco de dados
 - [x] Usuário criado: Recepção Sapere (sapererecepcao@gmail.com) - Admin
+
+## Redesign da Tela de Login
+- [ ] Analisar tela de login de referência (cmldevtest.manus.space)
+- [ ] Criar novo design vibrante e humanizado
+- [ ] Usar fonte Aileron
+- [ ] Suavizar cores de texto (evitar preto puro)
+- [ ] Otimizar para mobile-first
+- [ ] Adicionar textos acolhedores e humanizados
+- [ ] Integrar cores da Clínica Sapere (laranja/amarelo)
+- [ ] Testar responsividade em diferentes tamanhos de tela
+
+## Redesign da Tela de Login Sapere
+- [x] Analisar tela de login de referência (cmldevtest.manus.space/login)
+- [x] Criar novo design vibrante e humanizado para LoginPage.tsx
+- [x] Usar fonte Aileron em todo o site (configurado em index.css e index.html)
+- [x] Suavizar cores de texto (usando gray-100, gray-300, gray-400)
+- [x] Otimizar layout para mobile-first (split-screen responsivo)
+- [x] Adicionar textos acolhedores e humanizados
+- [x] Integrar paleta de cores Sapere (gradiente laranja/amarelo vibrante)
+- [x] Criar painel informativo com 3 cards de funcionalidades
+- [x] Adicionar indicadores de segurança e links úteis
+- [x] Testar responsividade em diferentes dispositivos (layout split-screen funciona perfeitamente)
