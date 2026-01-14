@@ -571,6 +571,34 @@ export const appRouter = router({
         await db.updateSessionRecord(id, data);
         return { success: true };
       }),
+
+    // Get collaboration history for family dashboard
+    getCollaborationHistory: familyProcedure
+      .input(z.object({
+        patientId: z.number().optional(),
+        days: z.number().optional().default(30),
+      }).optional())
+      .query(async ({ ctx, input }) => {
+        // Get all patients for this family user
+        const patients = await db.getPatientsByFamily(ctx.user.id);
+        let patientIds = patients.map(p => p.id);
+        
+        // Filter by specific patient if requested
+        if (input?.patientId) {
+          patientIds = patientIds.filter(id => id === input.patientId);
+        }
+        
+        if (patientIds.length === 0) {
+          return [];
+        }
+        
+        // Calculate start date based on days parameter
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - (input?.days || 30));
+        
+        const history = await db.getCollaborationHistory(patientIds, startDate);
+        return history;
+      }),
   }),
 
   // ============ NOTIFICATIONS ROUTER ============

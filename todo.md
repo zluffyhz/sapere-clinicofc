@@ -483,3 +483,15 @@
 - [x] Criar 3 testes vitest
 - [x] Remover dados mock
 - [x] Total: 57 testes passando (8 arquivos)
+
+## Reimplementação: Gráfico de Histórico de Colaboração + Filtros
+- [x] Adicionar função getCollaborationHistory no server/db.ts
+- [x] Adicionar função deleteSessionRecord no server/db.ts
+- [x] Adicionar import inArray no server/db.ts
+- [x] Criar rota getCollaborationHistory no server/routers.ts com suporte a filtros
+- [x] Criar componente CollaborationChart.tsx com UI de filtros
+- [x] Integrar CollaborationChart ao FamilyDashboard.tsx
+- [x] Adicionar filtro por paciente específico (dropdown)
+- [x] Adicionar filtro por período (7, 15, 30, 60 dias - dropdown)
+- [x] Criar 5 testes vitest para o gráfico
+- [x] Validar todos os testes passando (59 testes em 8 arquivos)
