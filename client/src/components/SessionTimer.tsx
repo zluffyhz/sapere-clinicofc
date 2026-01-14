@@ -21,7 +21,7 @@ export function SessionTimer({ patientId, patientName, onSessionEnd }: SessionTi
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const autosaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const createSessionMutation = trpc.sessionRecords.create.useMutation();
+  const createSessionMutation = trpc.evolutions.create.useMutation();
 
   // Timer logic
   useEffect(() => {
@@ -99,6 +99,7 @@ export function SessionTimer({ patientId, patientName, onSessionEnd }: SessionTi
         patientId,
         sessionDate: startTime || new Date(),
         sessionSummary: notes.trim(),
+        collaborationLevel: "partial", // Valor padrão para sessões via timer
         patientMood: "neutro",
         goalsAchieved: `Duração: ${durationMinutes} minutos`,
       });

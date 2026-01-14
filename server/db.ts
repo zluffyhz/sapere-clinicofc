@@ -6,7 +6,7 @@ import {
   appointments, InsertAppointment,
   documents, InsertDocument,
   patientData, InsertPatientData,
-  sessionRecords, InsertSessionRecord,
+  evolutions, InsertEvolution,
   notifications, InsertNotification,
   attendance, InsertAttendance
 } from "../drizzle/schema";
@@ -304,18 +304,18 @@ export const updateAnamnesis = updatePatientData;
 
 // ============ SESSION RECORD OPERATIONS ============
 
-export async function createSessionRecord(record: InsertSessionRecord) {
+export async function createSessionRecord(record: InsertEvolution) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  return await db.insert(sessionRecords).values(record);
+  return await db.insert(evolutions).values(record);
 }
 
 export async function getSessionRecordById(id: number) {
   const db = await getDb();
   if (!db) return undefined;
   
-  const result = await db.select().from(sessionRecords).where(eq(sessionRecords.id, id)).limit(1);
+  const result = await db.select().from(evolutions).where(eq(evolutions.id, id)).limit(1);
   return result.length > 0 ? result[0] : undefined;
 }
 
@@ -323,25 +323,25 @@ export async function getSessionRecordsByPatient(patientId: number) {
   const db = await getDb();
   if (!db) return [];
   
-  return await db.select().from(sessionRecords)
-    .where(eq(sessionRecords.patientId, patientId))
-    .orderBy(desc(sessionRecords.sessionDate));
+  return await db.select().from(evolutions)
+    .where(eq(evolutions.patientId, patientId))
+    .orderBy(desc(evolutions.sessionDate));
 }
 
 export async function getSessionRecordsByAppointment(appointmentId: number) {
   const db = await getDb();
   if (!db) return [];
   
-  return await db.select().from(sessionRecords)
-    .where(eq(sessionRecords.appointmentId, appointmentId))
-    .orderBy(desc(sessionRecords.sessionDate));
+  return await db.select().from(evolutions)
+    .where(eq(evolutions.appointmentId, appointmentId))
+    .orderBy(desc(evolutions.sessionDate));
 }
 
-export async function updateSessionRecord(id: number, data: Partial<InsertSessionRecord>) {
+export async function updateSessionRecord(id: number, data: Partial<InsertEvolution>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  return await db.update(sessionRecords).set(data).where(eq(sessionRecords.id, id));
+  return await db.update(evolutions).set(data).where(eq(evolutions.id, id));
 }
 
 // ============ NOTIFICATION OPERATIONS ============

@@ -1,0 +1,14 @@
+{
+  "query": "\n-- Verificar IDs\nSELECT \n  (SELECT id FROM patients WHERE name = 'Miguel Santos Silva' LIMIT 1) as patientId,\n  (SELECT id FROM users WHERE email = 'lucas@example.com') as therapistId;\n\n-- Criar agendamentos com IDs diretos\nINSERT INTO appointments (patientId, therapistUserId, therapyType, startTime, endTime, status)\nVALUES \n  ((SELECT id FROM patients WHERE name = 'Miguel Santos Silva' LIMIT 1), 1, 'psicologia', '2026-01-15 09:00:00', '2026-01-15 10:00:00', 'scheduled'),\n  ((SELECT id FROM patients WHERE name = 'Miguel Santos Silva' LIMIT 1), 1, 'fonoaudiologia', '2026-01-17 10:00:00', '2026-01-17 11:00:00', 'scheduled'),\n  ((SELECT id FROM patients WHERE name = 'Miguel Santos Silva' LIMIT 1), 1, 'terapia_ocupacional', '2026-01-19 14:00:00', '2026-01-19 15:00:00', 'scheduled');\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \n-- Verificar IDs\nSELECT \n  (SELECT id FROM patients WHERE name = 'Miguel Santos Silva' LIMIT 1) as patientId,\n  (SELECT id FROM users WHERE email = 'lucas@example.com') as therapistId;\n\n-- Criar agendamentos com IDs diretos\nINSERT INTO appointments (patientId, therapistUserId, therapyType, startTime, endTime, status)\nVALUES \n  ((SELECT id FROM patients WHERE name = 'Miguel Santos Silva' LIMIT 1), 1, 'psicologia', '2026-01-15 09:00:00', '2026-01-15 10:00:00', 'scheduled'),\n  ((SELECT id FROM patients WHERE name = 'Miguel Santos Silva' LIMIT 1), 1, 'fonoaudiologia', '2026-01-17 10:00:00', '2026-01-17 11:00:00', 'scheduled'),\n  ((SELECT id FROM patients WHERE name = 'Miguel Santos Silva' LIMIT 1), 1, 'terapia_ocupacional', '2026-01-19 14:00:00', '2026-01-19 15:00:00', 'scheduled');\n",
+  "rows": [
+    {
+      "patientId": "450015",
+      "therapistId": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "patientId\ttherapistId\n450015\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 79
+}

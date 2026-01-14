@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO users (name, email, password_hash, role, open_id) VALUES ('Terapeuta Teste 2', 'terapeuta2@sapere.com', '$2a$10$abcdefghijklmnopqrstuv', 'therapist', 'local_terapeuta2');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute INSERT INTO users (name, email, password_hash, role, open_id) VALUES ('Terapeuta Teste 2', 'terapeuta2@sapere.com', '$2a$10$abcdefghijklmnopqrstuv', 'therapist', 'local_terapeuta2');",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'password_hash' in 'field list'"
+  ]
+}

@@ -105,9 +105,9 @@ export type Anamnesis = PatientData;
 export type InsertAnamnesis = InsertPatientData;
 
 /**
- * Session Records table - stores evolution notes for each therapy session
+ * Evolutions table - stores private evolution notes for each therapy session (therapists and admins only)
  */
-export const sessionRecords = mysqlTable("sessionRecords", {
+export const evolutions = mysqlTable("evolutions", {
   id: int("id").autoincrement().primaryKey(),
   appointmentId: int("appointmentId").notNull(),
   patientId: int("patientId").notNull(),
@@ -119,13 +119,20 @@ export const sessionRecords = mysqlTable("sessionRecords", {
   patientBehavior: text("patientBehavior"),
   goalsAchieved: text("goalsAchieved"),
   nextSessionPlan: text("nextSessionPlan"),
+  // Collaboration Level (sent to parents via notification)
+  collaborationLevel: mysqlEnum("collaborationLevel", ["full", "partial", "none"]).notNull(),
   // Metadata
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
 
-export type SessionRecord = typeof sessionRecords.$inferSelect;
-export type InsertSessionRecord = typeof sessionRecords.$inferInsert;
+export type Evolution = typeof evolutions.$inferSelect;
+export type InsertEvolution = typeof evolutions.$inferInsert;
+
+// Legacy aliases for backward compatibility
+export const sessionRecords = evolutions;
+export type SessionRecord = Evolution;
+export type InsertSessionRecord = InsertEvolution;
 
 /**
  * Notifications table - stores user notifications

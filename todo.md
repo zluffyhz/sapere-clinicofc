@@ -392,3 +392,71 @@
 - [x] Usuário capturou screenshots mobile pelo celular
 - [x] Remover todos os dados mock (7 pacientes, agendamentos, documentos, sessões, presenças, usuário Lúcio)
 - [x] Verificar que sistema voltou ao estado original (5 usuários, 1 paciente, 0 agendamentos)
+
+## Guias de Uso em PDF
+- [x] Criar guia para pais/responsáveis em Markdown (linguagem acessível, sem termos capacitistas)
+- [x] Criar guia para terapeutas em Markdown (linguagem profissional e generalista)
+- [x] Converter ambos os guias para PDF usando WeasyPrint
+- [x] Entregar PDFs ao usuário (guia-pais.pdf 18KB, guia-terapeutas.pdf 19KB)
+
+## Correção dos Guias em PDF
+- [x] Remover assinatura "Desenvolvido por Manus AI" de ambos os guias
+- [x] Capturar 4 screenshots das principais telas (Dashboard, Agenda, Documentos, Notificações)
+- [x] Adicionar prints ao guia para pais com legendas explicativas
+- [x] Regenerar ambos os PDFs (guia-pais.pdf 350KB com imagens, guia-terapeutas.pdf 16KB)
+- [x] Entregar guias corrigidos
+
+## Recapturar Screenshots com Perspectiva de Família
+- [ ] Recriar usuário Lúcio Almeida (família) com dados mock
+- [ ] Fazer login como pai/responsável
+- [ ] Capturar screenshots da visão de família (Dashboard, Agenda, Documentos, Notificações)
+- [ ] Atualizar guia-pais.md com screenshots corretos
+- [ ] Regenerar guia-pais.pdf
+- [ ] Remover dados mock
+- [ ] Entregar guia corrigido
+
+
+## Recapturar Screenshots com Perspectiva de Família
+- [x] Recriar usuário Lúcio Almeida (família) e paciente Miguel com dados mock
+- [x] Corrigir hash de senha do Lúcio para permitir login
+- [x] Fazer login como Lúcio e capturar screenshots corretos
+- [x] Capturar 4 screenshots: Dashboard, Agenda, Documentos, Notificações
+- [x] Atualizar guia-pais.md com screenshots corretos (family-*.webp)
+- [x] Regenerar guia-pais.pdf com screenshots da perspectiva de família
+- [x] Remover dados mock (usuário Lúcio, paciente Miguel, agendamentos)
+- [x] Verificar estado final (5 usuários, 1 paciente, 0 agendamentos)
+
+## Adicionar Logo da Sapere no Guia para Pais
+- [x] Localizar arquivo do logo da Sapere (logo-sapere.webp)
+- [x] Copiar logo para pasta guia-screenshots
+- [x] Adicionar logo no topo do guia-pais.md
+- [x] Regenerar PDF com logo centralizado (200px)
+- [x] Entregar PDF atualizado
+
+## Transformar Registros de Sessão em Evoluções Privadas
+- [ ] Renomear tabela sessionRecords para evolutions no schema
+- [ ] Adicionar campo collaborationLevel (enum: full, partial, none) ao schema
+- [ ] Executar migração do banco de dados
+- [ ] Atualizar rotas backend (sessionRecords → evolutions)
+- [ ] Restringir acesso às evoluções (apenas therapist e admin)
+- [ ] Renomear no frontend: "Registros de Sessão" → "Evoluções"
+- [ ] Remover evoluções do portal da família
+- [ ] Garantir que documentos continuem visíveis para pais
+- [ ] Adicionar formulário obrigatório ao finalizar sessão
+- [ ] Implementar seleção de nível de colaboração (3 opções)
+- [ ] Enviar notificação automática aos pais com nível de colaboração
+- [ ] Testar fluxo completo (terapeuta finaliza → pais recebem notificação)
+- [ ] Atualizar testes vitest
+
+## Renomeação de Registros de Sessão para Evoluções
+- [x] Renomear tabela sessionRecords para evolutions no schema
+- [x] Adicionar campo obrigatório collaborationLevel (full, partial, none)
+- [x] Atualizar backend (routers.ts e db.ts) para usar evolutions
+- [x] Atualizar frontend (ProntuarioPage.tsx) para usar evolutions
+- [x] Adicionar formulário obrigatório de nível de colaboração
+- [x] Restringir acesso de famílias às evoluções (apenas terapeutas/admins)
+- [x] Atualizar SessionTimer para incluir collaborationLevel
+- [x] Corrigir todos os erros TypeScript relacionados
+- [x] Criar segundo terapeuta para testes de conflito
+- [x] Limpar agendamentos de teste do banco (ano 2030)
+- [x] Executar e validar todos os 51 testes vitest

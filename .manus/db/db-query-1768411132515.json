@@ -1,0 +1,25 @@
+{
+  "query": "\n-- Remover agendamentos mock\nDELETE FROM appointments WHERE patientId IN (SELECT id FROM patients WHERE familyUserId IN (SELECT id FROM users WHERE email = 'lucio@example.com'));\n\n-- Remover pacientes mock\nDELETE FROM patients WHERE familyUserId IN (SELECT id FROM users WHERE email = 'lucio@example.com');\n\n-- Remover usuário Lúcio\nDELETE FROM users WHERE email = 'lucio@example.com';\n\n-- Verificar estado final\nSELECT COUNT(*) as total_users FROM users;\nSELECT COUNT(*) as total_patients FROM patients;\nSELECT COUNT(*) as total_appointments FROM appointments;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \n-- Remover agendamentos mock\nDELETE FROM appointments WHERE patientId IN (SELECT id FROM patients WHERE familyUserId IN (SELECT id FROM users WHERE email = 'lucio@example.com'));\n\n-- Remover pacientes mock\nDELETE FROM patients WHERE familyUserId IN (SELECT id FROM users WHERE email = 'lucio@example.com');\n\n-- Remover usuário Lúcio\nDELETE FROM users WHERE email = 'lucio@example.com';\n\n-- Verificar estado final\nSELECT COUNT(*) as total_users FROM users;\nSELECT COUNT(*) as total_patients FROM patients;\nSELECT COUNT(*) as total_appointments FROM appointments;\n",
+  "rows": [
+    {
+      "total_users": "5"
+    },
+    {
+      "total_users": "total_patients"
+    },
+    {
+      "total_users": "1"
+    },
+    {
+      "total_users": "total_appointments"
+    },
+    {
+      "total_users": "26"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_users\n5\ntotal_patients\n1\ntotal_appointments\n26\n",
+  "stderr": "",
+  "execution_time_ms": 93
+}

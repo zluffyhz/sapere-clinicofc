@@ -508,8 +508,8 @@ export const appRouter = router({
       }),
   }),
 
-  // ============ SESSION RECORDS ROUTER ============
-  sessionRecords: router({
+  // ============ EVOLUTIONS ROUTER (Private - Therapists & Admins Only) ============
+  evolutions: router({
     create: therapistProcedure
       .input(z.object({
         appointmentId: z.number(),
@@ -520,6 +520,7 @@ export const appRouter = router({
         patientBehavior: z.string().optional(),
         goalsAchieved: z.string().optional(),
         nextSessionPlan: z.string().optional(),
+        collaborationLevel: z.enum(["full", "partial", "none"]),
       }))
       .mutation(async ({ input, ctx }) => {
         const result = await db.createSessionRecord({
@@ -527,44 +528,31 @@ export const appRouter = router({
           therapistUserId: ctx.user.id,
         });
         
-        // Create notification for family
+        // Send collaboration notification to family
         const patient = await db.getPatientById(input.patientId);
         if (patient) {
+          const collaborationMessages = {
+            full: `${patient.name} colaborou durante toda a sessão de hoje! 🎉`,
+            partial: `${patient.name} colaborou durante parte da sessão de hoje.`,
+            none: `${patient.name} não colaborou durante a sessão de hoje. A terapeuta está disponível para conversar.`
+          };
+          
           await db.createNotification({
             userId: patient.familyUserId,
-            type: 'new_session_record',
-            title: 'Novo registro de sessão',
-            message: `Um novo registro de sessão foi adicionado para ${patient.name}`,
+            type: 'attendance',
+            title: 'Atualização da Sessão',
+            message: collaborationMessages[input.collaborationLevel],
             relatedId: result[0].insertId,
           });
-          
-          // Send email notification
-          const familyUser = await db.getUserById(patient.familyUserId);
-          if (familyUser?.email) {
-            sendNewSessionRecordEmail(
-              familyUser.email,
-              patient.name,
-              input.sessionDate
-            ).catch(err => console.error('[Email] Failed to send new session record email:', err));
-          }
         }
         
         return { success: true, id: result[0].insertId };
       }),
 
-    listByPatient: protectedProcedure
+    listByPatient: therapistProcedure
       .input(z.object({ patientId: z.number() }))
-      .query(async ({ input, ctx }) => {
-        const patient = await db.getPatientById(input.patientId);
-        if (!patient) {
-          throw new TRPCError({ code: 'NOT_FOUND' });
-        }
-        
-        // Check access rights
-        if (ctx.user.role === 'family' && patient.familyUserId !== ctx.user.id) {
-          throw new TRPCError({ code: 'FORBIDDEN' });
-        }
-        
+      .query(async ({ input }) => {
+        // Evolutions are private - only therapists and admins can view
         return await db.getSessionRecordsByPatient(input.patientId);
       }),
 
@@ -576,6 +564,7 @@ export const appRouter = router({
         patientBehavior: z.string().optional(),
         goalsAchieved: z.string().optional(),
         nextSessionPlan: z.string().optional(),
+        collaborationLevel: z.enum(["full", "partial", "none"]).optional(),
       }))
       .mutation(async ({ input }) => {
         const { id, ...data } = input;

@@ -1,0 +1,15 @@
+{
+  "query": "\n-- Copiar hash correto do Lucas para o Lúcio\nUPDATE users \nSET passwordHash = (\n  SELECT passwordHash \n  FROM (SELECT passwordHash FROM users WHERE email = 'lucas@example.com') AS temp\n)\nWHERE email = 'lucio@example.com';\n\n-- Verificar atualização\nSELECT email, role, LEFT(passwordHash, 30) as hash FROM users WHERE email IN ('lucio@example.com', 'lucas@example.com');\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \n-- Copiar hash correto do Lucas para o Lúcio\nUPDATE users \nSET passwordHash = (\n  SELECT passwordHash \n  FROM (SELECT passwordHash FROM users WHERE email = 'lucas@example.com') AS temp\n)\nWHERE email = 'lucio@example.com';\n\n-- Verificar atualização\nSELECT email, role, LEFT(passwordHash, 30) as hash FROM users WHERE email IN ('lucio@example.com', 'lucas@example.com');\n",
+  "rows": [
+    {
+      "email": "lucio@example.com",
+      "role": "family",
+      "hash": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "email\trole\thash\nlucio@example.com\tfamily\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 64
+}

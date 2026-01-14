@@ -39,14 +39,15 @@ export default function ProntuarioPage() {
     additionalNotes: "",
   });
 
-  const [sessionRecordData, setSessionRecordData] = useState({
+  const [evolutionData, setEvolutionData] = useState({
     appointmentId: 0,
     sessionDate: new Date().toISOString().split("T")[0],
     sessionSummary: "",
     patientMood: "" as any,
-    activitiesPerformed: "",
-    progressNotes: "",
-    nextSessionGoals: "",
+    patientBehavior: "",
+    goalsAchieved: "",
+    nextSessionPlan: "",
+    collaborationLevel: "" as any,
   });
 
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
@@ -68,8 +69,8 @@ export default function ProntuarioPage() {
     { enabled: !!patientId }
   );
 
-  const { data: sessionRecords, isLoading: sessionRecordsLoading } =
-    trpc.sessionRecords.listByPatient.useQuery(
+  const { data: evolutions, isLoading: evolutionsLoading } =
+    trpc.evolutions.listByPatient.useQuery(
       { patientId: patientId! },
       { enabled: !!patientId }
     );
@@ -104,18 +105,19 @@ export default function ProntuarioPage() {
     },
   });
 
-  const createSessionRecordMutation = trpc.sessionRecords.create.useMutation({
+  const createEvolutionMutation = trpc.evolutions.create.useMutation({
     onSuccess: () => {
-      utils.sessionRecords.listByPatient.invalidate({ patientId: patientId! });
-      toast.success("Registro de sessão salvo com sucesso!");
-      setSessionRecordData({
+      utils.evolutions.listByPatient.invalidate({ patientId: patientId! });
+      toast.success("Evolução salvo com sucesso!");
+      setEvolutionData({
         appointmentId: 0,
         sessionDate: new Date().toISOString().split("T")[0],
         sessionSummary: "",
         patientMood: "",
-        activitiesPerformed: "",
-        progressNotes: "",
-        nextSessionGoals: "",
+        patientBehavior: "",
+        goalsAchieved: "",
+        nextSessionPlan: "",
+        collaborationLevel: "",
       });
     },
     onError: (error) => {
@@ -170,15 +172,15 @@ export default function ProntuarioPage() {
   };
 
   const handleSaveSessionRecord = () => {
-    if (!patientId || !sessionRecordData.appointmentId) {
+    if (!patientId || !evolutionData.appointmentId) {
       toast.error("Selecione uma sessão");
       return;
     }
 
-    createSessionRecordMutation.mutate({
-      ...sessionRecordData,
+    createEvolutionMutation.mutate({
+      ...evolutionData,
       patientId,
-      sessionDate: new Date(sessionRecordData.sessionDate),
+      sessionDate: new Date(evolutionData.sessionDate),
     });
   };
 
@@ -224,7 +226,7 @@ export default function ProntuarioPage() {
       <Tabs defaultValue="dados" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="dados">Dados do Paciente</TabsTrigger>
-          <TabsTrigger value="sessoes">Registros de Sessões</TabsTrigger>
+          <TabsTrigger value="sessoes">Evoluções</TabsTrigger>
           <TabsTrigger value="documentos">Documentos</TabsTrigger>
         </TabsList>
 
@@ -313,7 +315,7 @@ export default function ProntuarioPage() {
           </Card>
         </TabsContent>
 
-        {/* Registros de Sessões */}
+        {/* Evoluções */}
         <TabsContent value="sessoes">
           <div className="space-y-4">
             <Card>
@@ -325,9 +327,9 @@ export default function ProntuarioPage() {
                 <div className="space-y-2">
                   <Label htmlFor="appointment">Sessão</Label>
                   <Select
-                    value={sessionRecordData.appointmentId.toString()}
+                    value={evolutionData.appointmentId.toString()}
                     onValueChange={(value) =>
-                      setSessionRecordData({ ...sessionRecordData, appointmentId: parseInt(value) })
+                      setEvolutionData({ ...evolutionData, appointmentId: parseInt(value) })
                     }
                   >
                     <SelectTrigger>
@@ -348,9 +350,9 @@ export default function ProntuarioPage() {
                   <Input
                     id="sessionDate"
                     type="date"
-                    value={sessionRecordData.sessionDate}
+                    value={evolutionData.sessionDate}
                     onChange={(e) =>
-                      setSessionRecordData({ ...sessionRecordData, sessionDate: e.target.value })
+                      setEvolutionData({ ...evolutionData, sessionDate: e.target.value })
                     }
                   />
                 </div>
@@ -358,9 +360,9 @@ export default function ProntuarioPage() {
                 <div className="space-y-2">
                   <Label htmlFor="patientMood">Humor do Paciente</Label>
                   <Select
-                    value={sessionRecordData.patientMood}
+                    value={evolutionData.patientMood}
                     onValueChange={(value) =>
-                      setSessionRecordData({ ...sessionRecordData, patientMood: value })
+                      setEvolutionData({ ...evolutionData, patientMood: value })
                     }
                   >
                     <SelectTrigger>
@@ -380,9 +382,9 @@ export default function ProntuarioPage() {
                   <Label htmlFor="sessionSummary">Resumo da Sessão</Label>
                   <Textarea
                     id="sessionSummary"
-                    value={sessionRecordData.sessionSummary}
+                    value={evolutionData.sessionSummary}
                     onChange={(e) =>
-                      setSessionRecordData({ ...sessionRecordData, sessionSummary: e.target.value })
+                      setEvolutionData({ ...evolutionData, sessionSummary: e.target.value })
                     }
                     placeholder="Descreva o que foi trabalhado na sessão..."
                     rows={3}
@@ -390,14 +392,14 @@ export default function ProntuarioPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="activitiesPerformed">Atividades Realizadas</Label>
+                  <Label htmlFor="patientBehavior">Atividades Realizadas</Label>
                   <Textarea
-                    id="activitiesPerformed"
-                    value={sessionRecordData.activitiesPerformed}
+                    id="patientBehavior"
+                    value={evolutionData.patientBehavior}
                     onChange={(e) =>
-                      setSessionRecordData({
-                        ...sessionRecordData,
-                        activitiesPerformed: e.target.value,
+                      setEvolutionData({
+                        ...evolutionData,
+                        patientBehavior: e.target.value,
                       })
                     }
                     placeholder="Liste as atividades realizadas..."
@@ -406,12 +408,12 @@ export default function ProntuarioPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="progressNotes">Notas de Progresso</Label>
+                  <Label htmlFor="goalsAchieved">Notas de Progresso</Label>
                   <Textarea
-                    id="progressNotes"
-                    value={sessionRecordData.progressNotes}
+                    id="goalsAchieved"
+                    value={evolutionData.goalsAchieved}
                     onChange={(e) =>
-                      setSessionRecordData({ ...sessionRecordData, progressNotes: e.target.value })
+                      setEvolutionData({ ...evolutionData, goalsAchieved: e.target.value })
                     }
                     placeholder="Observações sobre o progresso do paciente..."
                     rows={2}
@@ -419,14 +421,14 @@ export default function ProntuarioPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="nextSessionGoals">Objetivos para Próxima Sessão</Label>
+                  <Label htmlFor="nextSessionPlan">Objetivos para Próxima Sessão</Label>
                   <Textarea
-                    id="nextSessionGoals"
-                    value={sessionRecordData.nextSessionGoals}
+                    id="nextSessionPlan"
+                    value={evolutionData.nextSessionPlan}
                     onChange={(e) =>
-                      setSessionRecordData({
-                        ...sessionRecordData,
-                        nextSessionGoals: e.target.value,
+                      setEvolutionData({
+                        ...evolutionData,
+                        nextSessionPlan: e.target.value,
                       })
                     }
                     placeholder="Defina os objetivos para a próxima sessão..."
@@ -434,13 +436,32 @@ export default function ProntuarioPage() {
                   />
                 </div>
 
+                <div className="space-y-2">
+                  <Label htmlFor="collaborationLevel">Nível de Colaboração *</Label>
+                  <Select
+                    value={evolutionData.collaborationLevel}
+                    onValueChange={(value) =>
+                      setEvolutionData({ ...evolutionData, collaborationLevel: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o nível de colaboração" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="full">Colaborou durante toda a sessão</SelectItem>
+                      <SelectItem value="partial">Colaborou durante parte da sessão</SelectItem>
+                      <SelectItem value="none">Não colaborou</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <Button
                   onClick={handleSaveSessionRecord}
-                  disabled={createSessionRecordMutation.isPending}
+                  disabled={createEvolutionMutation.isPending || !evolutionData.collaborationLevel}
                   className="w-full"
                 >
                   <Save className="w-4 h-4 mr-2" />
-                  Salvar Registro
+                  Salvar Evolução
                 </Button>
               </CardContent>
             </Card>
@@ -448,10 +469,10 @@ export default function ProntuarioPage() {
             {/* Lista de registros anteriores */}
             <div className="space-y-3">
               <h3 className="text-lg font-semibold">Registros Anteriores</h3>
-              {sessionRecordsLoading ? (
+              {evolutionsLoading ? (
                 <p className="text-gray-500">Carregando registros...</p>
-              ) : sessionRecords && sessionRecords.length > 0 ? (
-                sessionRecords.map((record) => (
+              ) : evolutions && evolutions.length > 0 ? (
+                evolutions.map((record) => (
                   <Card key={record.id}>
                     <CardHeader>
                       <CardTitle className="text-base">
@@ -469,7 +490,7 @@ export default function ProntuarioPage() {
                   </Card>
                 ))
               ) : (
-                <p className="text-gray-500">Nenhum registro de sessão encontrado</p>
+                <p className="text-gray-500">Nenhum evolução encontrado</p>
               )}
             </div>
           </div>

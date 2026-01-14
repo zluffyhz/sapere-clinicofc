@@ -1,0 +1,18 @@
+{
+  "query": "\n-- Verificar dados do usuário Lúcio\nSELECT id, openId, name, email, role, passwordHash \nFROM users \nWHERE email = 'lucio@example.com';\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \n-- Verificar dados do usuário Lúcio\nSELECT id, openId, name, email, role, passwordHash \nFROM users \nWHERE email = 'lucio@example.com';\n",
+  "rows": [
+    {
+      "id": "2171088",
+      "openId": "local_lucio_mock",
+      "name": "Lúcio Almeida",
+      "email": "lucio@example.com",
+      "role": "family",
+      "passwordHash": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\topenId\tname\temail\trole\tpasswordHash\n2171088\tlocal_lucio_mock\tLúcio Almeida\tlucio@example.com\tfamily\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 789
+}

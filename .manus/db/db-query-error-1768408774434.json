@@ -1,0 +1,8 @@
+{
+  "query": "\n-- Usar hash de senha123 do usuário Lucas\nUPDATE users \nSET passwordHash = (SELECT passwordHash FROM users WHERE email = 'lucas@example.com' LIMIT 1)\nWHERE email = 'lucio@example.com';\n\n-- Criar paciente Miguel vinculado ao Lúcio\nINSERT INTO patients (name, birthDate, diagnosis, familyUserId, createdAt)\nVALUES ('Miguel Santos Silva', '2018-05-15', 'TEA Nível 1', \n  (SELECT id FROM users WHERE email = 'lucio@example.com'), NOW());\n\n-- Buscar IDs\nSELECT u.id as userId, p.id as patientId \nFROM users u \nLEFT JOIN patients p ON p.familyUserId = u.id \nWHERE u.email = 'lucio@example.com';\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \n-- Usar hash de senha123 do usuário Lucas\nUPDATE users \nSET passwordHash = (SELECT passwordHash FROM users WHERE email = 'lucas@example.com' LIMIT 1)\nWHERE email = 'lucio@example.com';\n\n-- Criar paciente Miguel vinculado ao Lúcio\nINSERT INTO patients (name, birthDate, diagnosis, familyUserId, createdAt)\nVALUES ('Miguel Santos Silva', '2018-05-15', 'TEA Nível 1', \n  (SELECT id FROM users WHERE email = 'lucio@example.com'), NOW());\n\n-- Buscar IDs\nSELECT u.id as userId, p.id as patientId \nFROM users u \nLEFT JOIN patients p ON p.familyUserId = u.id \nWHERE u.email = 'lucio@example.com';\n",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 8: Unknown column 'birthDate' in 'field list'"
+  ]
+}
