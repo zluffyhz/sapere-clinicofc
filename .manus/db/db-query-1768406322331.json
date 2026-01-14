@@ -1,0 +1,15 @@
+{
+  "query": "\nSELECT p.id, p.name, u.id as lucio_id \nFROM patients p \nJOIN users u ON u.email = 'lucio@example.com'\nWHERE p.name = 'Miguel Santos Silva' AND p.familyUserId = u.id;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \nSELECT p.id, p.name, u.id as lucio_id \nFROM patients p \nJOIN users u ON u.email = 'lucio@example.com'\nWHERE p.name = 'Miguel Santos Silva' AND p.familyUserId = u.id;\n",
+  "rows": [
+    {
+      "id": "450008",
+      "name": "Miguel Santos Silva",
+      "lucio_id": "2147251"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tlucio_id\n450008\tMiguel Santos Silva\t2147251\n",
+  "stderr": "",
+  "execution_time_ms": 102
+}

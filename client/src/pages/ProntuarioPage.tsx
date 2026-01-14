@@ -63,7 +63,7 @@ export default function ProntuarioPage() {
     { enabled: !!patientId }
   );
 
-  const { data: anamnesis, isLoading: anamnesisLoading } = trpc.anamnesis.getByPatient.useQuery(
+  const { data: anamnesis, isLoading: anamnesisLoading } = trpc.patientData.getByPatient.useQuery(
     { patientId: patientId! },
     { enabled: !!patientId }
   );
@@ -84,9 +84,9 @@ export default function ProntuarioPage() {
     { enabled: !!patientId }
   );
 
-  const createAnamnesisMutation = trpc.anamnesis.create.useMutation({
+  const createAnamnesisMutation = trpc.patientData.create.useMutation({
     onSuccess: () => {
-      utils.anamnesis.getByPatient.invalidate({ patientId: patientId! });
+      utils.patientData.getByPatient.invalidate({ patientId: patientId! });
       toast.success("Dados do paciente salvos com sucesso!");
     },
     onError: (error) => {
@@ -94,9 +94,9 @@ export default function ProntuarioPage() {
     },
   });
 
-  const updateAnamnesisMutation = trpc.anamnesis.update.useMutation({
+  const updateAnamnesisMutation = trpc.patientData.update.useMutation({
     onSuccess: () => {
-      utils.anamnesis.getByPatient.invalidate({ patientId: patientId! });
+      utils.patientData.getByPatient.invalidate({ patientId: patientId! });
       toast.success("Dados do paciente atualizados com sucesso!");
     },
     onError: (error) => {

@@ -1,0 +1,15 @@
+{
+  "query": "\nSELECT \n  (SELECT COUNT(*) FROM patients WHERE name LIKE '%Silva%' OR name LIKE '%Costa%' OR name LIKE '%Lima%') as mock_patients,\n  (SELECT COUNT(*) FROM appointments WHERE DATE(startTime) >= '2026-01-14' AND DATE(startTime) <= '2026-01-16') as mock_appointments,\n  (SELECT COUNT(*) FROM documents WHERE title LIKE '%Dezembro 2025%' OR title LIKE '%2026%') as mock_documents;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \nSELECT \n  (SELECT COUNT(*) FROM patients WHERE name LIKE '%Silva%' OR name LIKE '%Costa%' OR name LIKE '%Lima%') as mock_patients,\n  (SELECT COUNT(*) FROM appointments WHERE DATE(startTime) >= '2026-01-14' AND DATE(startTime) <= '2026-01-16') as mock_appointments,\n  (SELECT COUNT(*) FROM documents WHERE title LIKE '%Dezembro 2025%' OR title LIKE '%2026%') as mock_documents;\n",
+  "rows": [
+    {
+      "mock_patients": "3",
+      "mock_appointments": "23",
+      "mock_documents": "4"
+    }
+  ],
+  "messages": [],
+  "stdout": "mock_patients\tmock_appointments\tmock_documents\n3\t23\t4\n",
+  "stderr": "",
+  "execution_time_ms": 61
+}

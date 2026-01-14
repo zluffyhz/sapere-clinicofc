@@ -450,7 +450,7 @@ export const appRouter = router({
   }),
 
   // ============ ANAMNESIS ROUTER ============
-  anamnesis: router({
+  patientData: router({
     create: therapistProcedure
       .input(z.object({
         patientId: z.number(),

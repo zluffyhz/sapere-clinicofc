@@ -1,0 +1,13 @@
+{
+  "query": "\n-- Buscar ID do Lúcio\nSELECT @lucio_id := id FROM users WHERE email = 'lucio@example.com';\n\n-- Atualizar pacientes mock para serem vinculados ao Lúcio\nUPDATE patients \nSET familyUserId = @lucio_id\nWHERE name IN (\n  'Miguel Santos Silva', 'Sofia Oliveira Costa', 'Lucas Ferreira Lima',\n  'Isabella Rodrigues', 'Gabriel Almeida', 'Valentina Souza', 'Heitor Martins'\n);\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \n-- Buscar ID do Lúcio\nSELECT @lucio_id := id FROM users WHERE email = 'lucio@example.com';\n\n-- Atualizar pacientes mock para serem vinculados ao Lúcio\nUPDATE patients \nSET familyUserId = @lucio_id\nWHERE name IN (\n  'Miguel Santos Silva', 'Sofia Oliveira Costa', 'Lucas Ferreira Lima',\n  'Isabella Rodrigues', 'Gabriel Almeida', 'Valentina Souza', 'Heitor Martins'\n);\n",
+  "rows": [
+    {
+      "@lucio_id := id": "2147251"
+    }
+  ],
+  "messages": [],
+  "stdout": "@lucio_id := id\n2147251\n",
+  "stderr": "",
+  "execution_time_ms": 118
+}

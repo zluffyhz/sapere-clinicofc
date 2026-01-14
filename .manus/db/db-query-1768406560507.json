@@ -1,0 +1,28 @@
+{
+  "query": "\nSELECT \n  (SELECT COUNT(*) FROM users) as total_users,\n  (SELECT COUNT(*) FROM patients) as total_patients,\n  (SELECT COUNT(*) FROM appointments) as total_appointments,\n  (SELECT COUNT(*) FROM documents) as total_documents,\n  (SELECT COUNT(*) FROM sessionRecords) as total_sessions,\n  (SELECT COUNT(*) FROM attendance) as total_attendance,\n  (SELECT COUNT(*) FROM patient_data) as total_patient_data;\n\n-- Listar usuários restantes\nSELECT id, name, email, role FROM users ORDER BY id;\n\n-- Listar pacientes restantes\nSELECT id, name, diagnosis FROM patients ORDER BY id;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \nSELECT \n  (SELECT COUNT(*) FROM users) as total_users,\n  (SELECT COUNT(*) FROM patients) as total_patients,\n  (SELECT COUNT(*) FROM appointments) as total_appointments,\n  (SELECT COUNT(*) FROM documents) as total_documents,\n  (SELECT COUNT(*) FROM sessionRecords) as total_sessions,\n  (SELECT COUNT(*) FROM attendance) as total_attendance,\n  (SELECT COUNT(*) FROM patient_data) as total_patient_data;\n\n-- Listar usuários restantes\nSELECT id, name, email, role FROM users ORDER BY id;\n\n-- Listar pacientes restantes\nSELECT id, name, diagnosis FROM patients ORDER BY id;\n",
+  "rows": [
+    {
+      "total_users": "5",
+      "total_patients": "1",
+      "total_appointments": "26",
+      "total_documents": "0",
+      "total_sessions": "6",
+      "total_attendance": "4",
+      "total_patient_data": "6"
+    }
+  ],
+  "messages": [
+    "id\tname\temail\trole",
+    "1\tLucas Henrique\tlucashenriqueas05@gmail.com\tadmin",
+    "124682\tCesar Henrique Santos \tcml.cesar@outlook.com\tadmin",
+    "468419\tMarcely Almeida Silva\tcelyneuro@gmail.com\ttherapist",
+    "468847\tPaciente0\tpaciente0familia@sapere.com\tfamily",
+    "1873789\tRecepção Sapere\tsapererecepcao@gmail.com\tadmin",
+    "id\tname\tdiagnosis",
+    "270005\tAntonella Salles romanini\tNULL"
+  ],
+  "stdout": "total_users\ttotal_patients\ttotal_appointments\ttotal_documents\ttotal_sessions\ttotal_attendance\ttotal_patient_data\n5\t1\t26\t0\t6\t4\t6\nid\tname\temail\trole\n1\tLucas Henrique\tlucashenriqueas05@gmail.com\tadmin\n124682\tCesar Henrique Santos \tcml.cesar@outlook.com\tadmin\n468419\tMarcely Almeida Silva\tcelyneuro@gmail.com\ttherapist\n468847\tPaciente0\tpaciente0familia@sapere.com\tfamily\n1873789\tRecepção Sapere\tsapererecepcao@gmail.com\tadmin\nid\tname\tdiagnosis\n270005\tAntonella Salles romanini\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 106
+}

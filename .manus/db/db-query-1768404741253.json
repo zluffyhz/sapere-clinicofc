@@ -1,0 +1,9 @@
+{
+  "query": "\n-- Criar registros de sessão mock\nINSERT INTO sessionRecords (appointmentId, patientId, therapistUserId, sessionDate, sessionSummary, patientMood, patientBehavior, goalsAchieved, nextSessionPlan, createdAt, updatedAt)\nSELECT \n  a.id,\n  a.patientId,\n  a.therapistUserId,\n  a.startTime,\n  CONCAT('Sessão produtiva com ', p.name, '. Trabalhamos atividades de ', a.therapyType, '.'),\n  'bem',\n  'Paciente colaborativo e engajado durante toda a sessão',\n  'Conseguiu completar 3 das 4 atividades propostas',\n  'Continuar com as mesmas estratégias na próxima sessão',\n  NOW(),\n  NOW()\nFROM appointments a\nJOIN patients p ON a.patientId = p.id\nWHERE a.startTime < NOW()\nLIMIT 3;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \n-- Criar registros de sessão mock\nINSERT INTO sessionRecords (appointmentId, patientId, therapistUserId, sessionDate, sessionSummary, patientMood, patientBehavior, goalsAchieved, nextSessionPlan, createdAt, updatedAt)\nSELECT \n  a.id,\n  a.patientId,\n  a.therapistUserId,\n  a.startTime,\n  CONCAT('Sessão produtiva com ', p.name, '. Trabalhamos atividades de ', a.therapyType, '.'),\n  'bem',\n  'Paciente colaborativo e engajado durante toda a sessão',\n  'Conseguiu completar 3 das 4 atividades propostas',\n  'Continuar com as mesmas estratégias na próxima sessão',\n  NOW(),\n  NOW()\nFROM appointments a\nJOIN patients p ON a.patientId = p.id\nWHERE a.startTime < NOW()\nLIMIT 3;\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 70
+}

@@ -1,0 +1,8 @@
+{
+  "query": "\n-- Criar registros de presença para agendamentos passados\nINSERT INTO attendance (appointmentId, patientId, status, checkInTime, notes, createdAt, updatedAt)\nSELECT \n  a.id,\n  a.patientId,\n  CASE WHEN RAND() > 0.2 THEN 'present' ELSE 'absent' END,\n  DATE_SUB(a.startTime, INTERVAL 5 MINUTE),\n  CASE WHEN RAND() > 0.2 THEN 'Paciente chegou no horário' ELSE 'Falta justificada' END,\n  NOW(),\n  NOW()\nFROM appointments a\nWHERE a.startTime < NOW()\nLIMIT 5;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \n-- Criar registros de presença para agendamentos passados\nINSERT INTO attendance (appointmentId, patientId, status, checkInTime, notes, createdAt, updatedAt)\nSELECT \n  a.id,\n  a.patientId,\n  CASE WHEN RAND() > 0.2 THEN 'present' ELSE 'absent' END,\n  DATE_SUB(a.startTime, INTERVAL 5 MINUTE),\n  CASE WHEN RAND() > 0.2 THEN 'Paciente chegou no horário' ELSE 'Falta justificada' END,\n  NOW(),\n  NOW()\nFROM appointments a\nWHERE a.startTime < NOW()\nLIMIT 5;\n",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 3: Unknown column 'checkInTime' in 'field list'"
+  ]
+}

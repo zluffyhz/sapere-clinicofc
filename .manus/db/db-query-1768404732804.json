@@ -1,0 +1,9 @@
+{
+  "query": "\n-- Criar registros de presença mock\nINSERT INTO attendance (appointmentId, patientId, familyUserId, therapistUserId, therapyType, scheduledDate, status, markedByUserId, notes, createdAt, updatedAt)\nSELECT \n  a.id,\n  a.patientId,\n  1,\n  a.therapistUserId,\n  a.therapyType,\n  a.startTime,\n  'present',\n  5,\n  'Paciente chegou no horário',\n  NOW(),\n  NOW()\nFROM appointments a\nWHERE a.startTime < NOW()\nLIMIT 3;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \n-- Criar registros de presença mock\nINSERT INTO attendance (appointmentId, patientId, familyUserId, therapistUserId, therapyType, scheduledDate, status, markedByUserId, notes, createdAt, updatedAt)\nSELECT \n  a.id,\n  a.patientId,\n  1,\n  a.therapistUserId,\n  a.therapyType,\n  a.startTime,\n  'present',\n  5,\n  'Paciente chegou no horário',\n  NOW(),\n  NOW()\nFROM appointments a\nWHERE a.startTime < NOW()\nLIMIT 3;\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 69
+}

@@ -372,3 +372,23 @@
 - [x] Card 1: "Agendamentos" → "Acompanhamento" com texto sobre agenda na palma da mão
 - [x] Card 2: "Prontuários" → "Desenvolvimento" com texto sobre registro de especialistas
 - [x] Card 3: "Pacientes" → "Inovação" com texto sobre segurança e web app sob medida
+
+## Screenshots com Dados Mock (Temporário)
+- [ ] Criar 5-8 pacientes mock com dados realistas
+- [ ] Criar 10-15 agendamentos mock para próximos dias
+- [ ] Criar registros de presença mock
+- [ ] Criar prontuários mock com sessões
+- [ ] Criar documentos mock
+- [ ] Capturar screenshots desktop (1920x1080) de todas as telas
+- [ ] Capturar screenshots mobile (375x812) de todas as telas
+- [ ] Remover TODOS os dados mock criados
+- [ ] Verificar que sistema voltou ao estado original
+
+## Screenshots Mobile com Dados Mock
+- [x] Recriar 7 pacientes mock temporários (Miguel, Sofia, Lucas, Isabella, Gabriel, Valentina, Heitor)
+- [x] Recriar 7 agendamentos mock (3 hoje, 2 amanhã, 2 depois de amanhã)
+- [x] Recriar 5 documentos mock (relatórios e laudos)
+- [x] Criar usuário Lúcio Almeida (família) com dados completos do filho Miguel
+- [x] Usuário capturou screenshots mobile pelo celular
+- [x] Remover todos os dados mock (7 pacientes, agendamentos, documentos, sessões, presenças, usuário Lúcio)
+- [x] Verificar que sistema voltou ao estado original (5 usuários, 1 paciente, 0 agendamentos)

@@ -1,0 +1,38 @@
+{
+  "query": "\nSELECT id, name FROM patients WHERE name IN (\n  'Miguel Santos Silva', 'Sofia Oliveira Costa', 'Lucas Ferreira Lima',\n  'Isabella Rodrigues', 'Gabriel Almeida', 'Valentina Souza', 'Heitor Martins'\n) ORDER BY id;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \nSELECT id, name FROM patients WHERE name IN (\n  'Miguel Santos Silva', 'Sofia Oliveira Costa', 'Lucas Ferreira Lima',\n  'Isabella Rodrigues', 'Gabriel Almeida', 'Valentina Souza', 'Heitor Martins'\n) ORDER BY id;\n",
+  "rows": [
+    {
+      "id": "450008",
+      "name": "Miguel Santos Silva"
+    },
+    {
+      "id": "450009",
+      "name": "Sofia Oliveira Costa"
+    },
+    {
+      "id": "450010",
+      "name": "Lucas Ferreira Lima"
+    },
+    {
+      "id": "450011",
+      "name": "Isabella Rodrigues"
+    },
+    {
+      "id": "450012",
+      "name": "Gabriel Almeida"
+    },
+    {
+      "id": "450013",
+      "name": "Valentina Souza"
+    },
+    {
+      "id": "450014",
+      "name": "Heitor Martins"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\n450008\tMiguel Santos Silva\n450009\tSofia Oliveira Costa\n450010\tLucas Ferreira Lima\n450011\tIsabella Rodrigues\n450012\tGabriel Almeida\n450013\tValentina Souza\n450014\tHeitor Martins\n",
+  "stderr": "",
+  "execution_time_ms": 52
+}

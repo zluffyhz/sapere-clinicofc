@@ -165,8 +165,8 @@ describe("Notifications Router", () => {
   });
 });
 
-describe("Anamnesis Router", () => {
-  it("therapist can create anamnesis", async () => {
+describe("Patient Data Router", () => {
+  it("therapist can create patient data", async () => {
     const { ctx } = createTherapistContext();
     const caller = appRouter.createCaller(ctx);
 
@@ -176,7 +176,7 @@ describe("Anamnesis Router", () => {
       familyUserId: 2,
     });
 
-    const result = await caller.anamnesis.create({
+    const result = await caller.patientData.create({
       patientId: patientResult.id,
       mainComplaints: "Queixas principais de teste",
       allergies: "Nenhuma alergia conhecida",
@@ -188,12 +188,12 @@ describe("Anamnesis Router", () => {
     expect(result.success).toBe(true);
   });
 
-  it("family user cannot create anamnesis", async () => {
+  it("family user cannot create patient data", async () => {
     const { ctx } = createFamilyContext();
     const caller = appRouter.createCaller(ctx);
 
     await expect(
-      caller.anamnesis.create({
+      caller.patientData.create({
         patientId: 1,
         mainComplaint: "Teste",
       })

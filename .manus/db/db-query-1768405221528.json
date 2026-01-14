@@ -1,0 +1,18 @@
+{
+  "query": "\nSELECT \n  (SELECT COUNT(*) FROM users) as total_users,\n  (SELECT COUNT(*) FROM patients) as total_patients,\n  (SELECT COUNT(*) FROM appointments) as total_appointments,\n  (SELECT COUNT(*) FROM documents) as total_documents,\n  (SELECT COUNT(*) FROM sessionRecords) as total_sessions,\n  (SELECT COUNT(*) FROM attendance) as total_attendance;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \nSELECT \n  (SELECT COUNT(*) FROM users) as total_users,\n  (SELECT COUNT(*) FROM patients) as total_patients,\n  (SELECT COUNT(*) FROM appointments) as total_appointments,\n  (SELECT COUNT(*) FROM documents) as total_documents,\n  (SELECT COUNT(*) FROM sessionRecords) as total_sessions,\n  (SELECT COUNT(*) FROM attendance) as total_attendance;\n",
+  "rows": [
+    {
+      "total_users": "5",
+      "total_patients": "1",
+      "total_appointments": "26",
+      "total_documents": "0",
+      "total_sessions": "6",
+      "total_attendance": "4"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_users\ttotal_patients\ttotal_appointments\ttotal_documents\ttotal_sessions\ttotal_attendance\n5\t1\t26\t0\t6\t4\n",
+  "stderr": "",
+  "execution_time_ms": 68
+}
