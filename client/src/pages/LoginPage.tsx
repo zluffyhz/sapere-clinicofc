@@ -95,7 +95,7 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <div className="text-sm text-white/70 font-light">
+        <div className="text-sm text-white/70 font-light -mt-4">
           © 2026 Clínica Sapere. Cuidando com dedicação e profissionalismo.
         </div>
       </div>
