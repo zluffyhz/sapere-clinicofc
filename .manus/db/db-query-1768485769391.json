@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO patients (name, dateOfBirth, familyUserId, diagnosis, createdAt, updatedAt) \nVALUES \n('Maria Julia Gama Alves Torres', '2018-01-01', 1, 'A definir', NOW(), NOW()),\n('Murilo Laranjeira Valente', '2019-01-01', 1, 'A definir', NOW(), NOW()),\n('Antonella Salles Romanini', '2020-01-01', 1, 'A definir', NOW(), NOW());",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute INSERT INTO patients (name, dateOfBirth, familyUserId, diagnosis, createdAt, updatedAt) \nVALUES \n('Maria Julia Gama Alves Torres', '2018-01-01', 1, 'A definir', NOW(), NOW()),\n('Murilo Laranjeira Valente', '2019-01-01', 1, 'A definir', NOW(), NOW()),\n('Antonella Salles Romanini', '2020-01-01', 1, 'A definir', NOW(), NOW());",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 68
+}

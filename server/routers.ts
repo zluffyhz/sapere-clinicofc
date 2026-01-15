@@ -571,6 +571,17 @@ export const appRouter = router({
         await db.updateSessionRecord(id, data);
         return { success: true };
       }),
+
+    getCollaborationHistory: therapistProcedure
+      .input(z.object({
+        familyUserId: z.number(),
+        days: z.number().default(30),
+        patientId: z.number().optional(),
+      }))
+      .query(async ({ input }) => {
+        // Only therapists and admins can view collaboration history
+        return await db.getCollaborationHistory(input.familyUserId, input.days, input.patientId);
+      }),
   }),
 
   // ============ NOTIFICATIONS ROUTER ============

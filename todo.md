@@ -460,3 +460,16 @@
 - [x] Criar segundo terapeuta para testes de conflito
 - [x] Limpar agendamentos de teste do banco (ano 2030)
 - [x] Executar e validar todos os 51 testes vitest
+
+## Recuperação de Pacientes e Reimplementação do Gráfico
+- [x] Criar paciente: Maria Julia Gama Alves Torres
+- [x] Criar paciente: Murilo Laranjeira Valente
+- [x] Criar paciente: Antonella Salles Romanini
+- [x] Adicionar função getCollaborationHistory no server/db.ts
+- [x] Adicionar rota getCollaborationHistory no server/routers.ts com filtros (7, 15, 30, 60 dias)
+- [x] Criar componente CollaborationChart.tsx com filtros por paciente e período
+- [x] Integrar gráfico ao TherapistDashboard (apenas para terapeutas e admins)
+- [x] Restringir acesso às evoluções (backend com therapistProcedure)
+- [x] Confirmar que famílias não têm acesso às evoluções
+- [x] Criar 5 testes vitest para o gráfico de colaboração
+- [x] Validar todas as funcionalidades (56 testes passando)

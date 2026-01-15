@@ -1,4 +1,4 @@
-import { eq, and, gte, lte, desc, ne, or, lt, gt } from "drizzle-orm";
+import { eq, and, gte, lte, desc, ne, or, lt, gt, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { 
   InsertUser, users, 
@@ -619,4 +619,53 @@ export async function checkScheduleConflicts(
     therapistConflict: therapistConflicts.length > 0,
     patientConflict: patientConflicts.length > 0,
   };
+}
+
+
+// ===== Collaboration History =====
+export async function getCollaborationHistory(familyUserId: number, days: number = 30, patientId?: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - days);
+  
+  // Get all patients for this family
+  const familyPatients = await db.select().from(patients)
+    .where(eq(patients.familyUserId, familyUserId));
+  
+  const patientIds = familyPatients.map((p: any) => p.id);
+  
+  if (patientIds.length === 0) {
+    return [];
+  }
+  
+  // Filter by specific patient if provided
+  const targetPatientIds = patientId ? [patientId] : patientIds;
+  
+  // Get evolutions for these patients
+  const evolutionsData = await db.select({
+    id: evolutions.id,
+    patientId: evolutions.patientId,
+    patientName: patients.name,
+    sessionDate: evolutions.sessionDate,
+    collaborationLevel: evolutions.collaborationLevel,
+  })
+  .from(evolutions)
+  .innerJoin(patients, eq(evolutions.patientId, patients.id))
+  .where(
+    and(
+      inArray(evolutions.patientId, targetPatientIds),
+      gte(evolutions.sessionDate, cutoffDate)
+    )
+  )
+  .orderBy(desc(evolutions.sessionDate));
+  
+  return evolutionsData;
+}
+
+export async function deleteSessionRecord(id: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db.delete(evolutions).where(eq(evolutions.id, id));
 }

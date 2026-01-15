@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO patients (name, dateOfBirth, diagnosis, responsibleUserId, therapyTypes, createdAt, updatedAt) \nVALUES \n('Maria Julia Gama Alves Torres', '2018-01-01', 'A definir', 1, 'Fonoaudiologia', NOW(), NOW()),\n('Murilo Laranjeira Valente', '2019-01-01', 'A definir', 1, 'Psicologia', NOW(), NOW()),\n('Antonella Salles Romanini', '2020-01-01', 'A definir', 1, 'Fonoaudiologia,Psicologia', NOW(), NOW());",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute INSERT INTO patients (name, dateOfBirth, diagnosis, responsibleUserId, therapyTypes, createdAt, updatedAt) \nVALUES \n('Maria Julia Gama Alves Torres', '2018-01-01', 'A definir', 1, 'Fonoaudiologia', NOW(), NOW()),\n('Murilo Laranjeira Valente', '2019-01-01', 'A definir', 1, 'Psicologia', NOW(), NOW()),\n('Antonella Salles Romanini', '2020-01-01', 'A definir', 1, 'Fonoaudiologia,Psicologia', NOW(), NOW());",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'responsibleUserId' in 'field list'"
+  ]
+}

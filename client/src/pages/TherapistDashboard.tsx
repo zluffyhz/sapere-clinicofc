@@ -6,6 +6,8 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { CollaborationChart } from "@/components/CollaborationChart";
+import { useState } from "react";
 
 // Quick Action Button Component
 function QuickActionButton({
@@ -39,6 +41,22 @@ export default function TherapistDashboard() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
   const { data: patients, isLoading: patientsLoading } = trpc.patients.list.useQuery();
+  
+  // Collaboration chart filters
+  const [selectedPatientId, setSelectedPatientId] = useState<number | undefined>(undefined);
+  const [selectedDays, setSelectedDays] = useState(30);
+  
+  // Get collaboration history (only for therapists/admins)
+  const { data: collaborationData } = trpc.evolutions.getCollaborationHistory.useQuery(
+    {
+      familyUserId: 1, // TODO: Get from selected patient's family
+      days: selectedDays,
+      patientId: selectedPatientId,
+    },
+    {
+      enabled: !!user && (user.role === 'therapist' || user.role === 'admin'),
+    }
+  );
 
   // Get today's appointments
   const today = new Date();
@@ -239,6 +257,18 @@ export default function TherapistDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Collaboration Chart */}
+      {collaborationData && collaborationData.length > 0 && (
+        <CollaborationChart
+          data={collaborationData}
+          patients={patients || []}
+          selectedPatientId={selectedPatientId}
+          selectedDays={selectedDays}
+          onPatientChange={setSelectedPatientId}
+          onDaysChange={setSelectedDays}
+        />
+      )}
 
       {/* Quick Actions */}
       <Card>
