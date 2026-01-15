@@ -27,12 +27,15 @@ import { ptBR } from "date-fns/locale";
 import { Link } from "wouter";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { EditPatientDialog } from "@/components/EditPatientDialog";
 
 export default function PacientesPage() {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [therapyTypeFilter, setTherapyTypeFilter] = useState<string>("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingPatient, setEditingPatient] = useState<any>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [newPatient, setNewPatient] = useState<{
     name: string;
     dateOfBirth: string;
@@ -378,7 +381,15 @@ export default function PacientesPage() {
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 space-y-2">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-semibold text-lg">{patient.name}</h3>
+                          <h3 
+                            className="font-semibold text-lg cursor-pointer hover:text-primary transition-colors"
+                            onClick={() => {
+                              setEditingPatient(patient);
+                              setIsEditDialogOpen(true);
+                            }}
+                          >
+                            {patient.name}
+                          </h3>
                           {therapyTypes.length > 0 && (
                             <div className="flex gap-1 flex-wrap">
                               {therapyTypes.map((type) => (
@@ -437,6 +448,15 @@ export default function PacientesPage() {
           )}
         </CardContent>
       </Card>
+
+      <EditPatientDialog
+        patient={editingPatient}
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        onSuccess={() => {
+          utils.patients.list.invalidate();
+        }}
+      />
     </div>
   );
 }

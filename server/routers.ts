@@ -185,12 +185,20 @@ export const appRouter = router({
         id: z.number(),
         name: z.string().min(1).optional(),
         dateOfBirth: z.date().optional(),
+        familyUserId: z.number().optional(),
         diagnosis: z.string().optional(),
         notes: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
         const { id, ...data } = input;
         await db.updatePatient(id, data);
+        return { success: true };
+      }),
+
+    delete: therapistProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await db.deletePatient(input.id);
         return { success: true };
       }),
   }),

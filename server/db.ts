@@ -152,6 +152,13 @@ export async function updatePatient(id: number, data: Partial<InsertPatient>) {
   return await db.update(patients).set(data).where(eq(patients.id, id));
 }
 
+export async function deletePatient(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return await db.delete(patients).where(eq(patients.id, id));
+}
+
 // ============ APPOINTMENT OPERATIONS ============
 
 export async function createAppointment(appointment: InsertAppointment) {

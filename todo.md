@@ -473,3 +473,17 @@
 - [x] Confirmar que famílias não têm acesso às evoluções
 - [x] Criar 5 testes vitest para o gráfico de colaboração
 - [x] Validar todas as funcionalidades (56 testes passando)
+
+## Edição e Exclusão de Pacientes (Administradores)
+- [x] Criar rota backend para atualizar dados do paciente (updatePatient)
+- [x] Criar rota backend para excluir paciente (deletePatient)
+- [x] Adicionar função updatePatient no server/db.ts
+- [x] Adicionar função deletePatient no server/db.ts
+- [x] Criar modal de edição de paciente no frontend (EditPatientDialog)
+- [x] Formulário com todos os campos editáveis (nome, data nascimento, diagnóstico, responsável, notas)
+- [x] Botão de exclusão com confirmação (AlertDialog)
+- [x] Tornar nome do paciente clicável na lista de pacientes
+- [x] Implementar invalidate para atualizar lista após edição/exclusão
+- [x] Criar 5 testes vitest para update e delete
+- [x] Validar permissões (therapistProcedure - admin e terapeuta podem editar/excluir)
+- [x] Total: 61 testes vitest passando (9 arquivos)
