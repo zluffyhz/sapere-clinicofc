@@ -1,0 +1,65 @@
+{
+  "query": "SELECT id, name, dateOfBirth FROM patients ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, dateOfBirth FROM patients ORDER BY id;",
+  "rows": [
+    {
+      "id": "510026",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL"
+    },
+    {
+      "id": "540001",
+      "name": "Maria Julia Gama Alves Torres",
+      "dateOfBirth": "2018-01-01 00:00:00"
+    },
+    {
+      "id": "540002",
+      "name": "Murilo Laranjeira Valente",
+      "dateOfBirth": "2019-01-01 00:00:00"
+    },
+    {
+      "id": "540003",
+      "name": "Antonella Salles Romanini",
+      "dateOfBirth": "2020-01-01 00:00:00"
+    },
+    {
+      "id": "570001",
+      "name": "Test Patient Collab 1",
+      "dateOfBirth": "2015-01-01 00:00:00"
+    },
+    {
+      "id": "570002",
+      "name": "Test Patient Collab 2",
+      "dateOfBirth": "2016-01-01 00:00:00"
+    },
+    {
+      "id": "570003",
+      "name": "Paciente Teste",
+      "dateOfBirth": "NULL"
+    },
+    {
+      "id": "570004",
+      "name": "Paciente para Agendamento",
+      "dateOfBirth": "NULL"
+    },
+    {
+      "id": "570005",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL"
+    },
+    {
+      "id": "570006",
+      "name": "Test Patient Collab 1",
+      "dateOfBirth": "2015-01-01 00:00:00"
+    },
+    {
+      "id": "570007",
+      "name": "Test Patient Collab 2",
+      "dateOfBirth": "2016-01-01 00:00:00"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdateOfBirth\n510026\tPaciente para Anamnese\tNULL\n540001\tMaria Julia Gama Alves Torres\t2018-01-01 00:00:00\n540002\tMurilo Laranjeira Valente\t2019-01-01 00:00:00\n540003\tAntonella Salles Romanini\t2020-01-01 00:00:00\n570001\tTest Patient Collab 1\t2015-01-01 00:00:00\n570002\tTest Patient Collab 2\t2016-01-01 00:00:00\n570003\tPaciente Teste\tNULL\n570004\tPaciente para Agendamento\tNULL\n570005\tPaciente para Anamnese\tNULL\n570006\tTest Patient Collab 1\t2015-01-01 00:00:00\n570007\tTest Patient Collab 2\t2016-01-01 00:00:00\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}

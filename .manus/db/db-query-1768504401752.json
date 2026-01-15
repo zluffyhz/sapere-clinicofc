@@ -1,0 +1,43 @@
+{
+  "query": "SELECT * FROM patients WHERE name IN ('Maria Julia Gama Alves Torres', 'Murilo Laranjeira Valente', 'Antonella Salles Romanini');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT * FROM patients WHERE name IN ('Maria Julia Gama Alves Torres', 'Murilo Laranjeira Valente', 'Antonella Salles Romanini');",
+  "rows": [
+    {
+      "id": "540001",
+      "name": "Maria Julia Gama Alves Torres",
+      "dateOfBirth": "2018-01-01 00:00:00",
+      "familyUserId": "1",
+      "therapistUserId": "NULL",
+      "diagnosis": "A definir",
+      "notes": "NULL",
+      "createdAt": "2026-01-15 14:02:49",
+      "updatedAt": "2026-01-15 14:02:49"
+    },
+    {
+      "id": "540002",
+      "name": "Murilo Laranjeira Valente",
+      "dateOfBirth": "2019-01-01 00:00:00",
+      "familyUserId": "1",
+      "therapistUserId": "NULL",
+      "diagnosis": "A definir",
+      "notes": "NULL",
+      "createdAt": "2026-01-15 14:02:49",
+      "updatedAt": "2026-01-15 14:02:49"
+    },
+    {
+      "id": "540003",
+      "name": "Antonella Salles Romanini",
+      "dateOfBirth": "2020-01-01 00:00:00",
+      "familyUserId": "1",
+      "therapistUserId": "NULL",
+      "diagnosis": "A definir",
+      "notes": "NULL",
+      "createdAt": "2026-01-15 14:02:49",
+      "updatedAt": "2026-01-15 14:02:49"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdateOfBirth\tfamilyUserId\ttherapistUserId\tdiagnosis\tnotes\tcreatedAt\tupdatedAt\n540001\tMaria Julia Gama Alves Torres\t2018-01-01 00:00:00\t1\tNULL\tA definir\tNULL\t2026-01-15 14:02:49\t2026-01-15 14:02:49\n540002\tMurilo Laranjeira Valente\t2019-01-01 00:00:00\t1\tNULL\tA definir\tNULL\t2026-01-15 14:02:49\t2026-01-15 14:02:49\n540003\tAntonella Salles Romanini\t2020-01-01 00:00:00\t1\tNULL\tA definir\tNULL\t2026-01-15 14:02:49\t2026-01-15 14:02:49\n",
+  "stderr": "",
+  "execution_time_ms": 61
+}
