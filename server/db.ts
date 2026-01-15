@@ -1,4 +1,4 @@
-import { eq, and, gte, lte, desc, ne, or, lt, gt, inArray } from "drizzle-orm";
+import { eq, and, gte, lte, desc, ne, or, lt, gt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { 
   InsertUser, users, 
@@ -342,38 +342,6 @@ export async function updateSessionRecord(id: number, data: Partial<InsertEvolut
   if (!db) throw new Error("Database not available");
   
   return await db.update(evolutions).set(data).where(eq(evolutions.id, id));
-}
-
-export async function getCollaborationHistory(patientIds: number[], startDate: Date) {
-  const db = await getDb();
-  if (!db) return [];
-  
-  // Get evolutions for specified patients since startDate
-  const records = await db.select({
-    id: evolutions.id,
-    patientId: evolutions.patientId,
-    sessionDate: evolutions.sessionDate,
-    collaborationLevel: evolutions.collaborationLevel,
-    patientName: patients.name,
-  })
-  .from(evolutions)
-  .innerJoin(patients, eq(evolutions.patientId, patients.id))
-  .where(
-    and(
-      inArray(evolutions.patientId, patientIds),
-      gte(evolutions.sessionDate, startDate)
-    )
-  )
-  .orderBy(evolutions.sessionDate);
-  
-  return records;
-}
-
-export async function deleteSessionRecord(id: number) {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  
-  return await db.delete(evolutions).where(eq(evolutions.id, id));
 }
 
 // ============ NOTIFICATION OPERATIONS ============

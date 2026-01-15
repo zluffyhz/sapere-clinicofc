@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,21 +6,11 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CollaborationChart } from "@/components/CollaborationChart";
 
 export default function FamilyDashboard() {
   const { user } = useAuth();
   const { data: patients, isLoading: patientsLoading } = trpc.patients.list.useQuery();
   const { data: notifications } = trpc.notifications.list.useQuery();
-  
-  // Collaboration chart filters
-  const [selectedPatientId, setSelectedPatientId] = useState<number | undefined>(undefined);
-  const [selectedDays, setSelectedDays] = useState(30);
-  
-  const { data: collaborationHistory, isLoading: historyLoading } = trpc.evolutions.getCollaborationHistory.useQuery({
-    patientId: selectedPatientId,
-    days: selectedDays,
-  });
   
   // Get upcoming appointments for the next 7 days
   const startDate = new Date();
@@ -95,18 +84,6 @@ export default function FamilyDashboard() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Collaboration History Chart */}
-      {!historyLoading && collaborationHistory && collaborationHistory.length > 0 && (
-        <CollaborationChart
-          data={collaborationHistory}
-          patients={patients || []}
-          selectedPatientId={selectedPatientId}
-          selectedDays={selectedDays}
-          onPatientChange={setSelectedPatientId}
-          onDaysChange={setSelectedDays}
-        />
-      )}
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Upcoming Appointments */}
