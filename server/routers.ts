@@ -191,7 +191,9 @@ export const appRouter = router({
       }))
       .mutation(async ({ input }) => {
         const { id, ...data } = input;
-        await db.updatePatient(id, data);
+        console.log("[patients.update] Received data:", { id, data });
+        const result = await db.updatePatient(id, data);
+        console.log("[patients.update] Update result:", result);
         return { success: true };
       }),
 

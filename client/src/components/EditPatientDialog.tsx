@@ -37,9 +37,9 @@ export function EditPatientDialog({ patient, open, onOpenChange, onSuccess }: Ed
   const familyUsers = allUsers?.filter(u => u.role === "family");
 
   const updateMutation = trpc.patients.update.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Paciente atualizado com sucesso!");
-      utils.patients.list.invalidate();
+      await utils.patients.list.invalidate();
       onSuccess();
       onOpenChange(false);
     },
@@ -49,9 +49,9 @@ export function EditPatientDialog({ patient, open, onOpenChange, onSuccess }: Ed
   });
 
   const deleteMutation = trpc.patients.delete.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Paciente excluído com sucesso!");
-      utils.patients.list.invalidate();
+      await utils.patients.list.invalidate();
       onSuccess();
       onOpenChange(false);
       setShowDeleteConfirm(false);
@@ -76,14 +76,17 @@ export function EditPatientDialog({ patient, open, onOpenChange, onSuccess }: Ed
     e.preventDefault();
     if (!patient) return;
 
-    updateMutation.mutate({
+    const updateData = {
       id: patient.id,
       name,
       dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
       familyUserId,
       diagnosis: diagnosis || undefined,
       notes: notes || undefined,
-    });
+    };
+
+    console.log("[EditPatientDialog] Submitting update:", updateData);
+    updateMutation.mutate(updateData);
   };
 
   const handleDelete = () => {

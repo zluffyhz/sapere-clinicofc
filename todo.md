@@ -487,3 +487,13 @@
 - [x] Criar 5 testes vitest para update e delete
 - [x] Validar permissões (therapistProcedure - admin e terapeuta podem editar/excluir)
 - [x] Total: 61 testes vitest passando (9 arquivos)
+
+## Bug: Edição de Paciente Não Salva Alterações
+- [x] Investigar por que alterações no modal de edição não são salvas
+- [x] Verificar se backend está recebendo os dados corretamente (backend OK - testes passando)
+- [x] Verificar se mutation está sendo executada (mutation OK)
+- [x] Adicionar await em invalidate para garantir sincronização
+- [x] Adicionar logs de debug no frontend e backend
+- [x] Testar edição de data de nascimento especificamente (2 testes novos passando)
+- [x] Garantir que todos os campos editáveis sejam salvos corretamente
+- [x] Total: 61 de 62 testes passando (apenas 1 teste antigo de conflitos falhando)

@@ -453,8 +453,10 @@ export default function PacientesPage() {
         patient={editingPatient}
         open={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}
-        onSuccess={() => {
-          utils.patients.list.invalidate();
+        onSuccess={async () => {
+          console.log("[PacientesPage] onSuccess callback - invalidating patients list");
+          await utils.patients.list.invalidate();
+          console.log("[PacientesPage] patients list invalidated successfully");
         }}
       />
     </div>

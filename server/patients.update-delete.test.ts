@@ -53,12 +53,34 @@ describe("Patients Update and Delete", () => {
 
   it("should update patient date of birth", async () => {
     const newDate = new Date("2021-06-15");
+    console.log("[TEST] Updating patient with date:", newDate);
+    
     await db.updatePatient(patientId, {
       dateOfBirth: newDate,
     });
 
     const patient = await db.getPatientById(patientId);
+    console.log("[TEST] Retrieved patient:", patient);
+    
     expect(patient?.dateOfBirth).toEqual(newDate);
+  });
+
+  it("should update patient date of birth with string input", async () => {
+    // Simulating what happens when date comes from HTML input
+    const dateString = "2022-03-20";
+    const newDate = new Date(dateString);
+    console.log("[TEST] Updating patient with date from string:", { dateString, newDate });
+    
+    await db.updatePatient(patientId, {
+      dateOfBirth: newDate,
+    });
+
+    const patient = await db.getPatientById(patientId);
+    console.log("[TEST] Retrieved patient after string date:", patient);
+    
+    // Compare just the date part (ignore time)
+    const expectedDate = new Date(dateString);
+    expect(patient?.dateOfBirth?.toISOString().split('T')[0]).toBe(expectedDate.toISOString().split('T')[0]);
   });
 
   it("should update patient diagnosis and notes", async () => {
