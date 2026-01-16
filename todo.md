@@ -544,3 +544,15 @@
 - [ ] Criar testes completos
 - [ ] Validar sistema sem bugs
 - [x] Total: 62 testes passando (backend estável)
+
+## Formulário de Especialidades e Dashboard de Terapeutas
+- [x] Adicionar estado para especialidades no formulário de criação de usuário
+- [x] Criar componente multi-select para especialidades (Fonoaudiologia, Psicologia, Terapia Ocupacional, Psicopedagogia)
+- [x] Integrar campo de especialidades ao formulário de cadastro
+- [x] Mostrar especialidades apenas quando role = "therapist"
+- [x] Salvar especialidades ao criar terapeuta (backend atualizado com input.specialties)
+- [x] Ajustar TherapistDashboard para usar getMyPatients apenas no card de "Pacientes Ativos"
+- [x] Manter visualização de todos os pacientes nas outras abas (Pacientes, Prontuários, Agenda)
+- [x] Criar testes para especialidades (5 novos testes em specialties.test.ts)
+- [x] Validar dashboard mostrando apenas pacientes vinculados no card inicial
+- [x] Total: 65 testes passando (2 testes antigos falhando, não relacionados)

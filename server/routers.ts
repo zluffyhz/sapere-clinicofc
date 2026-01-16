@@ -970,6 +970,7 @@ export const appRouter = router({
         name: z.string(),
         email: z.string().email(),
         role: z.enum(['family', 'therapist', 'admin']),
+        specialties: z.array(z.string()).optional(),
       }))
       .mutation(async ({ input }) => {
         // Generate temporary password
@@ -981,9 +982,16 @@ export const appRouter = router({
           password: tempPassword,
         });
         
+        const userId = result[0].insertId;
+        
+        // Save specialties if provided
+        if (input.specialties && input.specialties.length > 0) {
+          await db.updateUserSpecialties(userId, input.specialties);
+        }
+        
         return { 
           success: true, 
-          id: result[0].insertId,
+          id: userId,
           temporaryPassword: tempPassword,
         };
       }),

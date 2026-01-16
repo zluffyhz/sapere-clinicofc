@@ -54,6 +54,7 @@ export default function AdminUsersPage() {
     name: "",
     email: "",
     role: "family" as "family" | "therapist" | "admin",
+    specialties: [] as string[],
   });
 
   const utils = trpc.useUtils();
@@ -63,7 +64,7 @@ export default function AdminUsersPage() {
     onSuccess: (data) => {
       utils.admin.listUsers.invalidate();
       setTempPassword(data.temporaryPassword);
-      setNewUser({ name: "", email: "", role: "family" });
+      setNewUser({ name: "", email: "", role: "family", specialties: [] });
       toast.success("Usuário criado com sucesso");
     },
     onError: (error) => {
@@ -100,6 +101,11 @@ export default function AdminUsersPage() {
     
     if (!newUser.name || !newUser.email) {
       toast.error("Nome e email são obrigatórios");
+      return;
+    }
+
+    if (newUser.role === 'therapist' && newUser.specialties.length === 0) {
+      toast.error("Selecione pelo menos uma especialidade para o terapeuta");
       return;
     }
 
@@ -187,7 +193,9 @@ export default function AdminUsersPage() {
                 <Label htmlFor="role">Perfil *</Label>
                 <Select
                   value={newUser.role}
-                  onValueChange={(value: any) => setNewUser({ ...newUser, role: value })}
+                  onValueChange={(value: any) => {
+                    setNewUser({ ...newUser, role: value, specialties: value === 'therapist' ? newUser.specialties : [] });
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -199,6 +207,31 @@ export default function AdminUsersPage() {
                   </SelectContent>
                 </Select>
               </div>
+
+              {newUser.role === 'therapist' && (
+                <div className="space-y-2">
+                  <Label>Especialidades *</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {['Fonoaudiologia', 'Psicologia', 'Terapia Ocupacional', 'Psicopedagogia'].map((specialty) => (
+                      <label key={specialty} className="flex items-center space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={newUser.specialties.includes(specialty)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setNewUser({ ...newUser, specialties: [...newUser.specialties, specialty] });
+                            } else {
+                              setNewUser({ ...newUser, specialties: newUser.specialties.filter(s => s !== specialty) });
+                            }
+                          }}
+                          className="rounded border-gray-300"
+                        />
+                        <span className="text-sm">{specialty}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {tempPassword && (
                 <Alert className="bg-green-50 border-green-200">

@@ -40,7 +40,8 @@ function QuickActionButton({
 export default function TherapistDashboard() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
-  const { data: patients, isLoading: patientsLoading } = trpc.patients.list.useQuery();
+  // Get only patients assigned to this therapist
+  const { data: myPatients, isLoading: patientsLoading } = trpc.patients.getMyPatients.useQuery();
   
   // Collaboration chart filters
   const [selectedPatientId, setSelectedPatientId] = useState<number | undefined>(undefined);
@@ -98,7 +99,7 @@ export default function TherapistDashboard() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{patients?.length || 0}</div>
+            <div className="text-2xl font-bold">{myPatients?.length || 0}</div>
             <p className="text-xs text-muted-foreground">Total sob seus cuidados</p>
           </CardContent>
         </Card>
@@ -133,7 +134,7 @@ export default function TherapistDashboard() {
             <ClipboardList className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{patients?.length || 0}</div>
+            <div className="text-2xl font-bold">{myPatients?.length || 0}</div>
             <p className="text-xs text-muted-foreground">Disponíveis</p>
           </CardContent>
         </Card>
@@ -161,7 +162,7 @@ export default function TherapistDashboard() {
                       new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
                   )
                   .map((apt) => {
-                    const patient = patients?.find((p) => p.id === apt.patientId);
+                    const patient = myPatients?.find((p) => p.id === apt.patientId);
                     return (
                       <div key={apt.id} className="flex items-start gap-4 p-3 rounded-lg border">
                         <div className="flex-1 space-y-1">
@@ -217,13 +218,13 @@ export default function TherapistDashboard() {
           <CardContent>
             {patientsLoading ? (
               <div className="text-center py-8 text-muted-foreground">Carregando...</div>
-            ) : !patients || patients.length === 0 ? (
+            ) : !myPatients || myPatients.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 Nenhum paciente cadastrado
               </div>
             ) : (
               <div className="space-y-4">
-                {patients.slice(0, 5).map((patient) => (
+                {myPatients.slice(0, 5).map((patient) => (
                   <div
                     key={patient.id}
                     className="flex items-center justify-between p-3 rounded-lg border"
@@ -262,7 +263,7 @@ export default function TherapistDashboard() {
       {collaborationData && collaborationData.length > 0 && (
         <CollaborationChart
           data={collaborationData}
-          patients={patients || []}
+          patients={myPatients || []}
           selectedPatientId={selectedPatientId}
           selectedDays={selectedDays}
           onPatientChange={setSelectedPatientId}
