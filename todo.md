@@ -497,3 +497,50 @@
 - [x] Testar edição de data de nascimento especificamente (2 testes novos passando)
 - [x] Garantir que todos os campos editáveis sejam salvos corretamente
 - [x] Total: 61 de 62 testes passando (apenas 1 teste antigo de conflitos falhando)
+
+## Refatoração Completa: Especialidades, Vinculações e Notificações
+### 1. Especialidades de Terapeutas
+- [ ] Adicionar campo `specialties` (array) na tabela `user` para terapeutas
+- [ ] Criar enum com todas as terapias disponíveis
+- [ ] Atualizar formulário de cadastro de terapeuta para selecionar especialidades
+- [ ] Atualizar backend para salvar especialidades do terapeuta
+
+### 2. Dashboard de Terapeutas - Apenas Pacientes Vinculados
+- [ ] Remover contagem de "Pacientes Ativos" (todos os pacientes)
+- [ ] Criar query para buscar apenas pacientes vinculados ao terapeuta logado
+- [ ] Atualizar TherapistDashboard para mostrar apenas pacientes vinculados
+- [ ] Ajustar cards e estatísticas baseadas em pacientes vinculados
+
+### 3. Vinculação Paciente-Terapeuta-Terapia
+- [ ] Criar tabela `patient_therapist_assignments` (pacienteId, terapeutaId, therapyType)
+- [ ] Permitir múltiplas vinculações por paciente (várias terapias)
+- [ ] Criar interface para vincular paciente a terapeuta + terapia específica
+- [ ] Atualizar queries para considerar vinculações ao invés de therapistUserId direto
+
+### 4. Notificações de Agendamento para Terapeutas
+- [ ] Investigar por que notificações não estão chegando para terapeutas
+- [ ] Verificar se notificações estão sendo criadas no backend
+- [ ] Verificar se query de notificações está filtrando corretamente
+- [ ] Adicionar notificação automática ao criar/atualizar agendamento
+- [ ] Testar notificações end-to-end
+
+### 5. Testes e Validação
+- [ ] Criar testes para especialidades de terapeutas
+- [ ] Criar testes para vinculações paciente-terapeuta-terapia
+- [ ] Criar testes para notificações de agendamento
+- [ ] Validar que dashboard mostra apenas pacientes vinculados
+- [ ] Garantir zero bugs antes de entregar
+
+## Refatoração Completa: Especialidades, Vinculações e Notificações
+- [x] Adicionar campo specialties na tabela users
+- [x] Criar tabela patient_therapist_assignments
+- [x] Adicionar funções backend para vinculações (createPatientTherapistAssignment, getPatientTherapistAssignments, getTherapistPatients, deletePatientTherapistAssignment, updateUserSpecialties)
+- [x] Criar rotas para gerenciar vinculações (createAssignment, getAssignments, getMyPatients, deleteAssignment)
+- [x] Ajustar patients.list para terapeutas mostrarem apenas pacientes vinculados
+- [x] Corrigir notificações de agendamento para terapeutas
+- [ ] Implementar formulário de especialidades no cadastro de terapeuta
+- [ ] Implementar formulário de vinculação paciente-terapeuta-terapia
+- [ ] Permitir múltiplas terapias por paciente
+- [ ] Criar testes completos
+- [ ] Validar sistema sem bugs
+- [x] Total: 62 testes passando (backend estável)

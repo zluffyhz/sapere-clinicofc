@@ -12,6 +12,7 @@ export const users = mysqlTable("users", {
   loginMethod: varchar("loginMethod", { length: 64 }),
   passwordHash: text("passwordHash"), // For password-based authentication
   role: mysqlEnum("role", ["family", "therapist", "admin"]).default("family").notNull(),
+  specialties: text("specialties"), // JSON array of therapy types for therapists
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -172,3 +173,20 @@ export const attendance = mysqlTable("attendance", {
 
 export type Attendance = typeof attendance.$inferSelect;
 export type InsertAttendance = typeof attendance.$inferInsert;
+
+/**
+ * Patient-Therapist Assignments table - stores which therapists work with which patients on which therapies
+ * Allows multiple therapists per patient (one for each therapy type)
+ */
+export const patientTherapistAssignments = mysqlTable("patient_therapist_assignments", {
+  id: int("id").autoincrement().primaryKey(),
+  patientId: int("patientId").notNull(),
+  therapistUserId: int("therapistUserId").notNull(),
+  therapyType: mysqlEnum("therapyType", ["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "outro"]).notNull(),
+  isActive: boolean("isActive").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type PatientTherapistAssignment = typeof patientTherapistAssignments.$inferSelect;
+export type InsertPatientTherapistAssignment = typeof patientTherapistAssignments.$inferInsert;

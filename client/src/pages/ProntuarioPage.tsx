@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FileText, Save, Plus, Calendar, Upload } from "lucide-react";
+import { PatientTherapistAssignments } from "@/components/PatientTherapistAssignments";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
@@ -224,8 +225,9 @@ export default function ProntuarioPage() {
       </div>
 
       <Tabs defaultValue="dados" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="dados">Dados do Paciente</TabsTrigger>
+          <TabsTrigger value="terapias">Terapias</TabsTrigger>
           <TabsTrigger value="sessoes">Evoluções</TabsTrigger>
           <TabsTrigger value="documentos">Documentos</TabsTrigger>
         </TabsList>
@@ -313,6 +315,13 @@ export default function ProntuarioPage() {
               </Button>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Terapias */}
+        <TabsContent value="terapias">
+          {patientId && patient && (
+            <PatientTherapistAssignments patientId={patientId} patientName={patient.name} />
+          )}
         </TabsContent>
 
         {/* Evoluções */}

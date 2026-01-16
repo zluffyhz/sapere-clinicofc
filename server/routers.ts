@@ -155,7 +155,8 @@ export const appRouter = router({
       if (ctx.user.role === 'admin') {
         return await db.getAllPatients();
       } else if (ctx.user.role === 'therapist') {
-        return await db.getAllPatients(); // Terapeutas veem todos os pacientes
+        // Terapeutas veem apenas pacientes vinculados a eles
+        return await db.getTherapistPatients(ctx.user.id);
       } else {
         return await db.getPatientsByFamily(ctx.user.id);
       }
@@ -201,6 +202,36 @@ export const appRouter = router({
       .input(z.object({ id: z.number() }))
       .mutation(async ({ input }) => {
         await db.deletePatient(input.id);
+        return { success: true };
+      }),
+
+    // Patient-Therapist Assignments
+    createAssignment: therapistProcedure
+      .input(z.object({
+        patientId: z.number(),
+        therapistUserId: z.number(),
+        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "outro"]),
+      }))
+      .mutation(async ({ input }) => {
+        await db.createPatientTherapistAssignment(input);
+        return { success: true };
+      }),
+
+    getAssignments: therapistProcedure
+      .input(z.object({ patientId: z.number() }))
+      .query(async ({ input }) => {
+        return await db.getPatientTherapistAssignments(input.patientId);
+      }),
+
+    getMyPatients: therapistProcedure
+      .query(async ({ ctx }) => {
+        return await db.getTherapistPatients(ctx.user.id);
+      }),
+
+    deleteAssignment: therapistProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await db.deletePatientTherapistAssignment(input.id);
         return { success: true };
       }),
   }),
@@ -266,6 +297,15 @@ export const appRouter = router({
             ).catch(err => console.error('[Email] Failed to send schedule change email:', err));
           }
         }
+        
+        // Create notification for therapist
+        await db.createNotification({
+          userId: ctx.user.id,
+          type: 'schedule_change',
+          title: 'Sessão agendada',
+          message: `Você tem uma sessão de ${input.therapyType} agendada com ${patient?.name || 'paciente'} em ${input.startTime.toLocaleDateString('pt-BR')} às ${input.startTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`,
+          relatedId: result[0].insertId,
+        });
         
         return { success: true, id: result[0].insertId };
       }),

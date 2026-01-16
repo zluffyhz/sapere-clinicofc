@@ -8,7 +8,8 @@ import {
   patientData, InsertPatientData,
   evolutions, InsertEvolution,
   notifications, InsertNotification,
-  attendance, InsertAttendance
+  attendance, InsertAttendance,
+  patientTherapistAssignments, InsertPatientTherapistAssignment
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -675,4 +676,72 @@ export async function deleteSessionRecord(id: number) {
   const db = await getDb();
   if (!db) return;
   await db.delete(evolutions).where(eq(evolutions.id, id));
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Patient-Therapist Assignments
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function createPatientTherapistAssignment(data: InsertPatientTherapistAssignment) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(patientTherapistAssignments).values(data);
+  return result;
+}
+
+export async function getPatientTherapistAssignments(patientId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(patientTherapistAssignments)
+    .where(and(
+      eq(patientTherapistAssignments.patientId, patientId),
+      eq(patientTherapistAssignments.isActive, true)
+    ));
+}
+
+export async function getTherapistPatients(therapistUserId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  // Get all active assignments for this therapist
+  const assignments = await db
+    .select()
+    .from(patientTherapistAssignments)
+    .where(and(
+      eq(patientTherapistAssignments.therapistUserId, therapistUserId),
+      eq(patientTherapistAssignments.isActive, true)
+    ));
+  
+  if (assignments.length === 0) return [];
+  
+  // Get unique patient IDs
+  const patientIds = Array.from(new Set(assignments.map(a => a.patientId)));
+  
+  // Get patient details
+  const patientsResult = await db
+    .select()
+    .from(patients)
+    .where(inArray(patients.id, patientIds));
+  
+  return patientsResult;
+}
+
+export async function deletePatientTherapistAssignment(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db
+    .update(patientTherapistAssignments)
+    .set({ isActive: false })
+    .where(eq(patientTherapistAssignments.id, id));
+}
+
+export async function updateUserSpecialties(userId: number, specialties: string[]) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db
+    .update(users)
+    .set({ specialties: JSON.stringify(specialties) })
+    .where(eq(users.id, userId));
 }
