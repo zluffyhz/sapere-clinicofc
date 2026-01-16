@@ -1,0 +1,500 @@
+{
+  "query": "SELECT id, name, email, role, specialties FROM users WHERE role = 'therapist' ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, email, role, specialties FROM users WHERE role = 'therapist' ORDER BY id;",
+  "rows": [
+    {
+      "id": "468419",
+      "name": "Marcely Almeida Silva",
+      "email": "celyneuro@gmail.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2711400",
+      "name": "Vitória Santos Lira",
+      "email": "Vitoriasantosbrasileirolira@gmail.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2715659",
+      "name": "Login Test User",
+      "email": "login-test-1768591600345@sapere.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2715663",
+      "name": "Test Therapist Update",
+      "email": "therapist-update-1768591600609@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2715670",
+      "name": "Usuário para Atualizar",
+      "email": "atualizar@teste.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2715779",
+      "name": "Therapist Test",
+      "email": "therapist-1768591627937@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2715781",
+      "name": "Login Test User",
+      "email": "login-test-1768591628025@sapere.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2715784",
+      "name": "Therapist Test",
+      "email": "therapist-1768591628118@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2715787",
+      "name": "Therapist Test",
+      "email": "therapist-1768591628289@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2715788",
+      "name": "Test Therapist Update",
+      "email": "therapist-update-1768591628278@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2715793",
+      "name": "Therapist Test",
+      "email": "therapist-1768591628463@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2715796",
+      "name": "Therapist Test",
+      "email": "therapist-1768591628618@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2715800",
+      "name": "Usuário para Atualizar",
+      "email": "atualizar@teste.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2715801",
+      "name": "Therapist Test",
+      "email": "therapist-1768591628770@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716024",
+      "name": "Therapist Test",
+      "email": "therapist-1768591692440@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716025",
+      "name": "Login Test User",
+      "email": "login-test-1768591692506@sapere.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716029",
+      "name": "Therapist Test",
+      "email": "therapist-1768591692612@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716032",
+      "name": "Test Therapist Update",
+      "email": "therapist-update-1768591692739@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716033",
+      "name": "Therapist Test",
+      "email": "therapist-1768591692794@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716038",
+      "name": "Therapist Test",
+      "email": "therapist-1768591692965@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716040",
+      "name": "Therapist 2",
+      "email": "therapist2-1768591693052@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716044",
+      "name": "Usuário para Atualizar",
+      "email": "atualizar@teste.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716045",
+      "name": "Therapist Test",
+      "email": "therapist-1768591693202@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716050",
+      "name": "Therapist Test",
+      "email": "therapist-1768591693365@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716121",
+      "name": "Therapist Test",
+      "email": "therapist-1768591708253@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716122",
+      "name": "Login Test User",
+      "email": "login-test-1768591708267@sapere.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716126",
+      "name": "Therapist Test",
+      "email": "therapist-1768591708435@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716128",
+      "name": "Therapist Test",
+      "email": "therapist-1768591708601@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716129",
+      "name": "Test Therapist Update",
+      "email": "therapist-update-1768591708547@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716134",
+      "name": "Therapist Test",
+      "email": "therapist-1768591708763@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716136",
+      "name": "Therapist 2",
+      "email": "therapist2-1768591708846@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716140",
+      "name": "Therapist Test",
+      "email": "therapist-1768591709002@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716141",
+      "name": "Usuário para Atualizar",
+      "email": "atualizar@teste.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716147",
+      "name": "Therapist Test",
+      "email": "therapist-1768591709155@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716974",
+      "name": "Therapist Test",
+      "email": "therapist-1768591859396@test.com",
+      "role": "therapist",
+      "specialties": "[\"Terapia Ocupacional\",\"Psicopedagogia\"]"
+    },
+    {
+      "id": "2716975",
+      "name": "Login Test User",
+      "email": "login-test-1768591859416@sapere.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716978",
+      "name": "Therapist Test",
+      "email": "therapist-1768591859613@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716979",
+      "name": "Test Therapist Update",
+      "email": "therapist-update-1768591859694@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716984",
+      "name": "Therapist Test",
+      "email": "therapist-1768591859836@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716986",
+      "name": "Therapist 2",
+      "email": "therapist2-1768591859924@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716990",
+      "name": "Therapist Test",
+      "email": "therapist-1768591860099@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716995",
+      "name": "Usuário para Atualizar",
+      "email": "atualizar@teste.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2716999",
+      "name": "Therapist Test",
+      "email": "therapist-1768591860365@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717090",
+      "name": "Therapist Test",
+      "email": "therapist-1768591869695@test.com",
+      "role": "therapist",
+      "specialties": "[\"Terapia Ocupacional\",\"Psicopedagogia\"]"
+    },
+    {
+      "id": "2717092",
+      "name": "Login Test User",
+      "email": "login-test-1768591869741@sapere.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717096",
+      "name": "Therapist Test",
+      "email": "therapist-1768591869904@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717099",
+      "name": "Test Therapist Update",
+      "email": "therapist-update-1768591869983@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717100",
+      "name": "Therapist Test",
+      "email": "therapist-1768591870101@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717105",
+      "name": "Therapist 2",
+      "email": "therapist2-1768591870185@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717109",
+      "name": "Therapist Test",
+      "email": "therapist-1768591870358@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717113",
+      "name": "Usuário para Atualizar",
+      "email": "atualizar@teste.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717115",
+      "name": "Therapist Test",
+      "email": "therapist-1768591870540@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717312",
+      "name": "Therapist Test",
+      "email": "therapist-1768591886318@test.com",
+      "role": "therapist",
+      "specialties": "[\"Terapia Ocupacional\",\"Psicopedagogia\"]"
+    },
+    {
+      "id": "2717313",
+      "name": "Login Test User",
+      "email": "login-test-1768591886342@sapere.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717317",
+      "name": "Therapist Test",
+      "email": "therapist-1768591886568@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717321",
+      "name": "Test Therapist Update",
+      "email": "therapist-update-1768591886603@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717325",
+      "name": "Therapist Test",
+      "email": "therapist-1768591886751@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717328",
+      "name": "Therapist 2",
+      "email": "therapist2-1768591886832@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717333",
+      "name": "Therapist Test",
+      "email": "therapist-1768591887019@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717336",
+      "name": "Usuário para Atualizar",
+      "email": "atualizar@teste.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717342",
+      "name": "Therapist Test",
+      "email": "therapist-1768591887199@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717738",
+      "name": "Login Test User",
+      "email": "login-test-1768591928269@sapere.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717739",
+      "name": "Therapist Test",
+      "email": "therapist-1768591928297@test.com",
+      "role": "therapist",
+      "specialties": "[\"Terapia Ocupacional\",\"Psicopedagogia\"]"
+    },
+    {
+      "id": "2717744",
+      "name": "Therapist Test",
+      "email": "therapist-1768591928496@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717747",
+      "name": "Test Therapist Update",
+      "email": "therapist-update-1768591928585@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717748",
+      "name": "Therapist Test",
+      "email": "therapist-1768591928685@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717753",
+      "name": "Therapist 2",
+      "email": "therapist2-1768591928767@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717756",
+      "name": "Therapist Test",
+      "email": "therapist-1768591928940@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717762",
+      "name": "Usuário para Atualizar",
+      "email": "atualizar@teste.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "2717763",
+      "name": "Therapist Test",
+      "email": "therapist-1768591929126@test.com",
+      "role": "therapist",
+      "specialties": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\tspecialties\n468419\tMarcely Almeida Silva\tcelyneuro@gmail.com\ttherapist\tNULL\n2711400\tVitória Santos Lira\tVitoriasantosbrasileirolira@gmail.com\ttherapist\tNULL\n2715659\tLogin Test User\tlogin-test-1768591600345@sapere.com\ttherapist\tNULL\n2715663\tTest Therapist Update\ttherapist-update-1768591600609@test.com\ttherapist\tNULL\n2715670\tUsuário para Atualizar\tatualizar@teste.com\ttherapist\tNULL\n2715779\tTherapist Test\ttherapist-1768591627937@test.com\ttherapist\tNULL\n2715781\tLogin Test User\tlogin-test-1768591628025@sapere.com\ttherapist\tNULL\n2715784\tTherapist Test\ttherapist-1768591628118@test.com\ttherapist\tNULL\n2715787\tTherapist Test\ttherapist-1768591628289@test.com\ttherapist\tNULL\n2715788\tTest Therapist Update\ttherapist-update-1768591628278@test.com\ttherapist\tNULL\n2715793\tTherapist Test\ttherapist-1768591628463@test.com\ttherapist\tNULL\n2715796\tTherapist Test\ttherapist-1768591628618@test.com\ttherapist\tNULL\n2715800\tUsuário para Atualizar\tatualizar@teste.com\ttherapist\tNULL\n2715801\tTherapist Test\ttherapist-1768591628770@test.com\ttherapist\tNULL\n2716024\tTherapist Test\ttherapist-1768591692440@test.com\ttherapist\tNULL\n2716025\tLogin Test User\tlogin-test-1768591692506@sapere.com\ttherapist\tNULL\n2716029\tTherapist Test\ttherapist-1768591692612@test.com\ttherapist\tNULL\n2716032\tTest Therapist Update\ttherapist-update-1768591692739@test.com\ttherapist\tNULL\n2716033\tTherapist Test\ttherapist-1768591692794@test.com\ttherapist\tNULL\n2716038\tTherapist Test\ttherapist-1768591692965@test.com\ttherapist\tNULL\n2716040\tTherapist 2\ttherapist2-1768591693052@test.com\ttherapist\tNULL\n2716044\tUsuário para Atualizar\tatualizar@teste.com\ttherapist\tNULL\n2716045\tTherapist Test\ttherapist-1768591693202@test.com\ttherapist\tNULL\n2716050\tTherapist Test\ttherapist-1768591693365@test.com\ttherapist\tNULL\n2716121\tTherapist Test\ttherapist-1768591708253@test.com\ttherapist\tNULL\n2716122\tLogin Test User\tlogin-test-1768591708267@sapere.com\ttherapist\tNULL\n2716126\tTherapist Test\ttherapist-1768591708435@test.com\ttherapist\tNULL\n2716128\tTherapist Test\ttherapist-1768591708601@test.com\ttherapist\tNULL\n2716129\tTest Therapist Update\ttherapist-update-1768591708547@test.com\ttherapist\tNULL\n2716134\tTherapist Test\ttherapist-1768591708763@test.com\ttherapist\tNULL\n2716136\tTherapist 2\ttherapist2-1768591708846@test.com\ttherapist\tNULL\n2716140\tTherapist Test\ttherapist-1768591709002@test.com\ttherapist\tNULL\n2716141\tUsuário para Atualizar\tatualizar@teste.com\ttherapist\tNULL\n2716147\tTherapist Test\ttherapist-1768591709155@test.com\ttherapist\tNULL\n2716974\tTherapist Test\ttherapist-1768591859396@test.com\ttherapist\t[\"Terapia Ocupacional\",\"Psicopedagogia\"]\n2716975\tLogin Test User\tlogin-test-1768591859416@sapere.com\ttherapist\tNULL\n2716978\tTherapist Test\ttherapist-1768591859613@test.com\ttherapist\tNULL\n2716979\tTest Therapist Update\ttherapist-update-1768591859694@test.com\ttherapist\tNULL\n2716984\tTherapist Test\ttherapist-1768591859836@test.com\ttherapist\tNULL\n2716986\tTherapist 2\ttherapist2-1768591859924@test.com\ttherapist\tNULL\n2716990\tTherapist Test\ttherapist-1768591860099@test.com\ttherapist\tNULL\n2716995\tUsuário para Atualizar\tatualizar@teste.com\ttherapist\tNULL\n2716999\tTherapist Test\ttherapist-1768591860365@test.com\ttherapist\tNULL\n2717090\tTherapist Test\ttherapist-1768591869695@test.com\ttherapist\t[\"Terapia Ocupacional\",\"Psicopedagogia\"]\n2717092\tLogin Test User\tlogin-test-1768591869741@sapere.com\ttherapist\tNULL\n2717096\tTherapist Test\ttherapist-1768591869904@test.com\ttherapist\tNULL\n2717099\tTest Therapist Update\ttherapist-update-1768591869983@test.com\ttherapist\tNULL\n2717100\tTherapist Test\ttherapist-1768591870101@test.com\ttherapist\tNULL\n2717105\tTherapist 2\ttherapist2-1768591870185@test.com\ttherapist\tNULL\n2717109\tTherapist Test\ttherapist-1768591870358@test.com\ttherapist\tNULL\n2717113\tUsuário para Atualizar\tatualizar@teste.com\ttherapist\tNULL\n2717115\tTherapist Test\ttherapist-1768591870540@test.com\ttherapist\tNULL\n2717312\tTherapist Test\ttherapist-1768591886318@test.com\ttherapist\t[\"Terapia Ocupacional\",\"Psicopedagogia\"]\n2717313\tLogin Test User\tlogin-test-1768591886342@sapere.com\ttherapist\tNULL\n2717317\tTherapist Test\ttherapist-1768591886568@test.com\ttherapist\tNULL\n2717321\tTest Therapist Update\ttherapist-update-1768591886603@test.com\ttherapist\tNULL\n2717325\tTherapist Test\ttherapist-1768591886751@test.com\ttherapist\tNULL\n2717328\tTherapist 2\ttherapist2-1768591886832@test.com\ttherapist\tNULL\n2717333\tTherapist Test\ttherapist-1768591887019@test.com\ttherapist\tNULL\n2717336\tUsuário para Atualizar\tatualizar@teste.com\ttherapist\tNULL\n2717342\tTherapist Test\ttherapist-1768591887199@test.com\ttherapist\tNULL\n2717738\tLogin Test User\tlogin-test-1768591928269@sapere.com\ttherapist\tNULL\n2717739\tTherapist Test\ttherapist-1768591928297@test.com\ttherapist\t[\"Terapia Ocupacional\",\"Psicopedagogia\"]\n2717744\tTherapist Test\ttherapist-1768591928496@test.com\ttherapist\tNULL\n2717747\tTest Therapist Update\ttherapist-update-1768591928585@test.com\ttherapist\tNULL\n2717748\tTherapist Test\ttherapist-1768591928685@test.com\ttherapist\tNULL\n2717753\tTherapist 2\ttherapist2-1768591928767@test.com\ttherapist\tNULL\n2717756\tTherapist Test\ttherapist-1768591928940@test.com\ttherapist\tNULL\n2717762\tUsuário para Atualizar\tatualizar@teste.com\ttherapist\tNULL\n2717763\tTherapist Test\ttherapist-1768591929126@test.com\ttherapist\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 48
+}

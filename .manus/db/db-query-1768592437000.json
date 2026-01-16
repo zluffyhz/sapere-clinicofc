@@ -1,0 +1,31 @@
+{
+  "query": "SELECT id, name, dateOfBirth, diagnosis, familyUserId FROM patients ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, dateOfBirth, diagnosis, familyUserId FROM patients ORDER BY id;",
+  "rows": [
+    {
+      "id": "540001",
+      "name": "Maria Julia Gama Alves Torres",
+      "dateOfBirth": "2021-11-24 00:00:00",
+      "diagnosis": "A definir",
+      "familyUserId": "1"
+    },
+    {
+      "id": "540002",
+      "name": "Murilo Laranjeira Valente",
+      "dateOfBirth": "2019-01-01 00:00:00",
+      "diagnosis": "A definir",
+      "familyUserId": "1"
+    },
+    {
+      "id": "540003",
+      "name": "Antonella Salles Romanini",
+      "dateOfBirth": "2020-01-01 00:00:00",
+      "diagnosis": "A definir",
+      "familyUserId": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdateOfBirth\tdiagnosis\tfamilyUserId\n540001\tMaria Julia Gama Alves Torres\t2021-11-24 00:00:00\tA definir\t1\n540002\tMurilo Laranjeira Valente\t2019-01-01 00:00:00\tA definir\t1\n540003\tAntonella Salles Romanini\t2020-01-01 00:00:00\tA definir\t1\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

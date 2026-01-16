@@ -1,0 +1,22 @@
+{
+  "query": "SELECT id, name FROM patients ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name FROM patients ORDER BY id;",
+  "rows": [
+    {
+      "id": "540001",
+      "name": "Maria Julia Gama Alves Torres"
+    },
+    {
+      "id": "540002",
+      "name": "Murilo Laranjeira Valente"
+    },
+    {
+      "id": "540003",
+      "name": "Antonella Salles Romanini"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\n540001\tMaria Julia Gama Alves Torres\n540002\tMurilo Laranjeira Valente\n540003\tAntonella Salles Romanini\n",
+  "stderr": "",
+  "execution_time_ms": 51
+}

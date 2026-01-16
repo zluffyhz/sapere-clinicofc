@@ -1,0 +1,9 @@
+{
+  "query": "\n-- Maria Julia com Dra. Ana Paula (Fonoaudiologia)\nINSERT INTO patient_therapist_assignments (patientId, therapistUserId, therapyType, createdAt) \nVALUES (630001, 2715661, 'fonoaudiologia', NOW());\n\n-- Maria Julia com Dr. Carlos (Psicologia)\nINSERT INTO patient_therapist_assignments (patientId, therapistUserId, therapyType, createdAt) \nVALUES (630001, 2715662, 'psicologia', NOW());\n\n-- Murilo com Dra. Ana Paula (Fonoaudiologia)\nINSERT INTO patient_therapist_assignments (patientId, therapistUserId, therapyType, createdAt) \nVALUES (630002, 2715661, 'fonoaudiologia', NOW());\n\n-- Antonella com Dr. Carlos (Terapia Ocupacional)\nINSERT INTO patient_therapist_assignments (patientId, therapistUserId, therapyType, createdAt) \nVALUES (630003, 2715662, 'terapia_ocupacional', NOW());\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \n-- Maria Julia com Dra. Ana Paula (Fonoaudiologia)\nINSERT INTO patient_therapist_assignments (patientId, therapistUserId, therapyType, createdAt) \nVALUES (630001, 2715661, 'fonoaudiologia', NOW());\n\n-- Maria Julia com Dr. Carlos (Psicologia)\nINSERT INTO patient_therapist_assignments (patientId, therapistUserId, therapyType, createdAt) \nVALUES (630001, 2715662, 'psicologia', NOW());\n\n-- Murilo com Dra. Ana Paula (Fonoaudiologia)\nINSERT INTO patient_therapist_assignments (patientId, therapistUserId, therapyType, createdAt) \nVALUES (630002, 2715661, 'fonoaudiologia', NOW());\n\n-- Antonella com Dr. Carlos (Terapia Ocupacional)\nINSERT INTO patient_therapist_assignments (patientId, therapistUserId, therapyType, createdAt) \nVALUES (630003, 2715662, 'terapia_ocupacional', NOW());\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 78
+}

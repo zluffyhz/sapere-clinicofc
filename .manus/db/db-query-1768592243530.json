@@ -1,0 +1,661 @@
+{
+  "query": "SELECT id, name, dateOfBirth, diagnosis, familyUserId FROM patients ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, dateOfBirth, diagnosis, familyUserId FROM patients ORDER BY id;",
+  "rows": [
+    {
+      "id": "540001",
+      "name": "Maria Julia Gama Alves Torres",
+      "dateOfBirth": "2021-11-24 00:00:00",
+      "diagnosis": "A definir",
+      "familyUserId": "1"
+    },
+    {
+      "id": "540002",
+      "name": "Murilo Laranjeira Valente",
+      "dateOfBirth": "2019-01-01 00:00:00",
+      "diagnosis": "A definir",
+      "familyUserId": "1"
+    },
+    {
+      "id": "540003",
+      "name": "Antonella Salles Romanini",
+      "dateOfBirth": "2020-01-01 00:00:00",
+      "diagnosis": "A definir",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630001",
+      "name": "Final Patient Name",
+      "dateOfBirth": "2022-03-20 00:00:00",
+      "diagnosis": "Final Diagnosis",
+      "familyUserId": "2701105"
+    },
+    {
+      "id": "630002",
+      "name": "Paciente Teste",
+      "dateOfBirth": "NULL",
+      "diagnosis": "Teste de diagnóstico",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630003",
+      "name": "Paciente para Agendamento",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630005",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630006",
+      "name": "Test Patient Collab 1",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630007",
+      "name": "Test Patient Collab 2",
+      "dateOfBirth": "2016-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630008",
+      "name": "Paciente Teste",
+      "dateOfBirth": "NULL",
+      "diagnosis": "Teste de diagnóstico",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630009",
+      "name": "Paciente para Agendamento",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630010",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630011",
+      "name": "Final Patient Name",
+      "dateOfBirth": "2022-03-20 00:00:00",
+      "diagnosis": "Final Diagnosis",
+      "familyUserId": "2715664"
+    },
+    {
+      "id": "630012",
+      "name": "Test Patient Collab 1",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630013",
+      "name": "Test Patient Collab 2",
+      "dateOfBirth": "2016-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630015",
+      "name": "Paciente Teste",
+      "dateOfBirth": "NULL",
+      "diagnosis": "Teste de diagnóstico",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630016",
+      "name": "Paciente para Agendamento",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630017",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630018",
+      "name": "Final Patient Name",
+      "dateOfBirth": "2022-03-20 00:00:00",
+      "diagnosis": "Final Diagnosis",
+      "familyUserId": "2715790"
+    },
+    {
+      "id": "630020",
+      "name": "Test Patient Collab 1",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630021",
+      "name": "Test Patient Collab 2",
+      "dateOfBirth": "2016-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630022",
+      "name": "Paciente Teste",
+      "dateOfBirth": "NULL",
+      "diagnosis": "Teste de diagnóstico",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630023",
+      "name": "Paciente para Agendamento",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630024",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630025",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716022"
+    },
+    {
+      "id": "630026",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716027"
+    },
+    {
+      "id": "630027",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716030"
+    },
+    {
+      "id": "630028",
+      "name": "Final Patient Name",
+      "dateOfBirth": "2022-03-20 00:00:00",
+      "diagnosis": "Final Diagnosis",
+      "familyUserId": "2716034"
+    },
+    {
+      "id": "630030",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716036"
+    },
+    {
+      "id": "630031",
+      "name": "Test Patient Collab 1",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630032",
+      "name": "Test Patient Collab 2",
+      "dateOfBirth": "2016-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630033",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716042"
+    },
+    {
+      "id": "630034",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716048"
+    },
+    {
+      "id": "630035",
+      "name": "Paciente Teste",
+      "dateOfBirth": "NULL",
+      "diagnosis": "Teste de diagnóstico",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630036",
+      "name": "Paciente para Agendamento",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630037",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630038",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716119"
+    },
+    {
+      "id": "630039",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716123"
+    },
+    {
+      "id": "630040",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716127"
+    },
+    {
+      "id": "630041",
+      "name": "Final Patient Name",
+      "dateOfBirth": "2022-03-20 00:00:00",
+      "diagnosis": "Final Diagnosis",
+      "familyUserId": "2716133"
+    },
+    {
+      "id": "630042",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716132"
+    },
+    {
+      "id": "630044",
+      "name": "Test Patient Collab 1",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630045",
+      "name": "Test Patient Collab 2",
+      "dateOfBirth": "2016-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630046",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716138"
+    },
+    {
+      "id": "630047",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716143"
+    },
+    {
+      "id": "630048",
+      "name": "Paciente Teste",
+      "dateOfBirth": "NULL",
+      "diagnosis": "Teste de diagnóstico",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630049",
+      "name": "Paciente para Agendamento",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630050",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630051",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716971"
+    },
+    {
+      "id": "630052",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716977"
+    },
+    {
+      "id": "630053",
+      "name": "Final Patient Name",
+      "dateOfBirth": "2022-03-20 00:00:00",
+      "diagnosis": "Final Diagnosis",
+      "familyUserId": "2716982"
+    },
+    {
+      "id": "630054",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716981"
+    },
+    {
+      "id": "630056",
+      "name": "Test Patient Collab 1",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630057",
+      "name": "Test Patient Collab 2",
+      "dateOfBirth": "2016-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630058",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716987"
+    },
+    {
+      "id": "630059",
+      "name": "Other Patient",
+      "dateOfBirth": "2016-01-01 00:00:00",
+      "diagnosis": "Other diagnosis",
+      "familyUserId": "2716987"
+    },
+    {
+      "id": "630060",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2716996"
+    },
+    {
+      "id": "630061",
+      "name": "Paciente Teste",
+      "dateOfBirth": "NULL",
+      "diagnosis": "Teste de diagnóstico",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630062",
+      "name": "Paciente para Agendamento",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630063",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630064",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2717087"
+    },
+    {
+      "id": "630065",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2717093"
+    },
+    {
+      "id": "630066",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2717098"
+    },
+    {
+      "id": "630067",
+      "name": "Final Patient Name",
+      "dateOfBirth": "2022-03-20 00:00:00",
+      "diagnosis": "Final Diagnosis",
+      "familyUserId": "2717102"
+    },
+    {
+      "id": "630068",
+      "name": "Test Patient Collab 1",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630069",
+      "name": "Test Patient Collab 2",
+      "dateOfBirth": "2016-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630071",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2717107"
+    },
+    {
+      "id": "630072",
+      "name": "Other Patient",
+      "dateOfBirth": "2016-01-01 00:00:00",
+      "diagnosis": "Other diagnosis",
+      "familyUserId": "2717107"
+    },
+    {
+      "id": "630073",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2717112"
+    },
+    {
+      "id": "630074",
+      "name": "Paciente Teste",
+      "dateOfBirth": "NULL",
+      "diagnosis": "Teste de diagnóstico",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630075",
+      "name": "Paciente para Agendamento",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630076",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630077",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2717308"
+    },
+    {
+      "id": "630078",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2717316"
+    },
+    {
+      "id": "630079",
+      "name": "Final Patient Name",
+      "dateOfBirth": "2022-03-20 00:00:00",
+      "diagnosis": "Final Diagnosis",
+      "familyUserId": "2717324"
+    },
+    {
+      "id": "630080",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2717322"
+    },
+    {
+      "id": "630082",
+      "name": "Test Patient Collab 1",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630083",
+      "name": "Test Patient Collab 2",
+      "dateOfBirth": "2016-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630084",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2717331"
+    },
+    {
+      "id": "630085",
+      "name": "Other Patient",
+      "dateOfBirth": "2016-01-01 00:00:00",
+      "diagnosis": "Other diagnosis",
+      "familyUserId": "2717331"
+    },
+    {
+      "id": "630086",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2717338"
+    },
+    {
+      "id": "630087",
+      "name": "Paciente Teste",
+      "dateOfBirth": "NULL",
+      "diagnosis": "Teste de diagnóstico",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630088",
+      "name": "Paciente para Agendamento",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630089",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "familyUserId": "2"
+    },
+    {
+      "id": "630090",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2717736"
+    },
+    {
+      "id": "630091",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2717741"
+    },
+    {
+      "id": "630092",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2717746"
+    },
+    {
+      "id": "630093",
+      "name": "Final Patient Name",
+      "dateOfBirth": "2022-03-20 00:00:00",
+      "diagnosis": "Final Diagnosis",
+      "familyUserId": "2717750"
+    },
+    {
+      "id": "630095",
+      "name": "Test Patient Collab 1",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630096",
+      "name": "Test Patient Collab 2",
+      "dateOfBirth": "2016-01-01 00:00:00",
+      "diagnosis": "Test",
+      "familyUserId": "1"
+    },
+    {
+      "id": "630097",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2717754"
+    },
+    {
+      "id": "630098",
+      "name": "Other Patient",
+      "dateOfBirth": "2016-01-01 00:00:00",
+      "diagnosis": "Other diagnosis",
+      "familyUserId": "2717754"
+    },
+    {
+      "id": "630099",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "familyUserId": "2717760"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdateOfBirth\tdiagnosis\tfamilyUserId\n540001\tMaria Julia Gama Alves Torres\t2021-11-24 00:00:00\tA definir\t1\n540002\tMurilo Laranjeira Valente\t2019-01-01 00:00:00\tA definir\t1\n540003\tAntonella Salles Romanini\t2020-01-01 00:00:00\tA definir\t1\n630001\tFinal Patient Name\t2022-03-20 00:00:00\tFinal Diagnosis\t2701105\n630002\tPaciente Teste\tNULL\tTeste de diagnóstico\t2\n630003\tPaciente para Agendamento\tNULL\tNULL\t2\n630005\tPaciente para Anamnese\tNULL\tNULL\t2\n630006\tTest Patient Collab 1\t2015-01-01 00:00:00\tTest\t1\n630007\tTest Patient Collab 2\t2016-01-01 00:00:00\tTest\t1\n630008\tPaciente Teste\tNULL\tTeste de diagnóstico\t2\n630009\tPaciente para Agendamento\tNULL\tNULL\t2\n630010\tPaciente para Anamnese\tNULL\tNULL\t2\n630011\tFinal Patient Name\t2022-03-20 00:00:00\tFinal Diagnosis\t2715664\n630012\tTest Patient Collab 1\t2015-01-01 00:00:00\tTest\t1\n630013\tTest Patient Collab 2\t2016-01-01 00:00:00\tTest\t1\n630015\tPaciente Teste\tNULL\tTeste de diagnóstico\t2\n630016\tPaciente para Agendamento\tNULL\tNULL\t2\n630017\tPaciente para Anamnese\tNULL\tNULL\t2\n630018\tFinal Patient Name\t2022-03-20 00:00:00\tFinal Diagnosis\t2715790\n630020\tTest Patient Collab 1\t2015-01-01 00:00:00\tTest\t1\n630021\tTest Patient Collab 2\t2016-01-01 00:00:00\tTest\t1\n630022\tPaciente Teste\tNULL\tTeste de diagnóstico\t2\n630023\tPaciente para Agendamento\tNULL\tNULL\t2\n630024\tPaciente para Anamnese\tNULL\tNULL\t2\n630025\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716022\n630026\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716027\n630027\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716030\n630028\tFinal Patient Name\t2022-03-20 00:00:00\tFinal Diagnosis\t2716034\n630030\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716036\n630031\tTest Patient Collab 1\t2015-01-01 00:00:00\tTest\t1\n630032\tTest Patient Collab 2\t2016-01-01 00:00:00\tTest\t1\n630033\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716042\n630034\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716048\n630035\tPaciente Teste\tNULL\tTeste de diagnóstico\t2\n630036\tPaciente para Agendamento\tNULL\tNULL\t2\n630037\tPaciente para Anamnese\tNULL\tNULL\t2\n630038\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716119\n630039\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716123\n630040\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716127\n630041\tFinal Patient Name\t2022-03-20 00:00:00\tFinal Diagnosis\t2716133\n630042\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716132\n630044\tTest Patient Collab 1\t2015-01-01 00:00:00\tTest\t1\n630045\tTest Patient Collab 2\t2016-01-01 00:00:00\tTest\t1\n630046\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716138\n630047\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716143\n630048\tPaciente Teste\tNULL\tTeste de diagnóstico\t2\n630049\tPaciente para Agendamento\tNULL\tNULL\t2\n630050\tPaciente para Anamnese\tNULL\tNULL\t2\n630051\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716971\n630052\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716977\n630053\tFinal Patient Name\t2022-03-20 00:00:00\tFinal Diagnosis\t2716982\n630054\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716981\n630056\tTest Patient Collab 1\t2015-01-01 00:00:00\tTest\t1\n630057\tTest Patient Collab 2\t2016-01-01 00:00:00\tTest\t1\n630058\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716987\n630059\tOther Patient\t2016-01-01 00:00:00\tOther diagnosis\t2716987\n630060\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2716996\n630061\tPaciente Teste\tNULL\tTeste de diagnóstico\t2\n630062\tPaciente para Agendamento\tNULL\tNULL\t2\n630063\tPaciente para Anamnese\tNULL\tNULL\t2\n630064\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2717087\n630065\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2717093\n630066\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2717098\n630067\tFinal Patient Name\t2022-03-20 00:00:00\tFinal Diagnosis\t2717102\n630068\tTest Patient Collab 1\t2015-01-01 00:00:00\tTest\t1\n630069\tTest Patient Collab 2\t2016-01-01 00:00:00\tTest\t1\n630071\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2717107\n630072\tOther Patient\t2016-01-01 00:00:00\tOther diagnosis\t2717107\n630073\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2717112\n630074\tPaciente Teste\tNULL\tTeste de diagnóstico\t2\n630075\tPaciente para Agendamento\tNULL\tNULL\t2\n630076\tPaciente para Anamnese\tNULL\tNULL\t2\n630077\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2717308\n630078\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2717316\n630079\tFinal Patient Name\t2022-03-20 00:00:00\tFinal Diagnosis\t2717324\n630080\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2717322\n630082\tTest Patient Collab 1\t2015-01-01 00:00:00\tTest\t1\n630083\tTest Patient Collab 2\t2016-01-01 00:00:00\tTest\t1\n630084\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2717331\n630085\tOther Patient\t2016-01-01 00:00:00\tOther diagnosis\t2717331\n630086\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2717338\n630087\tPaciente Teste\tNULL\tTeste de diagnóstico\t2\n630088\tPaciente para Agendamento\tNULL\tNULL\t2\n630089\tPaciente para Anamnese\tNULL\tNULL\t2\n630090\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2717736\n630091\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2717741\n630092\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2717746\n630093\tFinal Patient Name\t2022-03-20 00:00:00\tFinal Diagnosis\t2717750\n630095\tTest Patient Collab 1\t2015-01-01 00:00:00\tTest\t1\n630096\tTest Patient Collab 2\t2016-01-01 00:00:00\tTest\t1\n630097\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2717754\n630098\tOther Patient\t2016-01-01 00:00:00\tOther diagnosis\t2717754\n630099\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2717760\n",
+  "stderr": "",
+  "execution_time_ms": 50
+}

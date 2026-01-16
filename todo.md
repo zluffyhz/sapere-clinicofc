@@ -556,3 +556,18 @@
 - [x] Criar testes para especialidades (5 novos testes em specialties.test.ts)
 - [x] Validar dashboard mostrando apenas pacientes vinculados no card inicial
 - [x] Total: 65 testes passando (2 testes antigos falhando, não relacionados)
+
+## Vinculação de Pacientes Existentes aos Terapeutas
+- [ ] Verificar pacientes no banco de dados (Maria Julia, Murilo, Antonella)
+- [ ] Verificar terapeutas disponíveis no sistema
+- [ ] Criar vinculações paciente-terapeuta-terapia para cada paciente
+- [ ] Validar que dashboard de terapeutas mostra pacientes vinculados
+- [ ] Testar acesso ao prontuário através do dashboard
+
+## Correção: Admin deve ver todos os pacientes no dashboard
+- [x] Ajustar TherapistDashboard para usar trpc.patients.list quando usuário é admin
+- [x] Manter trpc.patients.getMyPatients apenas para terapeutas
+- [x] Substituir todas as referências a myPatients por patients
+- [x] Implementar lógica condicional baseada em user.role
+- [ ] Testar que admin vê todos os 3 pacientes
+- [ ] Testar que terapeuta vê apenas pacientes vinculados

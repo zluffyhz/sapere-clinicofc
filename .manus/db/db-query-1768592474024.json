@@ -1,0 +1,18 @@
+{
+  "query": "SELECT id, name FROM users WHERE role = 'therapist' ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name FROM users WHERE role = 'therapist' ORDER BY id;",
+  "rows": [
+    {
+      "id": "468419",
+      "name": "Marcely Almeida Silva"
+    },
+    {
+      "id": "2711400",
+      "name": "Vitória Santos Lira"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\n468419\tMarcely Almeida Silva\n2711400\tVitória Santos Lira\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}
