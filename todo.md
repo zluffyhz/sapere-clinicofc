@@ -571,3 +571,10 @@
 - [x] Implementar lógica condicional baseada em user.role
 - [ ] Testar que admin vê todos os 3 pacientes
 - [ ] Testar que terapeuta vê apenas pacientes vinculados
+
+## Adicionar Especialidades Faltantes
+- [x] Adicionar "Musicoterapia" às opções de especialidades no AdminUsersPage
+- [x] Adicionar "Fisioterapia" às opções de especialidades no AdminUsersPage
+- [x] Verificar se constantes compartilhadas precisam ser atualizadas (já existem no schema)
+- [x] Verificar PatientTherapistAssignments (já possui todas as terapias)
+- [x] 0 erros TypeScript
