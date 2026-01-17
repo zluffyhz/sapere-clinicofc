@@ -243,15 +243,21 @@ export const appRouter = router({
 
   // ============ APPOINTMENT ROUTER ============
   appointments: router({
-    create: therapistProcedure
+    create: protectedProcedure
       .input(z.object({
         patientId: z.number(),
+        therapistUserId: z.number().optional(), // Admin can specify therapist, therapist defaults to self
         therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "outro"]),
         startTime: z.date(),
         endTime: z.date(),
         notes: z.string().optional(),
       }))
       .mutation(async ({ input, ctx }) => {
+        // Determine therapist: admin can specify, therapist uses self, family not allowed
+        if (ctx.user.role === 'family') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Famílias não podem criar agendamentos diretamente' });
+        }
+        const therapistUserId = input.therapistUserId || ctx.user.id;
         // Check for scheduling conflicts
         const conflicts = await db.checkScheduleConflicts(
           input.startTime,
@@ -276,7 +282,7 @@ export const appRouter = router({
 
         const result = await db.createAppointment({
           ...input,
-          therapistUserId: ctx.user.id,
+          therapistUserId,
           status: 'scheduled',
         });
         
@@ -303,14 +309,16 @@ export const appRouter = router({
           }
         }
         
-        // Create notification for therapist
-        await db.createNotification({
-          userId: ctx.user.id,
-          type: 'schedule_change',
-          title: 'Sessão agendada',
-          message: `Você tem uma sessão de ${input.therapyType} agendada com ${patient?.name || 'paciente'} em ${input.startTime.toLocaleDateString('pt-BR')} às ${input.startTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`,
-          relatedId: result[0].insertId,
-        });
+        // Create notification for therapist only if someone else created the appointment
+        if (therapistUserId !== ctx.user.id) {
+          await db.createNotification({
+            userId: therapistUserId,
+            type: 'schedule_change',
+            title: 'Nova sessão agendada',
+            message: `Uma nova sessão de ${input.therapyType} foi agendada com ${patient?.name || 'paciente'} em ${input.startTime.toLocaleDateString('pt-BR')} às ${input.startTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`,
+            relatedId: result[0].insertId,
+          });
+        }
         
         return { success: true, id: result[0].insertId };
       }),

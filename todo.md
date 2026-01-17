@@ -586,3 +586,14 @@
 - [x] Atualizar getById para verificar vinculações ativas
 - [x] 0 erros TypeScript
 - [ ] Testar que prontuários aparecem corretamente para admin e terapeuta
+
+## Implementar Notificações de Agendamento para Terapeutas
+- [x] Investigar sistema atual de notificações
+- [x] Identificar problema: terapeuta recebia notificação de agendamento que ele mesmo criou
+- [x] Mudar appointments.create de therapistProcedure para protectedProcedure
+- [x] Adicionar campo therapistUserId opcional no input
+- [x] Implementar lógica: notificar terapeuta apenas se outra pessoa criou o agendamento
+- [x] Permitir que admin crie agendamentos para qualquer terapeuta
+- [x] Atualizar frontend para enviar therapistUserId
+- [x] 0 erros TypeScript
+- [ ] Testar criação de agendamento por admin e verificar notificação ao terapeuta

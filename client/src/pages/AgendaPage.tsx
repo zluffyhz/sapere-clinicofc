@@ -168,6 +168,7 @@ export default function AgendaPage() {
 
     createAppointmentMutation.mutate({
       patientId: formData.patientId,
+      therapistUserId: formData.therapistId || undefined,
       therapyType: formData.therapyType,
       startTime: startDateTime,
       endTime: endDateTime,
