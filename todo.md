@@ -616,3 +616,12 @@
 - [x] Eliminar duplicidade: apenas 1 evolução após finalizar
 - [x] 0 erros TypeScript
 - [ ] Testar fluxo completo: iniciar timer → finalizar → preencher evolução única
+
+## Bug CRÍTICO: Erro de validação do patientMood ao salvar evolução
+- [x] Identificar valor incorreto sendo enviado pelo frontend
+- [x] Problema: Select usava valores em inglês (happy, calm, anxious, irritated, sad)
+- [x] Backend espera valores em português (muito_bem, bem, neutro, ansioso, irritado, triste)
+- [x] Corrigir Select para usar valores corretos do enum
+- [x] Adicionar opção "neutro" que estava faltando
+- [x] 0 erros TypeScript
+- [ ] Testar salvamento de evolução com todos os valores possíveis

@@ -406,11 +406,12 @@ export default function ProntuarioPage() {
                       <SelectValue placeholder="Selecione o humor" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="happy">Feliz</SelectItem>
-                      <SelectItem value="calm">Calmo</SelectItem>
-                      <SelectItem value="anxious">Ansioso</SelectItem>
-                      <SelectItem value="irritated">Irritado</SelectItem>
-                      <SelectItem value="sad">Triste</SelectItem>
+                      <SelectItem value="muito_bem">Muito Bem</SelectItem>
+                      <SelectItem value="bem">Bem</SelectItem>
+                      <SelectItem value="neutro">Neutro</SelectItem>
+                      <SelectItem value="ansioso">Ansioso</SelectItem>
+                      <SelectItem value="irritado">Irritado</SelectItem>
+                      <SelectItem value="triste">Triste</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
