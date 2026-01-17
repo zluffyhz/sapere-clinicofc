@@ -174,8 +174,13 @@ export const appRouter = router({
         if (ctx.user.role === 'family' && patient.familyUserId !== ctx.user.id) {
           throw new TRPCError({ code: 'FORBIDDEN', message: 'Sem permissão para acessar este paciente' });
         }
-        if (ctx.user.role === 'therapist' && patient.therapistUserId !== ctx.user.id) {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'Sem permissão para acessar este paciente' });
+        if (ctx.user.role === 'therapist') {
+          // Check if therapist has assignment with this patient
+          const assignments = await db.getPatientTherapistAssignments(input.id);
+          const hasAssignment = assignments.some((a: any) => a.therapistUserId === ctx.user.id);
+          if (!hasAssignment) {
+            throw new TRPCError({ code: 'FORBIDDEN', message: 'Sem permissão para acessar este paciente' });
+          }
         }
         
         return patient;

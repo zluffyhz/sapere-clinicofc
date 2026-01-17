@@ -578,3 +578,11 @@
 - [x] Verificar se constantes compartilhadas precisam ser atualizadas (já existem no schema)
 - [x] Verificar PatientTherapistAssignments (já possui todas as terapias)
 - [x] 0 erros TypeScript
+
+## Bug: Aba Prontuários não está funcionando
+- [x] Investigar erro "paciente não foi encontrado"
+- [x] Identificar problema: verificação de permissão usando campo obsoleto therapistUserId
+- [x] Corrigir verificação de permissão para usar patient_therapist_assignments
+- [x] Atualizar getById para verificar vinculações ativas
+- [x] 0 erros TypeScript
+- [ ] Testar que prontuários aparecem corretamente para admin e terapeuta
