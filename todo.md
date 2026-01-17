@@ -605,3 +605,14 @@
 - [x] Criar weekEnd a partir de weekStart normalizado
 - [x] 0 erros TypeScript
 - [ ] Testar que contagem atualiza corretamente
+
+## Bug: Erro de validação do patientMood e duplicidade de evolução
+- [x] Investigar erro de validação do patientMood ao salvar evolução
+- [x] Identificar problema: SessionTimer criava evolução automática com dados parciais
+- [x] Remover formulário de evolução da tela do timer
+- [x] SessionTimer agora apenas controla tempo e retorna duração + horário
+- [x] SessionPage armazena dados da sessão em sessionStorage
+- [x] ProntuarioPage detecta sessão finalizada e pré-preenche evolução
+- [x] Eliminar duplicidade: apenas 1 evolução após finalizar
+- [x] 0 erros TypeScript
+- [ ] Testar fluxo completo: iniciar timer → finalizar → preencher evolução única

@@ -24,10 +24,16 @@ export default function SessionPage() {
     }
   }, [params]);
 
-  const handleSessionEnd = () => {
-    // Redirect to prontuario after session ends
+  const handleSessionEnd = (durationMinutes: number, startTime: Date) => {
+    // Redirect to prontuario with session data after session ends
     if (selectedPatientId) {
-      setLocation(`/prontuarios/${selectedPatientId}`);
+      // Store session data in sessionStorage for the evolution form
+      sessionStorage.setItem('sessionData', JSON.stringify({
+        durationMinutes,
+        startTime: startTime.toISOString(),
+        patientId: selectedPatientId,
+      }));
+      setLocation(`/prontuarios/${selectedPatientId}?tab=evolucoes&newEvolution=true`);
     }
   };
 

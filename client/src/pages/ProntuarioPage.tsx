@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useRoute } from "wouter";
+import { useState, useEffect } from "react";
+import { useRoute, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,6 +31,9 @@ import {
 export default function ProntuarioPage() {
   const [, params] = useRoute("/prontuarios/:id");
   const patientId = params?.id ? parseInt(params.id) : null;
+  const [location] = useLocation();
+  const searchParams = new URLSearchParams(location.split('?')[1] || '');
+  const newEvolution = searchParams.get('newEvolution') === 'true';
 
   const [patientData, setPatientData] = useState({
     mainComplaints: "",
@@ -50,6 +53,31 @@ export default function ProntuarioPage() {
     nextSessionPlan: "",
     collaborationLevel: "" as any,
   });
+
+  // Check for session data from timer
+  useEffect(() => {
+    if (newEvolution) {
+      const sessionDataStr = sessionStorage.getItem('sessionData');
+      if (sessionDataStr) {
+        try {
+          const sessionData = JSON.parse(sessionDataStr);
+          if (sessionData.patientId === patientId) {
+            // Pre-fill evolution with session data
+            setEvolutionData(prev => ({
+              ...prev,
+              sessionDate: new Date(sessionData.startTime).toISOString().split("T")[0],
+              goalsAchieved: `Duração da sessão: ${sessionData.durationMinutes} minutos`,
+            }));
+            toast.success(`Sessão finalizada! Duração: ${sessionData.durationMinutes} minutos. Preencha a evolução completa abaixo.`);
+            // Clear session data
+            sessionStorage.removeItem('sessionData');
+          }
+        } catch (error) {
+          console.error('Error parsing session data:', error);
+        }
+      }
+    }
+  }, [newEvolution, patientId]);
 
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [uploadData, setUploadData] = useState({
