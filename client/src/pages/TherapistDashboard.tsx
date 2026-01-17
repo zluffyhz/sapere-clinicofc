@@ -80,9 +80,10 @@ export default function TherapistDashboard() {
     endDate: tomorrow,
   });
 
-  // Get this week's appointments
+  // Get this week's appointments (next 7 days from today)
   const weekStart = new Date();
-  const weekEnd = new Date();
+  weekStart.setHours(0, 0, 0, 0);
+  const weekEnd = new Date(weekStart);
   weekEnd.setDate(weekEnd.getDate() + 7);
 
   const { data: weekAppointments } = trpc.appointments.listByDateRange.useQuery({

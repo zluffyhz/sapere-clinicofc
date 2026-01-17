@@ -597,3 +597,11 @@
 - [x] Atualizar frontend para enviar therapistUserId
 - [x] 0 erros TypeScript
 - [ ] Testar criação de agendamento por admin e verificar notificação ao terapeuta
+
+## Bug: Card "Esta Semana" não está atualizando
+- [x] Investigar lógica de cálculo de sessões da semana no TherapistDashboard
+- [x] Identificar problema: weekStart não estava normalizado para início do dia
+- [x] Corrigir weekStart para usar setHours(0, 0, 0, 0)
+- [x] Criar weekEnd a partir de weekStart normalizado
+- [x] 0 erros TypeScript
+- [ ] Testar que contagem atualiza corretamente
