@@ -14,8 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FileText, Save, Plus, Calendar, Upload } from "lucide-react";
+import { FileText, Save, Plus, Calendar, Upload, Edit, Trash2 } from "lucide-react";
 import { PatientTherapistAssignments } from "@/components/PatientTherapistAssignments";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
@@ -34,6 +35,18 @@ export default function ProntuarioPage() {
   const [location] = useLocation();
   const searchParams = new URLSearchParams(location.split('?')[1] || '');
   const newEvolution = searchParams.get('newEvolution') === 'true';
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
+  
+  const [editingEvolutionId, setEditingEvolutionId] = useState<number | null>(null);
+  const [editEvolutionData, setEditEvolutionData] = useState({
+    sessionSummary: "",
+    patientMood: "" as any,
+    patientBehavior: "",
+    goalsAchieved: "",
+    nextSessionPlan: "",
+    collaborationLevel: "" as any,
+  });
 
   const [patientData, setPatientData] = useState({
     mainComplaints: "",
@@ -151,6 +164,35 @@ export default function ProntuarioPage() {
     },
     onError: (error) => {
       toast.error("Erro ao salvar registro: " + error.message);
+    },
+  });
+
+  const updateEvolutionMutation = trpc.evolutions.update.useMutation({
+    onSuccess: () => {
+      utils.evolutions.listByPatient.invalidate({ patientId: patientId! });
+      toast.success("Evolução atualizada com sucesso!");
+      setEditingEvolutionId(null);
+      setEditEvolutionData({
+        sessionSummary: "",
+        patientMood: "",
+        patientBehavior: "",
+        goalsAchieved: "",
+        nextSessionPlan: "",
+        collaborationLevel: "",
+      });
+    },
+    onError: (error) => {
+      toast.error("Erro ao atualizar evolução: " + error.message);
+    },
+  });
+
+  const deleteEvolutionMutation = trpc.evolutions.delete.useMutation({
+    onSuccess: () => {
+      utils.evolutions.listByPatient.invalidate({ patientId: patientId! });
+      toast.success("Evolução excluída com sucesso!");
+    },
+    onError: (error) => {
+      toast.error("Erro ao excluir evolução: " + error.message);
     },
   });
 
@@ -513,17 +555,166 @@ export default function ProntuarioPage() {
                 evolutions.map((record) => (
                   <Card key={record.id}>
                     <CardHeader>
-                      <CardTitle className="text-base">
-                        {format(new Date(record.sessionDate), "dd/MM/yyyy", { locale: ptBR })}
-                      </CardTitle>
-                      <CardDescription>
-                        Humor: {record.patientMood || "Não informado"}
-                      </CardDescription>
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <CardTitle className="text-base">
+                            {format(new Date(record.sessionDate), "dd/MM/yyyy", { locale: ptBR })}
+                          </CardTitle>
+                          <CardDescription>
+                            Humor: {record.patientMood || "Não informado"}
+                          </CardDescription>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setEditingEvolutionId(record.id);
+                              setEditEvolutionData({
+                                sessionSummary: record.sessionSummary,
+                                patientMood: record.patientMood || "",
+                                patientBehavior: record.patientBehavior || "",
+                                goalsAchieved: record.goalsAchieved || "",
+                                nextSessionPlan: record.nextSessionPlan || "",
+                                collaborationLevel: record.collaborationLevel,
+                              });
+                            }}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          {isAdmin && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                if (confirm("Tem certeza que deseja excluir esta evolução?")) {
+                                  deleteEvolutionMutation.mutate({ id: record.id });
+                                }
+                              }}
+                            >
+                              <Trash2 className="w-4 h-4 text-red-600" />
+                            </Button>
+                          )}
+                        </div>
+                      </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm text-gray-700 whitespace-pre-wrap">
-                        {record.sessionSummary}
-                      </p>
+                      {editingEvolutionId === record.id ? (
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label>Humor do Paciente</Label>
+                            <Select
+                              value={editEvolutionData.patientMood}
+                              onValueChange={(value) =>
+                                setEditEvolutionData({ ...editEvolutionData, patientMood: value })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione o humor" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="muito_bem">Muito Bem</SelectItem>
+                                <SelectItem value="bem">Bem</SelectItem>
+                                <SelectItem value="neutro">Neutro</SelectItem>
+                                <SelectItem value="ansioso">Ansioso</SelectItem>
+                                <SelectItem value="irritado">Irritado</SelectItem>
+                                <SelectItem value="triste">Triste</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Resumo da Sessão</Label>
+                            <Textarea
+                              value={editEvolutionData.sessionSummary}
+                              onChange={(e) =>
+                                setEditEvolutionData({ ...editEvolutionData, sessionSummary: e.target.value })
+                              }
+                              rows={3}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Comportamento do Paciente</Label>
+                            <Textarea
+                              value={editEvolutionData.patientBehavior}
+                              onChange={(e) =>
+                                setEditEvolutionData({ ...editEvolutionData, patientBehavior: e.target.value })
+                              }
+                              rows={2}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Metas Alcançadas</Label>
+                            <Textarea
+                              value={editEvolutionData.goalsAchieved}
+                              onChange={(e) =>
+                                setEditEvolutionData({ ...editEvolutionData, goalsAchieved: e.target.value })
+                              }
+                              rows={2}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Plano para Próxima Sessão</Label>
+                            <Textarea
+                              value={editEvolutionData.nextSessionPlan}
+                              onChange={(e) =>
+                                setEditEvolutionData({ ...editEvolutionData, nextSessionPlan: e.target.value })
+                              }
+                              rows={2}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Nível de Colaboração</Label>
+                            <Select
+                              value={editEvolutionData.collaborationLevel}
+                              onValueChange={(value) =>
+                                setEditEvolutionData({ ...editEvolutionData, collaborationLevel: value })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione o nível" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="full">Total</SelectItem>
+                                <SelectItem value="partial">Parcial</SelectItem>
+                                <SelectItem value="none">Nenhuma</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={() => {
+                                updateEvolutionMutation.mutate({
+                                  id: record.id,
+                                  ...editEvolutionData,
+                                });
+                              }}
+                            >
+                              <Save className="w-4 h-4 mr-2" />
+                              Salvar Alterações
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                setEditingEvolutionId(null);
+                                setEditEvolutionData({
+                                  sessionSummary: "",
+                                  patientMood: "",
+                                  patientBehavior: "",
+                                  goalsAchieved: "",
+                                  nextSessionPlan: "",
+                                  collaborationLevel: "",
+                                });
+                              }}
+                            >
+                              Cancelar
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-700 whitespace-pre-wrap">
+                          {record.sessionSummary}
+                        </p>
+                      )}
                     </CardContent>
                   </Card>
                 ))

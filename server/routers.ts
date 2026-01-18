@@ -645,6 +645,14 @@ export const appRouter = router({
         // Only therapists and admins can view collaboration history
         return await db.getCollaborationHistory(input.familyUserId, input.days, input.patientId);
       }),
+
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        // Only admins can delete evolutions
+        await db.deleteSessionRecord(input.id);
+        return { success: true };
+      }),
   }),
 
   // ============ NOTIFICATIONS ROUTER ============

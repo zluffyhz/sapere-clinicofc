@@ -625,3 +625,17 @@
 - [x] Adicionar opção "neutro" que estava faltando
 - [x] 0 erros TypeScript
 - [ ] Testar salvamento de evolução com todos os valores possíveis
+
+## Implementar Edição e Exclusão de Evoluções com Permissões
+- [x] Verificar se evoluções estão sendo salvas corretamente no banco de dados (5 evoluções confirmadas)
+- [x] Implementar funcionalidade de edição de evoluções para terapeutas
+- [x] Rota backend update já existia (therapistProcedure)
+- [x] Adicionar botão de editar na lista de evoluções
+- [x] Implementar formulário de edição inline com todos os campos
+- [x] Restringir exclusão de evoluções apenas para admins
+- [x] Criar rota delete com adminProcedure no backend
+- [x] Botão de excluir visível apenas para admins (isAdmin check)
+- [x] Adicionar confirmação antes de excluir
+- [x] Implementar mutations update e delete no frontend
+- [x] 0 erros TypeScript
+- [ ] Testar todas as permissões (criar, editar, excluir)
