@@ -258,7 +258,7 @@ export default function PacientesPage() {
       {/* Search and Filters */}
       <Card>
         <CardContent className="pt-6 space-y-4">
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col gap-4">
             {/* Search */}
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -271,7 +271,7 @@ export default function PacientesPage() {
             </div>
 
             {/* Therapy Type Filter */}
-            <div className="w-full md:w-64">
+            <div className="w-full">
               <Select value={therapyTypeFilter} onValueChange={setTherapyTypeFilter}>
                 <SelectTrigger>
                   <div className="flex items-center gap-2">

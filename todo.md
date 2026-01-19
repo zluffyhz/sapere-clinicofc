@@ -639,3 +639,22 @@
 - [x] Implementar mutations update e delete no frontend
 - [x] 0 erros TypeScript
 - [ ] Testar todas as permissões (criar, editar, excluir)
+
+## Otimização Mobile
+- [x] Analisar componentes principais (Dashboard, Agenda, Prontuários, Pacientes)
+- [x] Identificar problemas de responsividade e touch targets
+- [x] Otimizar cards e grids para mobile
+  * TherapistDashboard: grid de 4 colunas alterado para 2 colunas em mobile
+  * Grid principal alterado para empilhar em mobile (lg:grid-cols-2)
+- [x] Ajustar formulários para telas pequenas
+  * PacientesPage: filtros empilhados em mobile
+  * AdminUsersPage: especialidades em 1 coluna em mobile
+- [x] Melhorar touch targets (botões mínimo 44x44px)
+  * CSS: min-height e min-width 44px para botões e links
+  * Transform scale(0.98) no active para feedback tátil
+- [x] Otimizar inputs para mobile
+  * font-size 16px para prevenir zoom no iOS
+  * -webkit-tap-highlight-color: transparent
+- [x] 0 erros TypeScript
+- [ ] Testar em diferentes resoluções mobile
+- [ ] Garantir que todas as funcionalidades funcionam em mobile

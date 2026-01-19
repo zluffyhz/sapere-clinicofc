@@ -182,3 +182,42 @@
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
 }
+
+/* Mobile Optimizations */
+@layer components {
+  /* Ensure touch targets are at least 44x44px */
+  button,
+  [role="button"],
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better touch feedback */
+  button:active,
+  [role="button"]:active {
+    transform: scale(0.98);
+  }
+  
+  /* Prevent text selection on buttons for better mobile UX */
+  button,
+  [role="button"] {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Optimize inputs for mobile */
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  /* Better spacing for mobile cards */
+  @media (max-width: 768px) {
+    .card {
+      padding: 1rem;
+    }
+  }
+}

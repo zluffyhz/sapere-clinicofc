@@ -211,7 +211,7 @@ export default function AdminUsersPage() {
               {newUser.role === 'therapist' && (
                 <div className="space-y-2">
                   <Label>Especialidades *</Label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {['Fonoaudiologia', 'Psicologia', 'Terapia Ocupacional', 'Psicopedagogia', 'Musicoterapia', 'Fisioterapia'].map((specialty) => (
                       <label key={specialty} className="flex items-center space-x-2 cursor-pointer">
                         <input
