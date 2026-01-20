@@ -1,0 +1,1 @@
+ALTER TABLE `patients` ADD `imageAuthorization` boolean DEFAULT false NOT NULL;

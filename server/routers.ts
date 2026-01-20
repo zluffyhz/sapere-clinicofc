@@ -142,6 +142,7 @@ export const appRouter = router({
         familyUserId: z.number(),
         diagnosis: z.string().optional(),
         notes: z.string().optional(),
+        imageAuthorization: z.boolean().default(false),
       }))
       .mutation(async ({ input, ctx }) => {
         const result = await db.createPatient({
@@ -194,6 +195,7 @@ export const appRouter = router({
         familyUserId: z.number().optional(),
         diagnosis: z.string().optional(),
         notes: z.string().optional(),
+        imageAuthorization: z.boolean().optional(),
       }))
       .mutation(async ({ input }) => {
         const { id, ...data } = input;

@@ -658,3 +658,19 @@
 - [x] 0 erros TypeScript
 - [ ] Testar em diferentes resoluções mobile
 - [ ] Garantir que todas as funcionalidades funcionam em mobile
+
+
+## Adicionar Autorização de Imagem e Remover Objetivos Terapêuticos
+- [x] Adicionar campo imageAuthorization (boolean) na tabela patients do schema
+- [x] Campo therapeuticGoals não existia no schema (não era necessário remover)
+- [x] Executar ALTER TABLE direto no banco para adicionar coluna
+- [x] Atualizar routers.ts patients.create para incluir imageAuthorization
+- [x] Atualizar routers.ts patients.update para incluir imageAuthorization
+- [x] Atualizar PacientesPage para adicionar campo de autorização de imagem (radio buttons sim/não)
+- [x] Atualizar EditPatientDialog com campo de autorização de imagem
+- [x] Adicionar imageAuthorization ao estado e reset do newPatient
+- [x] Adicionar imageAuthorization ao useEffect e handleSubmit do EditPatientDialog
+- [x] Servidor reiniciado e funcionando corretamente
+- [x] 0 erros TypeScript
+- [ ] Testar criação e edição de pacientes
+- [ ] Verificar que dados antigos não quebram o sistema

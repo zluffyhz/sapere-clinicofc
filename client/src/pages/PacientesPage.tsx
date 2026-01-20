@@ -42,12 +42,14 @@ export default function PacientesPage() {
     familyUserId: number | undefined;
     diagnosis: string;
     notes: string;
+    imageAuthorization: boolean;
   }>({
     name: "",
     dateOfBirth: "",
     familyUserId: undefined,
     diagnosis: "",
     notes: "",
+    imageAuthorization: false,
   });
 
   const utils = trpc.useUtils();
@@ -75,6 +77,7 @@ export default function PacientesPage() {
         familyUserId: undefined,
         diagnosis: "",
         notes: "",
+        imageAuthorization: false,
       });
       toast.success("Paciente cadastrado com sucesso");
     },
@@ -235,6 +238,32 @@ export default function PacientesPage() {
                     placeholder="Observações gerais"
                     rows={3}
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Autorização de Imagem *</Label>
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="imageAuthorization"
+                        checked={newPatient.imageAuthorization === true}
+                        onChange={() => setNewPatient({ ...newPatient, imageAuthorization: true })}
+                        className="w-4 h-4"
+                      />
+                      <span>Sim</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="imageAuthorization"
+                        checked={newPatient.imageAuthorization === false}
+                        onChange={() => setNewPatient({ ...newPatient, imageAuthorization: false })}
+                        className="w-4 h-4"
+                      />
+                      <span>Não</span>
+                    </label>
+                  </div>
                 </div>
 
                 <div className="flex justify-end gap-2">

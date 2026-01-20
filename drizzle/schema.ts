@@ -32,6 +32,7 @@ export const patients = mysqlTable("patients", {
   therapistUserId: int("therapistUserId"), // Primary therapist assigned
   diagnosis: text("diagnosis"),
   notes: text("notes"),
+  imageAuthorization: boolean("imageAuthorization").default(false).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

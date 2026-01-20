@@ -30,6 +30,7 @@ export function EditPatientDialog({ patient, open, onOpenChange, onSuccess }: Ed
   const [familyUserId, setFamilyUserId] = useState<number | undefined>();
   const [diagnosis, setDiagnosis] = useState("");
   const [notes, setNotes] = useState("");
+  const [imageAuthorization, setImageAuthorization] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const utils = trpc.useUtils();
@@ -69,6 +70,7 @@ export function EditPatientDialog({ patient, open, onOpenChange, onSuccess }: Ed
       setFamilyUserId(patient.familyUserId);
       setDiagnosis(patient.diagnosis || "");
       setNotes(patient.notes || "");
+      setImageAuthorization((patient as any).imageAuthorization || false);
     }
   }, [patient]);
 
@@ -83,6 +85,7 @@ export function EditPatientDialog({ patient, open, onOpenChange, onSuccess }: Ed
       familyUserId,
       diagnosis: diagnosis || undefined,
       notes: notes || undefined,
+      imageAuthorization,
     };
 
     console.log("[EditPatientDialog] Submitting update:", updateData);
@@ -167,6 +170,32 @@ export function EditPatientDialog({ patient, open, onOpenChange, onSuccess }: Ed
                 placeholder="Informações adicionais sobre o paciente"
                 rows={3}
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Autorização de Imagem *</Label>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="imageAuthorization"
+                    checked={imageAuthorization === true}
+                    onChange={() => setImageAuthorization(true)}
+                    className="w-4 h-4"
+                  />
+                  <span>Sim</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="imageAuthorization"
+                    checked={imageAuthorization === false}
+                    onChange={() => setImageAuthorization(false)}
+                    className="w-4 h-4"
+                  />
+                  <span>Não</span>
+                </label>
+              </div>
             </div>
 
             <DialogFooter className="flex justify-between sm:justify-between">
