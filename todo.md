@@ -697,3 +697,12 @@
 - [x] Criar templates de mensagem para terapeutas e famílias
 - [ ] Testar login com senha temporária
 - [ ] Distribuir credenciais para os usuários
+
+
+## Aplicar Senha Temporária aos Novos Usuários
+- [x] Buscar todos os usuários no banco de dados (18 usuários encontrados)
+- [x] Identificar novos usuários adicionados (3 novos: Flávia Nunes, Gabriela Martins, Helena Costa)
+- [x] Atualizar senha de todos os 18 usuários para "Sapere2026!" (garantir consistência)
+- [x] Atualizar documento CREDENCIAIS_TEMPORARIAS.md com lista completa
+- [x] Adicionar checklist de distribuição atualizado
+- [x] Identificar duplicatas de usuários no documento
