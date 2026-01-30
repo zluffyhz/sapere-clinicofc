@@ -686,3 +686,14 @@
 - [x] 0 erros TypeScript
 - [ ] Testar cadastro de terapeuta com novas especialidades
 - [ ] Testar vinculação de paciente com novas terapias
+
+
+## Reset de Senhas para Senha Temporária
+- [x] Criar script para gerar hash bcrypt da senha "Sapere2026!"
+- [x] Buscar todos os usuários no banco de dados (15 usuários encontrados)
+- [x] Atualizar passwordHash de todos os usuários (UPDATE bem-sucedido)
+- [x] Gerar documento com lista de usuários e senha temporária (CREDENCIAIS_TEMPORARIAS.md)
+- [x] Incluir instruções de distribuição e segurança no documento
+- [x] Criar templates de mensagem para terapeutas e famílias
+- [ ] Testar login com senha temporária
+- [ ] Distribuir credenciais para os usuários

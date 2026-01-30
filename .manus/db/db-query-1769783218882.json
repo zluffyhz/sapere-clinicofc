@@ -1,0 +1,100 @@
+{
+  "query": "SELECT id, name, email, role FROM users WHERE loginMethod = 'password' ORDER BY role, name;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, email, role FROM users WHERE loginMethod = 'password' ORDER BY role, name;",
+  "rows": [
+    {
+      "id": "4290025",
+      "name": "GEDALVA",
+      "email": "gedalva14@hotmail.com",
+      "role": "family"
+    },
+    {
+      "id": "4290017",
+      "name": "JULIANA LIRA",
+      "email": "Juliralves@homail.com",
+      "role": "family"
+    },
+    {
+      "id": "4290037",
+      "name": "MACIEL",
+      "email": "maciel.dali@hotmail.com",
+      "role": "family"
+    },
+    {
+      "id": "4290056",
+      "name": "MOACYR",
+      "email": "Moacyrmassulo@hotmail.com",
+      "role": "family"
+    },
+    {
+      "id": "4290047",
+      "name": "TAISA",
+      "email": "Taisaayres@yahoo.com.br",
+      "role": "family"
+    },
+    {
+      "id": "4290063",
+      "name": "TATA",
+      "email": "ta_moliveira@icloud.com",
+      "role": "family"
+    },
+    {
+      "id": "4380053",
+      "name": "ANA PAULA GIRARD",
+      "email": "anapaulagirard22@outlook.com",
+      "role": "therapist"
+    },
+    {
+      "id": "4413761",
+      "name": "ANDREA AFONSO",
+      "email": "fonoandreagadelha@gmail.com",
+      "role": "therapist"
+    },
+    {
+      "id": "468419",
+      "name": "Marcely Almeida Silva",
+      "email": "celyneuro@gmail.com",
+      "role": "therapist"
+    },
+    {
+      "id": "4380044",
+      "name": "MARIA VITORIA",
+      "email": "olvmavit@gmail.com",
+      "role": "therapist"
+    },
+    {
+      "id": "4412996",
+      "name": "MAX",
+      "email": "maximusrusse@gmail.com",
+      "role": "therapist"
+    },
+    {
+      "id": "3180017",
+      "name": "Rayana Santos ",
+      "email": "santosrayana85@gmail.com",
+      "role": "therapist"
+    },
+    {
+      "id": "4413299",
+      "name": "VITORIA SANTOS",
+      "email": "vitoriasantosbrasileirolira@gmail.com",
+      "role": "therapist"
+    },
+    {
+      "id": "2725474",
+      "name": "Vitória Santos Lira",
+      "email": "Vitoriasantosbrasileirolira@gmail.com",
+      "role": "therapist"
+    },
+    {
+      "id": "124682",
+      "name": "Cesar Henrique Santos ",
+      "email": "cml.cesar@outlook.com",
+      "role": "admin"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\n4290025\tGEDALVA\tgedalva14@hotmail.com\tfamily\n4290017\tJULIANA LIRA\tJuliralves@homail.com\tfamily\n4290037\tMACIEL\tmaciel.dali@hotmail.com\tfamily\n4290056\tMOACYR\tMoacyrmassulo@hotmail.com\tfamily\n4290047\tTAISA\tTaisaayres@yahoo.com.br\tfamily\n4290063\tTATA\tta_moliveira@icloud.com\tfamily\n4380053\tANA PAULA GIRARD\tanapaulagirard22@outlook.com\ttherapist\n4413761\tANDREA AFONSO\tfonoandreagadelha@gmail.com\ttherapist\n468419\tMarcely Almeida Silva\tcelyneuro@gmail.com\ttherapist\n4380044\tMARIA VITORIA\tolvmavit@gmail.com\ttherapist\n4412996\tMAX\tmaximusrusse@gmail.com\ttherapist\n3180017\tRayana Santos \tsantosrayana85@gmail.com\ttherapist\n4413299\tVITORIA SANTOS\tvitoriasantosbrasileirolira@gmail.com\ttherapist\n2725474\tVitória Santos Lira\tVitoriasantosbrasileirolira@gmail.com\ttherapist\n124682\tCesar Henrique Santos \tcml.cesar@outlook.com\tadmin\n",
+  "stderr": "",
+  "execution_time_ms": 361
+}
