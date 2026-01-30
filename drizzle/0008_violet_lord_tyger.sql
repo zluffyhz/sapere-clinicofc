@@ -1,0 +1,3 @@
+ALTER TABLE `appointments` MODIFY COLUMN `therapyType` enum('fonoaudiologia','psicologia','terapia_ocupacional','psicopedagogia','musicoterapia','fisioterapia','neuropsicopedagogia','nutricao','psicomotricidade','outro') NOT NULL;--> statement-breakpoint
+ALTER TABLE `attendance` MODIFY COLUMN `therapyType` enum('fonoaudiologia','psicologia','terapia_ocupacional','psicopedagogia','musicoterapia','fisioterapia','neuropsicopedagogia','nutricao','psicomotricidade','outro') NOT NULL;--> statement-breakpoint
+ALTER TABLE `patient_therapist_assignments` MODIFY COLUMN `therapyType` enum('fonoaudiologia','psicologia','terapia_ocupacional','psicopedagogia','musicoterapia','fisioterapia','neuropsicopedagogia','nutricao','psicomotricidade','outro') NOT NULL;

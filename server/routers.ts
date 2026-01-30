@@ -217,7 +217,7 @@ export const appRouter = router({
       .input(z.object({
         patientId: z.number(),
         therapistUserId: z.number(),
-        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "outro"]),
+        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "outro"]),
       }))
       .mutation(async ({ input }) => {
         await db.createPatientTherapistAssignment(input);
@@ -249,7 +249,7 @@ export const appRouter = router({
       .input(z.object({
         patientId: z.number(),
         therapistUserId: z.number().optional(), // Admin can specify therapist, therapist defaults to self
-        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "outro"]),
+        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "outro"]),
         startTime: z.date(),
         endTime: z.date(),
         notes: z.string().optional(),
@@ -354,7 +354,7 @@ export const appRouter = router({
     update: therapistProcedure
       .input(z.object({
         id: z.number(),
-        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "outro"]).optional(),
+        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "outro"]).optional(),
         startTime: z.date().optional(),
         endTime: z.date().optional(),
         status: z.enum(["scheduled", "completed", "cancelled", "rescheduled"]).optional(),
@@ -690,7 +690,7 @@ export const appRouter = router({
         patientId: z.number(),
         familyUserId: z.number(),
         therapistUserId: z.number(),
-        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "outro"]),
+        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "outro"]),
         scheduledDate: z.date(),
         status: z.enum(["present", "absent"]).default("present"),
         notes: z.string().optional(),

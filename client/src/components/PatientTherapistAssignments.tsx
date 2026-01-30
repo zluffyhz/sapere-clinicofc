@@ -20,6 +20,7 @@ const THERAPY_TYPES = [
   { value: "fisioterapia", label: "Fisioterapia" },
   { value: "neuropsicopedagogia", label: "Neuropsicopedagogia" },
   { value: "nutricao", label: "Nutrição" },
+  { value: "psicomotricidade", label: "Psicomotricidade" },
   { value: "outro", label: "Outro" },
 ];
 

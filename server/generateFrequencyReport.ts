@@ -170,6 +170,7 @@ function getTherapyTypeLabel(type: string): string {
     fisioterapia: "Fisioterapia",
     neuropsicopedagogia: "Neuropsicopedagogia",
     nutricao: "Nutrição",
+    psicomotricidade: "Psicomotricidade",
   };
   return labels[type] || type;
 }

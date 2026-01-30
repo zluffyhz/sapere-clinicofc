@@ -674,3 +674,15 @@
 - [x] 0 erros TypeScript
 - [ ] Testar criação e edição de pacientes
 - [ ] Verificar que dados antigos não quebram o sistema
+
+
+## Adicionar Especialidades: Nutrição e Psicomotricidade
+- [x] Identificar todos os lugares onde especialidades/terapias são usadas
+- [x] Adicionar "psicomotricidade" ao enum therapyType no schema ("nutricao" já existia)
+- [x] Atualizar routers.ts com "psicomotricidade" em todos os enums (4 lugares)
+- [x] Atualizar generateFrequencyReport.ts com label "Psicomotricidade"
+- [x] Atualizar AdminUsersPage para incluir Nutrição e Psicomotricidade
+- [x] Atualizar PatientTherapistAssignments para incluir Psicomotricidade (Nutrição já existia)
+- [x] 0 erros TypeScript
+- [ ] Testar cadastro de terapeuta com novas especialidades
+- [ ] Testar vinculação de paciente com novas terapias
