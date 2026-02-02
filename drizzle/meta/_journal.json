@@ -64,6 +64,13 @@
       "when": 1769781136588,
       "tag": "0008_violet_lord_tyger",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1770039053276,
+      "tag": "0009_slippery_talisman",
+      "breakpoints": true
     }
   ]
 }

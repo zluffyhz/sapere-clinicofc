@@ -171,6 +171,7 @@ function getTherapyTypeLabel(type: string): string {
     neuropsicopedagogia: "Neuropsicopedagogia",
     nutricao: "Nutrição",
     psicomotricidade: "Psicomotricidade",
+    aplicadora_denver_aba: "Aplicadora DENVER e ABA",
   };
   return labels[type] || type;
 }

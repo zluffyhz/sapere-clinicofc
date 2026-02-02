@@ -706,3 +706,8 @@
 - [x] Atualizar documento CREDENCIAIS_TEMPORARIAS.md com lista completa
 - [x] Adicionar checklist de distribuição atualizado
 - [x] Identificar duplicatas de usuários no documento
+
+## Adicionar Especialidade Aplicadora DENVER e ABA
+- [x] Adicionar "Aplicadora DENVER e ABA" ao enum de especialidades no schema
+- [x] Atualizar formulário de cadastro de terapeutas no AdminUsersPage
+- [x] Testar cadastro de terapeuta com nova especialidade

@@ -21,6 +21,7 @@ const THERAPY_TYPES = [
   { value: "neuropsicopedagogia", label: "Neuropsicopedagogia" },
   { value: "nutricao", label: "Nutrição" },
   { value: "psicomotricidade", label: "Psicomotricidade" },
+  { value: "aplicadora_denver_aba", label: "Aplicadora DENVER e ABA" },
   { value: "outro", label: "Outro" },
 ];
 
