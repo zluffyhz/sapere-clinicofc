@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { trpc } from "@/lib/trpc";
-import { Bell, Calendar, FileText, Home, Users, ClipboardList, LogOut, Menu, X, Key, ClipboardCheck, BarChart3 } from "lucide-react";
+import { Bell, Calendar, FileText, Home, Users, ClipboardList, LogOut, Menu, X, Key, ClipboardCheck, BarChart3, Database } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +34,7 @@ const navItems: NavItem[] = [
   { label: "Prontuários", href: "/prontuarios", icon: <ClipboardList className="h-5 w-5" />, roles: ["therapist", "admin"] },
   { label: "Presença", href: "/presenca", icon: <ClipboardCheck className="h-5 w-5" />, roles: ["admin"] },
   { label: "Usuários", href: "/admin/usuarios", icon: <Users className="h-5 w-5" />, roles: ["admin"] },
+  { label: "Gerenciar Dados", href: "/admin/dados", icon: <Database className="h-5 w-5" />, roles: ["admin"] },
 ];
 
 export default function SapereLayout({ children }: { children: React.ReactNode }) {

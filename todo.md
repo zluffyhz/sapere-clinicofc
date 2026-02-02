@@ -724,3 +724,13 @@
 ## Recriar Dados de Seed
 - [x] Criar script de seed com pacientes de demonstração
 - [x] Executar seed e popular banco de dados
+
+## Procedimento Seguro de Remoção de Dados
+- [x] Criar interface administrativa para remoção segura de pacientes
+- [x] Implementar confirmação em duas etapas
+- [x] Adicionar listagem prévia dos dados a serem removidos
+
+## Sistema de Backup Automático
+- [x] Criar script de backup do banco de dados
+- [x] Configurar rotina automática de backup (cron)
+- [x] Implementar retenção de 7 dias de backups

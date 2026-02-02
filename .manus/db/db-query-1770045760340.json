@@ -1,0 +1,28 @@
+{
+  "query": "SELECT id, name, email, role FROM users WHERE role = 'admin' LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, email, role FROM users WHERE role = 'admin' LIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Lucas Henrique",
+      "email": "lucashenriqueas05@gmail.com",
+      "role": "admin"
+    },
+    {
+      "id": "124682",
+      "name": "Cesar Henrique Santos ",
+      "email": "cml.cesar@outlook.com",
+      "role": "admin"
+    },
+    {
+      "id": "1873789",
+      "name": "Recepção Sapere",
+      "email": "sapererecepcao@gmail.com",
+      "role": "admin"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\n1\tLucas Henrique\tlucashenriqueas05@gmail.com\tadmin\n124682\tCesar Henrique Santos \tcml.cesar@outlook.com\tadmin\n1873789\tRecepção Sapere\tsapererecepcao@gmail.com\tadmin\n",
+  "stderr": "",
+  "execution_time_ms": 66
+}

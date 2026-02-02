@@ -16,6 +16,7 @@ import PacientesPage from "./pages/PacientesPage";
 import ProntuarioPage from "./pages/ProntuarioPage";
 import ProntuariosListPage from "./pages/ProntuariosListPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
+import AdminDataManagementPage from "./pages/AdminDataManagementPage";
 import LoginPage from "./pages/LoginPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import SessionPage from "./pages/SessionPage";
@@ -82,6 +83,9 @@ function Router() {
       </Route>
       <Route path="/admin/usuarios">
         {() => <ProtectedRoute component={AdminUsersPage} />}
+      </Route>
+      <Route path="/admin/dados">
+        {() => <ProtectedRoute component={AdminDataManagementPage} />}
       </Route>
       <Route path="/session">
         {() => <ProtectedRoute component={SessionPage} />}

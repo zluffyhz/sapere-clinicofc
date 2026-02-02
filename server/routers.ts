@@ -212,6 +212,25 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    listAll: adminProcedure.query(async () => {
+      return await db.getAllPatients();
+    }),
+
+    bulkDelete: adminProcedure
+      .input(z.object({ patientIds: z.array(z.number()) }))
+      .mutation(async ({ input }) => {
+        if (input.patientIds.length === 0) {
+          throw new TRPCError({ code: 'BAD_REQUEST', message: 'Nenhum paciente selecionado' });
+        }
+        
+        // Remover dados relacionados e pacientes
+        for (const patientId of input.patientIds) {
+          await db.deletePatient(patientId);
+        }
+        
+        return { success: true, deletedCount: input.patientIds.length };
+      }),
+
     // Patient-Therapist Assignments
     createAssignment: therapistProcedure
       .input(z.object({
