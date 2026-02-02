@@ -734,3 +734,7 @@
 - [x] Criar script de backup do banco de dados
 - [x] Configurar rotina automática de backup (cron)
 - [x] Implementar retenção de 7 dias de backups
+
+## Preparação para Lançamento em Produção
+- [x] Remover observação 'Paciente de demonstração' de todos os pacientes
+- [x] Recuperar pacientes Adam e Adriel Gouveia (não foi possível - dados permanentemente perdidos)
