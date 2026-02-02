@@ -711,3 +711,8 @@
 - [x] Adicionar "Aplicadora DENVER e ABA" ao enum de especialidades no schema
 - [x] Atualizar formulário de cadastro de terapeutas no AdminUsersPage
 - [x] Testar cadastro de terapeuta com nova especialidade
+
+## Configurar Meta Tags Open Graph
+- [x] Preparar imagem do logo Sapere para Open Graph (1200x630px recomendado)
+- [x] Adicionar meta tags Open Graph no index.html
+- [x] Testar compartilhamento no WhatsApp
