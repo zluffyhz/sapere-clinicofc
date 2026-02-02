@@ -1,0 +1,150 @@
+{
+  "query": "SELECT id, name, dateOfBirth, diagnosis, createdAt FROM patients ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, dateOfBirth, diagnosis, createdAt FROM patients ORDER BY id;",
+  "rows": [
+    {
+      "id": "540001",
+      "name": "Maria Julia Gama Alves Torres",
+      "dateOfBirth": "2021-11-24 00:00:00",
+      "diagnosis": "A definir",
+      "createdAt": "2026-01-15 14:02:49"
+    },
+    {
+      "id": "540002",
+      "name": "Murilo Laranjeira Valente",
+      "dateOfBirth": "2021-05-27 00:00:00",
+      "diagnosis": "A definir",
+      "createdAt": "2026-01-15 14:02:49"
+    },
+    {
+      "id": "540003",
+      "name": "Antonella Salles Romanini",
+      "dateOfBirth": "2022-02-28 00:00:00",
+      "diagnosis": "A definir",
+      "createdAt": "2026-01-15 14:02:49"
+    },
+    {
+      "id": "660001",
+      "name": "ISABEL KATERINE DOS SANTOS MORAIS",
+      "dateOfBirth": "2013-12-26 00:00:00",
+      "diagnosis": "NULL",
+      "createdAt": "2026-01-20 18:22:27"
+    },
+    {
+      "id": "690001",
+      "name": "ADRIEL RODRIGUES  GOUVEIA ",
+      "dateOfBirth": "2016-02-03 00:00:00",
+      "diagnosis": "NULL",
+      "createdAt": "2026-01-31 12:18:38"
+    },
+    {
+      "id": "690002",
+      "name": "ADAM RODRIGUES TEIXEIRA ",
+      "dateOfBirth": "2017-05-27 00:00:00",
+      "diagnosis": "NULL",
+      "createdAt": "2026-01-31 12:19:38"
+    },
+    {
+      "id": "690003",
+      "name": "LEVI DE SOUZA AGUIAR",
+      "dateOfBirth": "2022-08-20 00:00:00",
+      "diagnosis": "NULL",
+      "createdAt": "2026-01-31 12:21:25"
+    },
+    {
+      "id": "690004",
+      "name": "JOSÉ FELIPE DE SOUZA AGUIAR",
+      "dateOfBirth": "2020-12-20 00:00:00",
+      "diagnosis": "NULL",
+      "createdAt": "2026-01-31 12:22:13"
+    },
+    {
+      "id": "720001",
+      "name": "Paciente Teste",
+      "dateOfBirth": "NULL",
+      "diagnosis": "Teste de diagnóstico",
+      "createdAt": "2026-02-02 13:33:20"
+    },
+    {
+      "id": "720002",
+      "name": "Paciente para Agendamento",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "createdAt": "2026-02-02 13:33:20"
+    },
+    {
+      "id": "720003",
+      "name": "Paciente para Anamnese",
+      "dateOfBirth": "NULL",
+      "diagnosis": "NULL",
+      "createdAt": "2026-02-02 13:33:20"
+    },
+    {
+      "id": "720004",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "createdAt": "2026-02-02 13:33:20"
+    },
+    {
+      "id": "720005",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "createdAt": "2026-02-02 13:33:21"
+    },
+    {
+      "id": "720006",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "createdAt": "2026-02-02 13:33:21"
+    },
+    {
+      "id": "720007",
+      "name": "Final Patient Name",
+      "dateOfBirth": "2022-03-20 00:00:00",
+      "diagnosis": "Final Diagnosis",
+      "createdAt": "2026-02-02 13:33:21"
+    },
+    {
+      "id": "720009",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "createdAt": "2026-02-02 13:33:21"
+    },
+    {
+      "id": "720010",
+      "name": "Other Patient",
+      "dateOfBirth": "2016-01-01 00:00:00",
+      "diagnosis": "Other diagnosis",
+      "createdAt": "2026-02-02 13:33:21"
+    },
+    {
+      "id": "720011",
+      "name": "Test Patient Collab 1",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test",
+      "createdAt": "2026-02-02 13:33:21"
+    },
+    {
+      "id": "720012",
+      "name": "Test Patient Collab 2",
+      "dateOfBirth": "2016-01-01 00:00:00",
+      "diagnosis": "Test",
+      "createdAt": "2026-02-02 13:33:21"
+    },
+    {
+      "id": "720013",
+      "name": "Test Patient",
+      "dateOfBirth": "2015-01-01 00:00:00",
+      "diagnosis": "Test diagnosis",
+      "createdAt": "2026-02-02 13:33:21"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdateOfBirth\tdiagnosis\tcreatedAt\n540001\tMaria Julia Gama Alves Torres\t2021-11-24 00:00:00\tA definir\t2026-01-15 14:02:49\n540002\tMurilo Laranjeira Valente\t2021-05-27 00:00:00\tA definir\t2026-01-15 14:02:49\n540003\tAntonella Salles Romanini\t2022-02-28 00:00:00\tA definir\t2026-01-15 14:02:49\n660001\tISABEL KATERINE DOS SANTOS MORAIS\t2013-12-26 00:00:00\tNULL\t2026-01-20 18:22:27\n690001\tADRIEL RODRIGUES  GOUVEIA \t2016-02-03 00:00:00\tNULL\t2026-01-31 12:18:38\n690002\tADAM RODRIGUES TEIXEIRA \t2017-05-27 00:00:00\tNULL\t2026-01-31 12:19:38\n690003\tLEVI DE SOUZA AGUIAR\t2022-08-20 00:00:00\tNULL\t2026-01-31 12:21:25\n690004\tJOSÉ FELIPE DE SOUZA AGUIAR\t2020-12-20 00:00:00\tNULL\t2026-01-31 12:22:13\n720001\tPaciente Teste\tNULL\tTeste de diagnóstico\t2026-02-02 13:33:20\n720002\tPaciente para Agendamento\tNULL\tNULL\t2026-02-02 13:33:20\n720003\tPaciente para Anamnese\tNULL\tNULL\t2026-02-02 13:33:20\n720004\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2026-02-02 13:33:20\n720005\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2026-02-02 13:33:21\n720006\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2026-02-02 13:33:21\n720007\tFinal Patient Name\t2022-03-20 00:00:00\tFinal Diagnosis\t2026-02-02 13:33:21\n720009\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2026-02-02 13:33:21\n720010\tOther Patient\t2016-01-01 00:00:00\tOther diagnosis\t2026-02-02 13:33:21\n720011\tTest Patient Collab 1\t2015-01-01 00:00:00\tTest\t2026-02-02 13:33:21\n720012\tTest Patient Collab 2\t2016-01-01 00:00:00\tTest\t2026-02-02 13:33:21\n720013\tTest Patient\t2015-01-01 00:00:00\tTest diagnosis\t2026-02-02 13:33:21\n",
+  "stderr": "",
+  "execution_time_ms": 66
+}

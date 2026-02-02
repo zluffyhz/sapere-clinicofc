@@ -716,3 +716,11 @@
 - [x] Preparar imagem do logo Sapere para Open Graph (1200x630px recomendado)
 - [x] Adicionar meta tags Open Graph no index.html
 - [x] Testar compartilhamento no WhatsApp
+
+## Remover Test Patients
+- [ ] Identificar test patients no banco de dados
+- [ ] Remover test patients e dados relacionados
+
+## Recriar Dados de Seed
+- [x] Criar script de seed com pacientes de demonstração
+- [x] Executar seed e popular banco de dados

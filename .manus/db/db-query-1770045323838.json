@@ -1,0 +1,31 @@
+{
+  "query": "SELECT COUNT(*) as total_patients FROM patients;\nSELECT id, name, dateOfBirth, diagnosis FROM patients ORDER BY id LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT COUNT(*) as total_patients FROM patients;\nSELECT id, name, dateOfBirth, diagnosis FROM patients ORDER BY id LIMIT 5;",
+  "rows": [
+    {
+      "total_patients": "20"
+    },
+    {
+      "total_patients": "id\tname\tdateOfBirth\tdiagnosis"
+    },
+    {
+      "total_patients": "750001\tMaria Julia Gama Alves Torres\t2021-11-24 00:00:00\tTEA - Transtorno do Espectro Autista"
+    },
+    {
+      "total_patients": "750002\tMurilo Laranjeira Valente\t2021-05-27 00:00:00\tAtraso no desenvolvimento da fala"
+    },
+    {
+      "total_patients": "750003\tAntonella Salles Romanini\t2022-02-28 00:00:00\tTEA - Transtorno do Espectro Autista"
+    },
+    {
+      "total_patients": "750004\tPedro Henrique Costa Silva\t2020-08-15 00:00:00\tTDAH - Transtorno de Déficit de Atenção"
+    },
+    {
+      "total_patients": "750005\tAna Clara Ferreira Santos\t2021-03-10 00:00:00\tDislexia"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_patients\n20\nid\tname\tdateOfBirth\tdiagnosis\n750001\tMaria Julia Gama Alves Torres\t2021-11-24 00:00:00\tTEA - Transtorno do Espectro Autista\n750002\tMurilo Laranjeira Valente\t2021-05-27 00:00:00\tAtraso no desenvolvimento da fala\n750003\tAntonella Salles Romanini\t2022-02-28 00:00:00\tTEA - Transtorno do Espectro Autista\n750004\tPedro Henrique Costa Silva\t2020-08-15 00:00:00\tTDAH - Transtorno de Déficit de Atenção\n750005\tAna Clara Ferreira Santos\t2021-03-10 00:00:00\tDislexia\n",
+  "stderr": "",
+  "execution_time_ms": 62
+}
