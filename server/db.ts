@@ -672,11 +672,12 @@ export async function getCollaborationHistory(familyUserId: number, days: number
   return evolutionsData;
 }
 
-export async function deleteSessionRecord(id: number) {
-  const db = await getDb();
-  if (!db) return;
-  await db.delete(evolutions).where(eq(evolutions.id, id));
-}
+// FUNÇÃO REMOVIDA: Evoluções clínicas NUNCA podem ser deletadas (requisito legal)
+// export async function deleteSessionRecord(id: number) {
+//   const db = await getDb();
+//   if (!db) return;
+//   await db.delete(evolutions).where(eq(evolutions.id, id));
+// }
 
 
 // ─────────────────────────────────────────────────────────────────────────────

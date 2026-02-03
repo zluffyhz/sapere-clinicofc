@@ -186,15 +186,16 @@ export default function ProntuarioPage() {
     },
   });
 
-  const deleteEvolutionMutation = trpc.evolutions.delete.useMutation({
-    onSuccess: () => {
-      utils.evolutions.listByPatient.invalidate({ patientId: patientId! });
-      toast.success("Evolução excluída com sucesso!");
-    },
-    onError: (error) => {
-      toast.error("Erro ao excluir evolução: " + error.message);
-    },
-  });
+  // MUTATION REMOVIDA: Evoluções clínicas NUNCA podem ser deletadas (requisito legal)
+  // const deleteEvolutionMutation = trpc.evolutions.delete.useMutation({
+  //   onSuccess: () => {
+  //     utils.evolutions.listByPatient.invalidate({ patientId: patientId! });
+  //     toast.success("Evolução excluída com sucesso!");
+  //   },
+  //   onError: (error: any) => {
+  //     toast.error("Erro ao excluir evolução: " + error.message);
+  //   },
+  // });
 
   const uploadDocumentMutation = trpc.documents.upload.useMutation({
     onSuccess: () => {
@@ -582,19 +583,7 @@ export default function ProntuarioPage() {
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
-                          {isAdmin && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                if (confirm("Tem certeza que deseja excluir esta evolução?")) {
-                                  deleteEvolutionMutation.mutate({ id: record.id });
-                                }
-                              }}
-                            >
-                              <Trash2 className="w-4 h-4 text-red-600" />
-                            </Button>
-                          )}
+                          {/* BOTÃO REMOVIDO: Evoluções clínicas NUNCA podem ser deletadas (requisito legal) */}
                         </div>
                       </div>
                     </CardHeader>

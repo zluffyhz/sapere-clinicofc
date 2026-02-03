@@ -738,3 +738,10 @@
 ## Preparação para Lançamento em Produção
 - [x] Remover observação 'Paciente de demonstração' de todos os pacientes
 - [x] Recuperar pacientes Adam e Adriel Gouveia (não foi possível - dados permanentemente perdidos)
+
+## ⚠️ CRÍTICO: Proteção de Evoluções Clínicas
+- [x] Auditar sistema para identificar pontos de exclusão de evoluções
+- [x] Remover endpoints de exclusão de evoluções do backend
+- [x] Remover botões de exclusão de evoluções da interface
+- [x] Testar que evoluções não podem ser apagadas
+- [x] Redefinir senha do usuário sapere.recepcao@gmail.com

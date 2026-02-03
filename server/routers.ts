@@ -667,13 +667,14 @@ export const appRouter = router({
         return await db.getCollaborationHistory(input.familyUserId, input.days, input.patientId);
       }),
 
-    delete: adminProcedure
-      .input(z.object({ id: z.number() }))
-      .mutation(async ({ input }) => {
-        // Only admins can delete evolutions
-        await db.deleteSessionRecord(input.id);
-        return { success: true };
-      }),
+    // ENDPOINT REMOVIDO: Evoluções clínicas NUNCA podem ser deletadas (requisito legal)
+    // delete: adminProcedure
+    //   .input(z.object({ id: z.number() }))
+    //   .mutation(async ({ input }) => {
+    //     // Only admins can delete evolutions
+    //     await db.deleteSessionRecord(input.id);
+    //     return { success: true };
+    //   }),
   }),
 
   // ============ NOTIFICATIONS ROUTER ============
