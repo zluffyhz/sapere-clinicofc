@@ -664,15 +664,44 @@ export const appRouter = router({
         return { success: true };
       }),
 
-    getCollaborationHistory: therapistProcedure
+    getCollaborationHistory: protectedProcedure
       .input(z.object({
-        familyUserId: z.number(),
         days: z.number().default(30),
         patientId: z.number().optional(),
       }))
-      .query(async ({ input }) => {
-        // Only therapists and admins can view collaboration history
-        return await db.getCollaborationHistory(input.familyUserId, input.days, input.patientId);
+      .query(async ({ input, ctx }) => {
+        const allHistory: any[] = [];
+        
+        if (ctx.user.role === 'admin') {
+          // Admins see all patients
+          const allPatients = await db.getAllPatients();
+          for (const patient of allPatients) {
+            const patientHistory = await db.getCollaborationHistoryByPatient(patient.id, input.days);
+            allHistory.push(...patientHistory);
+          }
+        } else if (ctx.user.role === 'therapist') {
+          // Therapists see only their assigned patients
+          const therapistPatients = await db.getPatientsByTherapist(ctx.user.id);
+          for (const patient of therapistPatients) {
+            const patientHistory = await db.getCollaborationHistoryByPatient(patient.id, input.days);
+            allHistory.push(...patientHistory);
+          }
+        } else if (ctx.user.role === 'family') {
+          // Families see only their children
+          const familyPatients = await db.getPatientsByFamily(ctx.user.id);
+          for (const patient of familyPatients) {
+            const patientHistory = await db.getCollaborationHistoryByPatient(patient.id, input.days);
+            allHistory.push(...patientHistory);
+          }
+        }
+        
+        // Filter by patientId if specified
+        if (input.patientId) {
+          return allHistory.filter(h => h.patientId === input.patientId);
+        }
+        
+        // Sort by date descending
+        return allHistory.sort((a, b) => new Date(b.sessionDate).getTime() - new Date(a.sessionDate).getTime());
       }),
 
     // ENDPOINT REMOVIDO: Evoluções clínicas NUNCA podem ser deletadas (requisito legal)

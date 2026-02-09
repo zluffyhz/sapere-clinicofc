@@ -683,6 +683,34 @@ export async function getCollaborationHistory(familyUserId: number, days: number
   return evolutionsData;
 }
 
+export async function getCollaborationHistoryByPatient(patientId: number, days: number = 30) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - days);
+  
+  // Get evolutions for this patient
+  const evolutionsData = await db.select({
+    id: evolutions.id,
+    patientId: evolutions.patientId,
+    patientName: patients.name,
+    sessionDate: evolutions.sessionDate,
+    collaborationLevel: evolutions.collaborationLevel,
+  })
+  .from(evolutions)
+  .innerJoin(patients, eq(evolutions.patientId, patients.id))
+  .where(
+    and(
+      eq(evolutions.patientId, patientId),
+      gte(evolutions.sessionDate, cutoffDate)
+    )
+  )
+  .orderBy(desc(evolutions.sessionDate));
+  
+  return evolutionsData;
+}
+
 // FUNÇÃO REMOVIDA: Evoluções clínicas NUNCA podem ser deletadas (requisito legal)
 // export async function deleteSessionRecord(id: number) {
 //   const db = await getDb();

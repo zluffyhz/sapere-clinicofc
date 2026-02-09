@@ -60,7 +60,6 @@ export default function TherapistDashboard() {
   // Get collaboration history (only for therapists/admins)
   const { data: collaborationData } = trpc.evolutions.getCollaborationHistory.useQuery(
     {
-      familyUserId: 1, // TODO: Get from selected patient's family
       days: selectedDays,
       patientId: selectedPatientId,
     },
