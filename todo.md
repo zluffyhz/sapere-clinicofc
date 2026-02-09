@@ -745,3 +745,6 @@
 - [x] Remover botões de exclusão de evoluções da interface
 - [x] Testar que evoluções não podem ser apagadas
 - [x] Redefinir senha do usuário sapere.recepcao@gmail.com
+- [x] Corrigir login do usuário sapere.recepcao@gmail.com
+- [ ] Verificar gráfico de colaboração
+- [x] Filtrar agenda para terapeutas verem apenas seus próprios pacientes

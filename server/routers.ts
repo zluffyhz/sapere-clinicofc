@@ -354,7 +354,11 @@ export const appRouter = router({
         if (ctx.user.role === 'admin') {
           return await db.getAppointmentsByDateRange(input.startDate, input.endDate);
         } else if (ctx.user.role === 'therapist') {
-          return await db.getAppointmentsByDateRange(input.startDate, input.endDate); // Terapeutas veem todos os agendamentos
+          // Terapeutas veem apenas agendamentos dos pacientes vinculados a eles
+          const myPatients = await db.getPatientsByTherapist(ctx.user.id);
+          const patientIds = myPatients.map(p => p.id);
+          const allAppointments = await db.getAppointmentsByDateRange(input.startDate, input.endDate);
+          return allAppointments.filter(apt => patientIds.includes(apt.patientId));
         } else {
           // For families, get appointments for their patients
           const patients = await db.getPatientsByFamily(ctx.user.id);

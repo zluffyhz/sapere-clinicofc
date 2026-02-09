@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO users (openId, name, email, loginMethod, passwordHash, role, createdAt, updatedAt, lastSignedIn) \nVALUES (\n  CONCAT('local-', UUID()), \n  'Recepção Sapere', \n  'sapere.recepcao@gmail.com', \n  'password', \n  '$2b$12$nnYTlleg2i4lVFGBghLlu.zRPR9xRKaVPrXvpQhCoWgFjmOleEbfG',\n  'admin',\n  NOW(),\n  NOW(),\n  NOW()\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute INSERT INTO users (openId, name, email, loginMethod, passwordHash, role, createdAt, updatedAt, lastSignedIn) \nVALUES (\n  CONCAT('local-', UUID()), \n  'Recepção Sapere', \n  'sapere.recepcao@gmail.com', \n  'password', \n  '$2b$12$nnYTlleg2i4lVFGBghLlu.zRPR9xRKaVPrXvpQhCoWgFjmOleEbfG',\n  'admin',\n  NOW(),\n  NOW(),\n  NOW()\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 67
+}
