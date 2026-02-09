@@ -56,6 +56,7 @@ export default function AgendaPage() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [viewMode, setViewMode] = useState<"month" | "week">("month");
   const [selectedTherapistId, setSelectedTherapistId] = useState<number | null>(null);
+  const [showMyPatientsOnly, setShowMyPatientsOnly] = useState(true); // Padrão: mostrar apenas meus pacientes
   
   // Modal state for creating
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -99,6 +100,7 @@ export default function AgendaPage() {
   const { data: appointments, isLoading } = trpc.appointments.listByDateRange.useQuery({
     startDate,
     endDate,
+    showAllPatients: user?.role === 'therapist' ? !showMyPatientsOnly : undefined,
   });
 
   const { data: patients } = trpc.patients.list.useQuery();
@@ -471,6 +473,28 @@ export default function AgendaPage() {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+          )}
+          
+          {/* Patient Filter - Only for therapists */}
+          {user?.role === 'therapist' && (
+            <>
+              <div className="flex items-center gap-2">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <Select
+                  value={showMyPatientsOnly ? "my" : "all"}
+                  onValueChange={(value) => setShowMyPatientsOnly(value === "my")}
+                >
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="my">Meus Pacientes</SelectItem>
+                    <SelectItem value="all">Todos os Pacientes</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="h-6 w-px bg-border" />
+            </>
           )}
           
           {/* Therapist Filter */}

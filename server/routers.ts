@@ -349,16 +349,21 @@ export const appRouter = router({
         startDate: z.date(),
         endDate: z.date(),
         patientId: z.number().optional(),
+        showAllPatients: z.boolean().optional(), // Para terapeutas escolherem ver todos ou apenas seus pacientes
       }))
       .query(async ({ input, ctx }) => {
         if (ctx.user.role === 'admin') {
           return await db.getAppointmentsByDateRange(input.startDate, input.endDate);
         } else if (ctx.user.role === 'therapist') {
-          // Terapeutas veem apenas agendamentos dos pacientes vinculados a eles
-          const myPatients = await db.getPatientsByTherapist(ctx.user.id);
-          const patientIds = myPatients.map(p => p.id);
-          const allAppointments = await db.getAppointmentsByDateRange(input.startDate, input.endDate);
-          return allAppointments.filter(apt => patientIds.includes(apt.patientId));
+          // Terapeutas podem escolher ver todos ou apenas seus pacientes
+          if (input.showAllPatients) {
+            return await db.getAppointmentsByDateRange(input.startDate, input.endDate);
+          } else {
+            const myPatients = await db.getPatientsByTherapist(ctx.user.id);
+            const patientIds = myPatients.map(p => p.id);
+            const allAppointments = await db.getAppointmentsByDateRange(input.startDate, input.endDate);
+            return allAppointments.filter(apt => patientIds.includes(apt.patientId));
+          }
         } else {
           // For families, get appointments for their patients
           const patients = await db.getPatientsByFamily(ctx.user.id);

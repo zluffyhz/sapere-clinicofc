@@ -748,3 +748,4 @@
 - [x] Corrigir login do usuário sapere.recepcao@gmail.com
 - [ ] Verificar gráfico de colaboração
 - [x] Filtrar agenda para terapeutas verem apenas seus próprios pacientes
+- [x] Adicionar filtro opcional na agenda para terapeutas escolherem ver seus pacientes ou todos
