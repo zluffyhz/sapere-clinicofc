@@ -1,0 +1,34 @@
+{
+  "query": "SELECT u.id, u.name, u.email, u.role, \n(SELECT COUNT(*) FROM patient_therapist_assignments WHERE therapistUserId = u.id) as patients_count,\n(SELECT COUNT(*) FROM appointments WHERE therapistUserId = u.id) as appointments_count\nFROM users u \nWHERE u.role = 'therapist' \nLIMIT 3;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT u.id, u.name, u.email, u.role, \n(SELECT COUNT(*) FROM patient_therapist_assignments WHERE therapistUserId = u.id) as patients_count,\n(SELECT COUNT(*) FROM appointments WHERE therapistUserId = u.id) as appointments_count\nFROM users u \nWHERE u.role = 'therapist' \nLIMIT 3;",
+  "rows": [
+    {
+      "id": "468419",
+      "name": "Marcely Almeida Silva",
+      "email": "celyneuro@gmail.com",
+      "role": "therapist",
+      "patients_count": "13",
+      "appointments_count": "7"
+    },
+    {
+      "id": "2725474",
+      "name": "Vitória Santos Lira",
+      "email": "Vitoriasantosbrasileirolira@gmail.com",
+      "role": "therapist",
+      "patients_count": "7",
+      "appointments_count": "6"
+    },
+    {
+      "id": "3180017",
+      "name": "Rayana Santos ",
+      "email": "santosrayana85@gmail.com",
+      "role": "therapist",
+      "patients_count": "1",
+      "appointments_count": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\tpatients_count\tappointments_count\n468419\tMarcely Almeida Silva\tcelyneuro@gmail.com\ttherapist\t13\t7\n2725474\tVitória Santos Lira\tVitoriasantosbrasileirolira@gmail.com\ttherapist\t7\t6\n3180017\tRayana Santos \tsantosrayana85@gmail.com\ttherapist\t1\t0\n",
+  "stderr": "",
+  "execution_time_ms": 59
+}

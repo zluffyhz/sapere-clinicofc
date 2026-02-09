@@ -749,3 +749,5 @@
 - [ ] Verificar gráfico de colaboração
 - [x] Filtrar agenda para terapeutas verem apenas seus próprios pacientes
 - [x] Adicionar filtro opcional na agenda para terapeutas escolherem ver seus pacientes ou todos
+- [x] Corrigir duplicidade de filtros na agenda
+- [x] Corrigir bug: pacientes não aparecem quando terapeuta seleciona "Meus Pacientes"

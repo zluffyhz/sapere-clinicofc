@@ -479,7 +479,6 @@ export default function AgendaPage() {
           {user?.role === 'therapist' && (
             <>
               <div className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-muted-foreground" />
                 <Select
                   value={showMyPatientsOnly ? "my" : "all"}
                   onValueChange={(value) => setShowMyPatientsOnly(value === "my")}

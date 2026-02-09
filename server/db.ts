@@ -136,7 +136,18 @@ export async function getPatientsByTherapist(therapistUserId: number) {
   const db = await getDb();
   if (!db) return [];
   
-  return await db.select().from(patients).where(eq(patients.therapistUserId, therapistUserId));
+  // Buscar IDs dos pacientes vinculados ao terapeuta
+  const assignments = await db
+    .select({ patientId: patientTherapistAssignments.patientId })
+    .from(patientTherapistAssignments)
+    .where(eq(patientTherapistAssignments.therapistUserId, therapistUserId));
+  
+  if (assignments.length === 0) return [];
+  
+  const patientIds = assignments.map(a => a.patientId);
+  
+  // Buscar os pacientes
+  return await db.select().from(patients).where(inArray(patients.id, patientIds));
 }
 
 export async function getAllPatients() {
