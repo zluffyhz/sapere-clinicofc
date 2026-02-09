@@ -6,11 +6,28 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { CollaborationChart } from "@/components/CollaborationChart";
+import { useState } from "react";
 
 export default function FamilyDashboard() {
   const { user } = useAuth();
   const { data: patients, isLoading: patientsLoading } = trpc.patients.list.useQuery();
   const { data: notifications } = trpc.notifications.list.useQuery();
+  
+  // Collaboration chart filters
+  const [selectedPatientId, setSelectedPatientId] = useState<number | undefined>(undefined);
+  const [selectedDays, setSelectedDays] = useState(30);
+  
+  // Get collaboration history for family's children
+  const { data: collaborationData } = trpc.evolutions.getCollaborationHistory.useQuery(
+    {
+      days: selectedDays,
+      patientId: selectedPatientId,
+    },
+    {
+      enabled: !!user,
+    }
+  );
   
   // Get upcoming appointments for the next 7 days
   const startDate = new Date();
@@ -178,6 +195,18 @@ export default function FamilyDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Collaboration Chart */}
+      {collaborationData && collaborationData.length > 0 && (
+        <CollaborationChart
+          data={collaborationData}
+          patients={patients || []}
+          selectedPatientId={selectedPatientId}
+          selectedDays={selectedDays}
+          onPatientChange={setSelectedPatientId}
+          onDaysChange={setSelectedDays}
+        />
+      )}
 
       {/* Patients List */}
       {patients && patients.length > 0 && (

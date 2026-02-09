@@ -754,3 +754,5 @@
 - [x] Corrigir filtro: terapeuta deve ver apenas agendamentos onde ELA é a terapeuta responsável
 - [x] Remover duplicação de botões de filtro na agenda
 - [x] Localizar e tornar visível o gráfico de colaboração de pacientes baseado nas evoluções
+
+- [x] Adicionar gráfico de colaboração ao Portal da Família
