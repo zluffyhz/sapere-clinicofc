@@ -757,4 +757,4 @@
 
 - [x] Adicionar gráfico de colaboração ao Portal da Família
 
-- [x] Corrigir bug no campo de observações do agendamento que perde foco a cada letra
+- [x] URGENTE: Corrigir definitivamente bug de perda de foco no campo observações

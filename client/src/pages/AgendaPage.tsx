@@ -275,7 +275,7 @@ export default function AgendaPage() {
   const isAdmin = user?.role === "admin";
 
   // Appointment Form Component (reused for create and edit)
-  const AppointmentForm = useCallback(({ isEdit = false }: { isEdit?: boolean }) => (
+  const AppointmentForm = ({ isEdit = false }: { isEdit?: boolean }) => (
     <div className="grid gap-4 py-4">
       {/* Patient Selection - disabled in edit mode */}
       <div className="grid gap-2">
@@ -420,14 +420,14 @@ export default function AgendaPage() {
         <Textarea
           id="notes"
           placeholder="Observações adicionais (opcional)"
-          value={formData.notes}
-          onChange={(e) =>
+          defaultValue={formData.notes}
+          onBlur={(e) =>
             setFormData({ ...formData, notes: e.target.value })
           }
         />
       </div>
     </div>
-  ), [formData, patients, therapists]);
+  );
 
   return (
     <div className="space-y-6">
