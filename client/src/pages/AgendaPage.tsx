@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -275,7 +275,7 @@ export default function AgendaPage() {
   const isAdmin = user?.role === "admin";
 
   // Appointment Form Component (reused for create and edit)
-  const AppointmentForm = ({ isEdit = false }: { isEdit?: boolean }) => (
+  const AppointmentForm = useCallback(({ isEdit = false }: { isEdit?: boolean }) => (
     <div className="grid gap-4 py-4">
       {/* Patient Selection - disabled in edit mode */}
       <div className="grid gap-2">
@@ -427,7 +427,7 @@ export default function AgendaPage() {
         />
       </div>
     </div>
-  );
+  ), [formData, patients, therapists]);
 
   return (
     <div className="space-y-6">

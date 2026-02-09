@@ -756,3 +756,5 @@
 - [x] Localizar e tornar visível o gráfico de colaboração de pacientes baseado nas evoluções
 
 - [x] Adicionar gráfico de colaboração ao Portal da Família
+
+- [x] Corrigir bug no campo de observações do agendamento que perde foco a cada letra
