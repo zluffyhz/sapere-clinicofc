@@ -751,3 +751,5 @@
 - [x] Adicionar filtro opcional na agenda para terapeutas escolherem ver seus pacientes ou todos
 - [x] Corrigir duplicidade de filtros na agenda
 - [x] Corrigir bug: pacientes não aparecem quando terapeuta seleciona "Meus Pacientes"
+- [x] Corrigir filtro: terapeuta deve ver apenas agendamentos onde ELA é a terapeuta responsável
+- [x] Remover duplicação de botões de filtro na agenda

@@ -496,31 +496,35 @@ export default function AgendaPage() {
             </>
           )}
           
-          {/* Therapist Filter */}
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-muted-foreground" />
-            <Select
-              value={selectedTherapistId?.toString() || "all"}
-              onValueChange={(value) =>
-                setSelectedTherapistId(value === "all" ? null : parseInt(value))
-              }
-            >
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Todos os terapeutas" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os terapeutas</SelectItem>
-                {therapists
-                  ?.filter((u) => u.role === "therapist")
-                  .map((therapist) => (
-                    <SelectItem key={therapist.id} value={therapist.id.toString()}>
-                      {therapist.name}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="h-6 w-px bg-border" />
+          {/* Therapist Filter - Only for admins */}
+          {user?.role !== 'therapist' && (
+            <>
+              <div className="flex items-center gap-2">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <Select
+                  value={selectedTherapistId?.toString() || "all"}
+                  onValueChange={(value) =>
+                    setSelectedTherapistId(value === "all" ? null : parseInt(value))
+                  }
+                >
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Todos os terapeutas" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos os terapeutas</SelectItem>
+                    {therapists
+                      ?.filter((u) => u.role === "therapist")
+                      .map((therapist) => (
+                        <SelectItem key={therapist.id} value={therapist.id.toString()}>
+                          {therapist.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="h-6 w-px bg-border" />
+            </>
+          )}
           <Button
             variant={viewMode === "month" ? "default" : "outline"}
             onClick={() => setViewMode("month")}
