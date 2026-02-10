@@ -349,9 +349,28 @@ export async function getSessionRecordsByPatient(patientId: number) {
   const db = await getDb();
   if (!db) return [];
   
-  return await db.select().from(evolutions)
+  // Join with users table to get therapist name
+  const result = await db.select({
+    id: evolutions.id,
+    patientId: evolutions.patientId,
+    therapistUserId: evolutions.therapistUserId,
+    appointmentId: evolutions.appointmentId,
+    sessionDate: evolutions.sessionDate,
+    sessionSummary: evolutions.sessionSummary,
+    patientMood: evolutions.patientMood,
+    patientBehavior: evolutions.patientBehavior,
+    goalsAchieved: evolutions.goalsAchieved,
+    nextSessionPlan: evolutions.nextSessionPlan,
+    collaborationLevel: evolutions.collaborationLevel,
+    createdAt: evolutions.createdAt,
+    therapistName: users.name,
+  })
+    .from(evolutions)
+    .leftJoin(users, eq(evolutions.therapistUserId, users.id))
     .where(eq(evolutions.patientId, patientId))
     .orderBy(desc(evolutions.sessionDate));
+  
+  return result;
 }
 
 export async function getSessionRecordsByAppointment(appointmentId: number) {

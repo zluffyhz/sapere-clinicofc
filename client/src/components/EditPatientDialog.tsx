@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,8 @@ interface EditPatientDialogProps {
 }
 
 export function EditPatientDialog({ patient, open, onOpenChange, onSuccess }: EditPatientDialogProps) {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const [name, setName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [familyUserId, setFamilyUserId] = useState<number | undefined>();
@@ -199,15 +202,18 @@ export function EditPatientDialog({ patient, open, onOpenChange, onSuccess }: Ed
             </div>
 
             <DialogFooter className="flex justify-between sm:justify-between">
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={() => setShowDeleteConfirm(true)}
-                disabled={updateMutation.isPending || deleteMutation.isPending}
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Excluir Paciente
-              </Button>
+              {/* Only admins can delete patients */}
+              {isAdmin && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  disabled={updateMutation.isPending || deleteMutation.isPending}
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Excluir Paciente
+                </Button>
+              )}
 
               <div className="flex gap-2">
                 <Button

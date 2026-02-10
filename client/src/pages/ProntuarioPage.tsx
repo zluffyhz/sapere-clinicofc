@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FileText, Save, Plus, Calendar, Upload, Edit, Trash2 } from "lucide-react";
+import { FileText, Save, Plus, Calendar, Upload, Edit, Trash2, Eye } from "lucide-react";
 import { PatientTherapistAssignments } from "@/components/PatientTherapistAssignments";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { format } from "date-fns";
@@ -39,6 +39,7 @@ export default function ProntuarioPage() {
   const isAdmin = user?.role === 'admin';
   
   const [editingEvolutionId, setEditingEvolutionId] = useState<number | null>(null);
+  const [viewingEvolutionId, setViewingEvolutionId] = useState<number | null>(null);
   const [editEvolutionData, setEditEvolutionData] = useState({
     sessionSummary: "",
     patientMood: "" as any,
@@ -566,10 +567,28 @@ export default function ProntuarioPage() {
                             {format(new Date(record.sessionDate), "dd/MM/yyyy", { locale: ptBR })}
                           </CardTitle>
                           <CardDescription>
+                            Registrado por: <span className="font-semibold">{(record as any).therapistName || "Desconhecido"}</span>
+                          </CardDescription>
+                          <CardDescription className="text-xs">
                             Humor: {record.patientMood || "Não informado"}
                           </CardDescription>
                         </div>
                         <div className="flex gap-2">
+                          {/* View button - always visible for all users */}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              if (viewingEvolutionId === record.id) {
+                                setViewingEvolutionId(null);
+                              } else {
+                                setViewingEvolutionId(record.id);
+                                setEditingEvolutionId(null); // Close edit mode if open
+                              }
+                            }}
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
                           {/* Only show edit button if user is admin or the therapist who created the evolution */}
                           {(isAdmin || record.therapistUserId === user?.id) && (
                             <Button
@@ -577,6 +596,7 @@ export default function ProntuarioPage() {
                               size="sm"
                               onClick={() => {
                                 setEditingEvolutionId(record.id);
+                                setViewingEvolutionId(null); // Close view mode if open
                                 setEditEvolutionData({
                                   sessionSummary: record.sessionSummary,
                                   patientMood: record.patientMood || "",
@@ -705,6 +725,44 @@ export default function ProntuarioPage() {
                               Cancelar
                             </Button>
                           </div>
+                        </div>
+                      ) : viewingEvolutionId === record.id ? (
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label className="font-semibold">Humor do Paciente</Label>
+                            <p className="text-sm text-gray-700">{record.patientMood || "Não informado"}</p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="font-semibold">Resumo da Sessão</Label>
+                            <p className="text-sm text-gray-700 whitespace-pre-wrap">{record.sessionSummary || "Não informado"}</p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="font-semibold">Atividades Realizadas</Label>
+                            <p className="text-sm text-gray-700 whitespace-pre-wrap">{record.patientBehavior || "Não informado"}</p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="font-semibold">Notas de Progresso</Label>
+                            <p className="text-sm text-gray-700 whitespace-pre-wrap">{record.goalsAchieved || "Não informado"}</p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="font-semibold">Objetivos para Próxima Sessão</Label>
+                            <p className="text-sm text-gray-700 whitespace-pre-wrap">{record.nextSessionPlan || "Não informado"}</p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="font-semibold">Nível de Colaboração</Label>
+                            <p className="text-sm text-gray-700">
+                              {record.collaborationLevel === 'full' ? 'Colaborou durante toda a sessão' :
+                               record.collaborationLevel === 'partial' ? 'Colaborou durante parte da sessão' :
+                               record.collaborationLevel === 'none' ? 'Não colaborou' : 'Não informado'}
+                            </p>
+                          </div>
+                          <Button
+                            variant="outline"
+                            onClick={() => setViewingEvolutionId(null)}
+                            className="w-full"
+                          >
+                            Fechar
+                          </Button>
                         </div>
                       ) : (
                         <p className="text-sm text-gray-700 whitespace-pre-wrap">

@@ -765,3 +765,8 @@
 
 - [x] Corrigir bug de timezone nas evoluções (salvando com dia anterior)
 - [x] Implementar permissão de edição apenas para terapeuta criadora da evolução
+
+## Melhorias de Segurança e Usabilidade no Prontuário (10/02/2026)
+- [x] Remover opção de exclusão de paciente para terapeutas (apenas admins podem excluir)
+- [x] Exibir nome do criador em todas as evoluções (transparência de autoria)
+- [x] Implementar visualização completa de evoluções de outras terapeutas (botão "Ver" funcional)
