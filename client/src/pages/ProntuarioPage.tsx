@@ -249,10 +249,14 @@ export default function ProntuarioPage() {
       return;
     }
 
+    // Create date in local timezone to avoid day shift
+    const [year, month, day] = evolutionData.sessionDate.split('-').map(Number);
+    const localDate = new Date(year, month - 1, day);
+    
     createEvolutionMutation.mutate({
       ...evolutionData,
       patientId,
-      sessionDate: new Date(evolutionData.sessionDate),
+      sessionDate: localDate,
     });
   };
 
@@ -566,23 +570,26 @@ export default function ProntuarioPage() {
                           </CardDescription>
                         </div>
                         <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setEditingEvolutionId(record.id);
-                              setEditEvolutionData({
-                                sessionSummary: record.sessionSummary,
-                                patientMood: record.patientMood || "",
-                                patientBehavior: record.patientBehavior || "",
-                                goalsAchieved: record.goalsAchieved || "",
-                                nextSessionPlan: record.nextSessionPlan || "",
-                                collaborationLevel: record.collaborationLevel,
-                              });
-                            }}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Button>
+                          {/* Only show edit button if user is admin or the therapist who created the evolution */}
+                          {(isAdmin || record.therapistUserId === user?.id) && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setEditingEvolutionId(record.id);
+                                setEditEvolutionData({
+                                  sessionSummary: record.sessionSummary,
+                                  patientMood: record.patientMood || "",
+                                  patientBehavior: record.patientBehavior || "",
+                                  goalsAchieved: record.goalsAchieved || "",
+                                  nextSessionPlan: record.nextSessionPlan || "",
+                                  collaborationLevel: record.collaborationLevel,
+                                });
+                              }}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                          )}
                           {/* BOTÃO REMOVIDO: Evoluções clínicas NUNCA podem ser deletadas (requisito legal) */}
                         </div>
                       </div>

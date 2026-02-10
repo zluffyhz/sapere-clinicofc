@@ -762,3 +762,6 @@
 - [x] Atualizar status do agendamento para "concluído" quando terapeuta registrar evolução
 
 - [x] Adicionar indicador visual verde para sessões concluídas na agenda
+
+- [x] Corrigir bug de timezone nas evoluções (salvando com dia anterior)
+- [x] Implementar permissão de edição apenas para terapeuta criadora da evolução

@@ -661,8 +661,22 @@ export const appRouter = router({
         nextSessionPlan: z.string().optional(),
         collaborationLevel: z.enum(["full", "partial", "none"]).optional(),
       }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ input, ctx }) => {
         const { id, ...data } = input;
+        
+        // Only the therapist who created the evolution or admins can edit it
+        const evolution = await db.getSessionRecordById(id);
+        if (!evolution) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Evolução não encontrada' });
+        }
+        
+        if (ctx.user.role !== 'admin' && evolution.therapistUserId !== ctx.user.id) {
+          throw new TRPCError({ 
+            code: 'FORBIDDEN', 
+            message: 'Apenas a terapeuta que criou esta evolução pode editá-la' 
+          });
+        }
+        
         await db.updateSessionRecord(id, data);
         return { success: true };
       }),
