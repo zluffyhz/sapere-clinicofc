@@ -646,9 +646,11 @@ export default function AgendaPage() {
                     <div
                       key={apt.id}
                       className={`p-4 rounded-lg border-l-4 transition-colors ${
-                        therapyTypeColors[apt.therapyType]?.bg || "bg-gray-50"
-                      } ${
-                        therapyTypeColors[apt.therapyType]?.border || "border-gray-300"
+                        apt.status === 'completed' 
+                          ? 'bg-green-50 border-green-500' 
+                          : `${therapyTypeColors[apt.therapyType]?.bg || "bg-gray-50"} ${
+                              therapyTypeColors[apt.therapyType]?.border || "border-gray-300"
+                            }`
                       } hover:shadow-md`}
                     >
                       <div className="flex items-start justify-between gap-4">

@@ -760,3 +760,5 @@
 - [x] URGENTE: Corrigir definitivamente bug de perda de foco no campo observações
 
 - [x] Atualizar status do agendamento para "concluído" quando terapeuta registrar evolução
+
+- [x] Adicionar indicador visual verde para sessões concluídas na agenda
