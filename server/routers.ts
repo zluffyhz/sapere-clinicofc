@@ -620,6 +620,9 @@ export const appRouter = router({
           therapistUserId: ctx.user.id,
         });
         
+        // Update appointment status to completed
+        await db.updateAppointmentStatus(input.appointmentId, 'completed');
+        
         // Send collaboration notification to family
         const patient = await db.getPatientById(input.patientId);
         if (patient) {

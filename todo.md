@@ -758,3 +758,5 @@
 - [x] Adicionar gráfico de colaboração ao Portal da Família
 
 - [x] URGENTE: Corrigir definitivamente bug de perda de foco no campo observações
+
+- [x] Atualizar status do agendamento para "concluído" quando terapeuta registrar evolução

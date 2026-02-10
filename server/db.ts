@@ -249,6 +249,13 @@ export async function updateAppointment(id: number, data: Partial<InsertAppointm
   return await db.update(appointments).set(data).where(eq(appointments.id, id));
 }
 
+export async function updateAppointmentStatus(id: number, status: 'scheduled' | 'completed' | 'cancelled' | 'rescheduled') {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return await db.update(appointments).set({ status }).where(eq(appointments.id, id));
+}
+
 export async function deleteAppointment(id: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
