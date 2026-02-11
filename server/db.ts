@@ -656,8 +656,7 @@ export async function getTodayAppointmentsForAttendance() {
     .where(
       and(
         gte(appointments.startTime, today),
-        lte(appointments.startTime, tomorrow),
-        eq(appointments.status, 'scheduled')
+        lte(appointments.startTime, tomorrow)
       )
     )
     .orderBy(appointments.startTime);

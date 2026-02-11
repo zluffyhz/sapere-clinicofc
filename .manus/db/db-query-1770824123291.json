@@ -1,0 +1,28 @@
+{
+  "query": "SELECT id, patientId, therapistUserId, therapyType, startTime, endTime, status FROM appointments WHERE DATE(startTime) = CURDATE() ORDER BY startTime;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, patientId, therapistUserId, therapyType, startTime, endTime, status FROM appointments WHERE DATE(startTime) = CURDATE() ORDER BY startTime;",
+  "rows": [
+    {
+      "id": "870017",
+      "patientId": "870002",
+      "therapistUserId": "4530139",
+      "therapyType": "nutricao",
+      "startTime": "2026-02-11 15:00:00",
+      "endTime": "2026-02-11 15:50:00",
+      "status": "scheduled"
+    },
+    {
+      "id": "900002",
+      "patientId": "750001",
+      "therapistUserId": "4530139",
+      "therapyType": "nutricao",
+      "startTime": "2026-02-11 18:00:00",
+      "endTime": "2026-02-11 18:50:00",
+      "status": "scheduled"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tpatientId\ttherapistUserId\ttherapyType\tstartTime\tendTime\tstatus\n870017\t870002\t4530139\tnutricao\t2026-02-11 15:00:00\t2026-02-11 15:50:00\tscheduled\n900002\t750001\t4530139\tnutricao\t2026-02-11 18:00:00\t2026-02-11 18:50:00\tscheduled\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

@@ -781,3 +781,31 @@
 - [x] Implementar badge de alerta na página de Prontuários
 - [x] Adicionar lógica de remoção automática ao completar evolução
 - [x] Testar fluxo completo com webapp-testing
+
+## Revisão do Sistema de Notificações de Agendamento (11/02/2026)
+- [x] Analisar código do sistema de notificações de agendamento
+- [x] Identificar quais eventos geram notificações
+- [x] Testar notificações de criação de agendamento
+- [x] Testar notificações de alteração de agendamento
+- [x] Testar notificações de cancelamento de agendamento
+- [x] Verificar se notificações chegam para admins e terapeutas corretos
+- [x] Documentar problemas encontrados
+- [ ] Propor e implementar correções necessárias
+
+## Alteração de Senha de Usuária (11/02/2026)
+- [x] Alterar senha da terapeuta marciaratis29@gmail.com para nova senha
+
+## Verificação de Controle de Presença (11/02/2026)
+- [x] Analisar código da página de Controle de Presença
+- [x] Testar visualização de lista de presença
+- [x] Testar registro de presença
+- [x] Testar filtros e busca
+- [x] Verificar permissões de acesso (admin/terapeuta/família)
+- [x] Documentar problemas encontrados
+
+## Correção de Agendamentos Faltando no Controle de Presença (11/02/2026)
+- [x] Verificar agendamentos de hoje no banco de dados
+- [x] Analisar query getTodayAppointmentsForAttendance
+- [x] Identificar causa dos agendamentos faltando
+- [x] Corrigir query ou lógica do backend
+- [x] Testar e validar correção
