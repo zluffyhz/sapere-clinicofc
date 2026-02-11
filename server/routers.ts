@@ -678,7 +678,17 @@ export const appRouter = router({
         }
         
         await db.updateSessionRecord(id, data);
-        return { success: true };
+        
+        // Check if evolution is now complete and mark notifications as read
+        const updatedEvolution = await db.getSessionRecordById(id);
+        if (updatedEvolution && db.isEvolutionComplete(updatedEvolution)) {
+          await db.markEvolutionNotificationsAsRead(id);
+        }
+        
+        return { 
+          success: true,
+          isComplete: updatedEvolution ? db.isEvolutionComplete(updatedEvolution) : false 
+        };
       }),
 
     getCollaborationHistory: protectedProcedure
@@ -752,6 +762,24 @@ export const appRouter = router({
     markAllAsRead: protectedProcedure.mutation(async ({ ctx }) => {
       await db.markAllNotificationsAsRead(ctx.user.id);
       return { success: true };
+    }),
+
+    // Get incomplete evolutions for therapist
+    getIncompleteEvolutions: therapistProcedure.query(async ({ ctx }) => {
+      const incompleteEvos = await db.getIncompleteEvolutionsByTherapist(ctx.user.id);
+      
+      // Get patient names for each evolution
+      const evosWithPatients = await Promise.all(
+        incompleteEvos.map(async (evo) => {
+          const patient = await db.getPatientById(evo.patientId);
+          return {
+            ...evo,
+            patientName: patient?.name || 'Paciente Desconhecido',
+          };
+        })
+      );
+      
+      return evosWithPatients;
     }),
   }),
 

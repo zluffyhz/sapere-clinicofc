@@ -169,9 +169,17 @@ export default function ProntuarioPage() {
   });
 
   const updateEvolutionMutation = trpc.evolutions.update.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
       utils.evolutions.listByPatient.invalidate({ patientId: patientId! });
-      toast.success("Evolução atualizada com sucesso!");
+      
+      // If evolution is now complete, invalidate incomplete evolutions query
+      if (data.isComplete) {
+        utils.notifications.getIncompleteEvolutions.invalidate();
+        toast.success("✅ Evolução completa e atualizada com sucesso!");
+      } else {
+        toast.success("Evolução atualizada com sucesso!");
+      }
+      
       setEditingEvolutionId(null);
       setEditEvolutionData({
         sessionSummary: "",

@@ -2,7 +2,7 @@ import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { FileText, Search, Calendar, User } from "lucide-react";
+import { FileText, Search, Calendar, User, AlertTriangle } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Link } from "wouter";
@@ -11,6 +11,12 @@ import { useState } from "react";
 export default function ProntuariosListPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const { data: patients, isLoading } = trpc.patients.list.useQuery();
+  const { data: incompleteEvolutions } = trpc.notifications.getIncompleteEvolutions.useQuery();
+  
+  // Create a map of patient IDs with incomplete evolutions
+  const patientsWithIncompleteEvos = new Set(
+    incompleteEvolutions?.map(evo => evo.patientId) || []
+  );
 
   const filteredPatients = patients?.filter((patient) =>
     patient.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -94,10 +100,17 @@ export default function ProntuariosListPage() {
                           </p>
                         )}
 
-                        <Button variant="outline" size="sm" className="w-full">
-                          <FileText className="h-4 w-4 mr-2" />
-                          Abrir Prontuário
-                        </Button>
+                        <div className="relative">
+                          <Button variant="outline" size="sm" className="w-full">
+                            <FileText className="h-4 w-4 mr-2" />
+                            Abrir Prontuário
+                          </Button>
+                          {patientsWithIncompleteEvos.has(patient.id) && (
+                            <div className="absolute -top-2 -right-2 bg-amber-500 text-white rounded-full p-1" title="Evolução incompleta pendente">
+                              <AlertTriangle className="h-3 w-3" />
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

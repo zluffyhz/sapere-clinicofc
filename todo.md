@@ -770,3 +770,14 @@
 - [x] Remover opção de exclusão de paciente para terapeutas (apenas admins podem excluir)
 - [x] Exibir nome do criador em todas as evoluções (transparência de autoria)
 - [x] Implementar visualização completa de evoluções de outras terapeutas (botão "Ver" funcional)
+
+## Sistema de Notificações para Evoluções Incompletas (10/02/2026)
+- [x] Adicionar tabela `notifications` ao schema Drizzle
+- [x] Criar função `isEvolutionComplete()` para validar completude
+- [x] Implementar tRPC procedures de notificações
+- [x] Criar endpoint de cron `/api/cron/check-incomplete-evolutions`
+- [x] Integrar validação de completude ao salvar evolução
+- [x] Adicionar query de notificações ao header existente
+- [x] Implementar badge de alerta na página de Prontuários
+- [x] Adicionar lógica de remoção automática ao completar evolução
+- [x] Testar fluxo completo com webapp-testing

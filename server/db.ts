@@ -435,6 +435,79 @@ export async function markAllNotificationsAsRead(userId: number) {
   return await db.update(notifications).set({ isRead: true }).where(eq(notifications.userId, userId));
 }
 
+// ============ EVOLUTION COMPLETENESS CHECKS ============
+
+export function isEvolutionComplete(evolution: any): boolean {
+  return !!(
+    evolution.sessionSummary?.trim() &&
+    evolution.patientMood?.trim() &&
+    evolution.patientBehavior?.trim() &&
+    evolution.goalsAchieved?.trim() &&
+    evolution.nextSessionPlan?.trim() &&
+    evolution.collaborationLevel
+  );
+}
+
+export async function getIncompleteEvolutions() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  // Get evolutions created more than 24 hours ago
+  const yesterday = new Date();
+  yesterday.setHours(yesterday.getHours() - 24);
+  
+  const allEvolutions = await db.select()
+    .from(evolutions)
+    .where(lt(evolutions.createdAt, yesterday));
+  
+  // Filter incomplete ones
+  return allEvolutions.filter(evo => !isEvolutionComplete(evo));
+}
+
+export async function getIncompleteEvolutionsByTherapist(therapistUserId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const allEvolutions = await db.select()
+    .from(evolutions)
+    .where(eq(evolutions.therapistUserId, therapistUserId));
+  
+  return allEvolutions.filter(evo => !isEvolutionComplete(evo));
+}
+
+export async function hasUnreadNotificationForEvolution(userId: number, evolutionId: number) {
+  const db = await getDb();
+  if (!db) return false;
+  
+  const result = await db.select()
+    .from(notifications)
+    .where(
+      and(
+        eq(notifications.userId, userId),
+        eq(notifications.evolutionId, evolutionId),
+        eq(notifications.isRead, false),
+        eq(notifications.type, 'incomplete_evolution')
+      )
+    )
+    .limit(1);
+  
+  return result.length > 0;
+}
+
+export async function markEvolutionNotificationsAsRead(evolutionId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return await db.update(notifications)
+    .set({ isRead: true })
+    .where(
+      and(
+        eq(notifications.evolutionId, evolutionId),
+        eq(notifications.type, 'incomplete_evolution')
+      )
+    );
+}
+
 // ============ ADMIN USER MANAGEMENT ============
 
 export async function getAllUsers() {

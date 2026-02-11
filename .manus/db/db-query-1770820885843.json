@@ -1,0 +1,9 @@
+{
+  "query": "\nALTER TABLE notifications \nADD COLUMN evolutionId INT AFTER relatedId;\n\nALTER TABLE notifications\nMODIFY COLUMN type ENUM('new_document', 'schedule_change', 'new_session_record', 'attendance', 'general', 'incomplete_evolution') NOT NULL;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \nALTER TABLE notifications \nADD COLUMN evolutionId INT AFTER relatedId;\n\nALTER TABLE notifications\nMODIFY COLUMN type ENUM('new_document', 'schedule_change', 'new_session_record', 'attendance', 'general', 'incomplete_evolution') NOT NULL;\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 767
+}

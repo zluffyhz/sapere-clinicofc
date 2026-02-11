@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { notifyOwner } from "./notification";
 import { adminProcedure, publicProcedure, router } from "./trpc";
+import { checkIncompleteEvolutions } from "../cron";
 
 export const systemRouter = router({
   health: publicProcedure
@@ -25,5 +26,12 @@ export const systemRouter = router({
       return {
         success: delivered,
       } as const;
+    }),
+
+  // Cron endpoint to check incomplete evolutions (should be called daily at 8 AM)
+  checkIncompleteEvolutions: publicProcedure
+    .mutation(async () => {
+      const result = await checkIncompleteEvolutions();
+      return result;
     }),
 });
