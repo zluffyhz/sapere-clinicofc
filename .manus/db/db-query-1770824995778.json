@@ -1,0 +1,46 @@
+{
+  "query": "\nSELECT \n  att.id,\n  att.scheduledDate,\n  att.status,\n  att.notes,\n  p.name as patient_name,\n  YEAR(att.scheduledDate) as year,\n  MONTH(att.scheduledDate) as month\nFROM attendance att\nJOIN patients p ON att.patientId = p.id\nWHERE p.name LIKE '%Antonella%Salles%'\nORDER BY att.scheduledDate;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \nSELECT \n  att.id,\n  att.scheduledDate,\n  att.status,\n  att.notes,\n  p.name as patient_name,\n  YEAR(att.scheduledDate) as year,\n  MONTH(att.scheduledDate) as month\nFROM attendance att\nJOIN patients p ON att.patientId = p.id\nWHERE p.name LIKE '%Antonella%Salles%'\nORDER BY att.scheduledDate;\n",
+  "rows": [
+    {
+      "id": "120005",
+      "scheduledDate": "2026-02-09 18:00:00",
+      "status": "present",
+      "notes": "Presença registrada para teste de relatório",
+      "patient_name": "Antonella Salles Romanini",
+      "year": "2026",
+      "month": "2"
+    },
+    {
+      "id": "120004",
+      "scheduledDate": "2026-02-09 19:00:00",
+      "status": "present",
+      "notes": "Presença registrada para teste de relatório",
+      "patient_name": "Antonella Salles Romanini",
+      "year": "2026",
+      "month": "2"
+    },
+    {
+      "id": "120006",
+      "scheduledDate": "2026-02-10 20:00:00",
+      "status": "present",
+      "notes": "Presença registrada para teste de relatório",
+      "patient_name": "Antonella Salles Romanini",
+      "year": "2026",
+      "month": "2"
+    },
+    {
+      "id": "120007",
+      "scheduledDate": "2026-02-10 21:00:00",
+      "status": "present",
+      "notes": "Presença registrada para teste de relatório",
+      "patient_name": "Antonella Salles Romanini",
+      "year": "2026",
+      "month": "2"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tscheduledDate\tstatus\tnotes\tpatient_name\tyear\tmonth\n120005\t2026-02-09 18:00:00\tpresent\tPresença registrada para teste de relatório\tAntonella Salles Romanini\t2026\t2\n120004\t2026-02-09 19:00:00\tpresent\tPresença registrada para teste de relatório\tAntonella Salles Romanini\t2026\t2\n120006\t2026-02-10 20:00:00\tpresent\tPresença registrada para teste de relatório\tAntonella Salles Romanini\t2026\t2\n120007\t2026-02-10 21:00:00\tpresent\tPresença registrada para teste de relatório\tAntonella Salles Romanini\t2026\t2\n",
+  "stderr": "",
+  "execution_time_ms": 63
+}

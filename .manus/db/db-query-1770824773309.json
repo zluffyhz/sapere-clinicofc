@@ -1,0 +1,9 @@
+{
+  "query": "\nSELECT \n  a.id,\n  a.startTime,\n  a.therapyType,\n  a.status,\n  p.name as patient_name\nFROM appointments a\nJOIN patients p ON a.patientId = p.id\nWHERE p.name LIKE '%Antonella%Salles%'\n  AND YEAR(a.startTime) = 2026\n  AND MONTH(a.startTime) = 1\nORDER BY a.startTime;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \nSELECT \n  a.id,\n  a.startTime,\n  a.therapyType,\n  a.status,\n  p.name as patient_name\nFROM appointments a\nJOIN patients p ON a.patientId = p.id\nWHERE p.name LIKE '%Antonella%Salles%'\n  AND YEAR(a.startTime) = 2026\n  AND MONTH(a.startTime) = 1\nORDER BY a.startTime;\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 58
+}

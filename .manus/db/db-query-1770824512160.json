@@ -1,0 +1,26 @@
+{
+  "query": "\nSELECT \n  a.id as appointment_id,\n  a.startTime,\n  p.name as patient_name,\n  att.status,\n  att.notes,\n  att.createdAt as registered_at\nFROM appointments a\nLEFT JOIN patients p ON a.patientId = p.id\nLEFT JOIN attendance att ON a.id = att.appointmentId\nWHERE DATE(a.startTime) = CURDATE()\nORDER BY a.startTime;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \nSELECT \n  a.id as appointment_id,\n  a.startTime,\n  p.name as patient_name,\n  att.status,\n  att.notes,\n  att.createdAt as registered_at\nFROM appointments a\nLEFT JOIN patients p ON a.patientId = p.id\nLEFT JOIN attendance att ON a.id = att.appointmentId\nWHERE DATE(a.startTime) = CURDATE()\nORDER BY a.startTime;\n",
+  "rows": [
+    {
+      "appointment_id": "870017",
+      "startTime": "2026-02-11 15:00:00",
+      "patient_name": "ABIGAIL THIRZA DA ROCHA PEIXOTO",
+      "status": "present",
+      "notes": "Presença confirmada retroativamente",
+      "registered_at": "2026-02-11 15:41:42"
+    },
+    {
+      "appointment_id": "900002",
+      "startTime": "2026-02-11 18:00:00",
+      "patient_name": "Maria Julia Gama Alves Torres",
+      "status": "present",
+      "notes": "Presença confirmada retroativamente",
+      "registered_at": "2026-02-11 15:41:42"
+    }
+  ],
+  "messages": [],
+  "stdout": "appointment_id\tstartTime\tpatient_name\tstatus\tnotes\tregistered_at\n870017\t2026-02-11 15:00:00\tABIGAIL THIRZA DA ROCHA PEIXOTO\tpresent\tPresença confirmada retroativamente\t2026-02-11 15:41:42\n900002\t2026-02-11 18:00:00\tMaria Julia Gama Alves Torres\tpresent\tPresença confirmada retroativamente\t2026-02-11 15:41:42\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

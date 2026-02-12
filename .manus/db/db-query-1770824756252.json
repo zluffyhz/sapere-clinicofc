@@ -1,0 +1,14 @@
+{
+  "query": "SELECT id, name FROM patients WHERE name LIKE '%Antonella%Salles%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name FROM patients WHERE name LIKE '%Antonella%Salles%';",
+  "rows": [
+    {
+      "id": "750003",
+      "name": "Antonella Salles Romanini"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\n750003\tAntonella Salles Romanini\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

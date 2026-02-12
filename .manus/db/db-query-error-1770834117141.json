@@ -1,0 +1,8 @@
+{
+  "query": "\nSELECT \n  e.id,\n  e.sessionSummary,\n  e.createdByUserId,\n  u.name as therapist_name,\n  p.name as patient_name\nFROM evolutions e\nLEFT JOIN users u ON e.createdByUserId = u.id\nLEFT JOIN patients p ON e.patientId = p.id\nLIMIT 5;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \nSELECT \n  e.id,\n  e.sessionSummary,\n  e.createdByUserId,\n  u.name as therapist_name,\n  p.name as patient_name\nFROM evolutions e\nLEFT JOIN users u ON e.createdByUserId = u.id\nLEFT JOIN patients p ON e.patientId = p.id\nLIMIT 5;\n",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 2: Unknown column 'e.createdbyuserid' in 'on clause'"
+  ]
+}

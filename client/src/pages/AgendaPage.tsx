@@ -48,6 +48,7 @@ type AppointmentFormData = {
   endTime: string;
   notes: string;
   status?: "scheduled" | "completed" | "cancelled" | "rescheduled";
+  replicateWeekly?: boolean;
 };
 
 export default function AgendaPage() {
@@ -78,6 +79,7 @@ export default function AgendaPage() {
     endTime: "09:50",
     notes: "",
     status: "scheduled",
+    replicateWeekly: false,
   });
 
   // Calculate date range based on view mode
@@ -108,8 +110,12 @@ export default function AgendaPage() {
 
   // Create mutation
   const createAppointmentMutation = trpc.appointments.create.useMutation({
-    onSuccess: () => {
-      toast.success("Agendamento criado e adicionado ao calendário!");
+    onSuccess: (data) => {
+      if (data.replicatedCount && data.replicatedCount > 0) {
+        toast.success(`Agendamento criado com sucesso! ${data.replicatedCount} agendamentos adicionais foram replicados para as próximas ${data.replicatedCount} semanas.`);
+      } else {
+        toast.success("Agendamento criado e adicionado ao calendário!");
+      }
       setIsCreateModalOpen(false);
       resetForm();
       utils.appointments.listByDateRange.invalidate();
@@ -175,6 +181,7 @@ export default function AgendaPage() {
       startTime: startDateTime,
       endTime: endDateTime,
       notes: formData.notes || undefined,
+      replicateWeekly: formData.replicateWeekly || false,
     });
   };
 
@@ -426,6 +433,24 @@ export default function AgendaPage() {
           }
         />
       </div>
+      
+      {/* Replicate Weekly - Admin Only */}
+      {!isEdit && isAdmin && (
+        <div className="flex items-center space-x-2 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <input
+            type="checkbox"
+            id="replicateWeekly"
+            checked={formData.replicateWeekly || false}
+            onChange={(e) =>
+              setFormData({ ...formData, replicateWeekly: e.target.checked })
+            }
+            className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+          />
+          <Label htmlFor="replicateWeekly" className="text-sm font-medium text-gray-900 cursor-pointer">
+            Replicar este agendamento semanalmente pelos próximos 30 dias (4 semanas)
+          </Label>
+        </div>
+      )}
     </div>
   );
 

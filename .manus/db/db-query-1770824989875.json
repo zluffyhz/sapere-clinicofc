@@ -1,0 +1,9 @@
+{
+  "query": "\nINSERT INTO attendance (appointmentId, patientId, familyUserId, therapistUserId, therapyType, scheduledDate, status, notes, markedByUserId, createdAt, updatedAt)\nSELECT \n  a.id,\n  a.patientId,\n  p.familyUserId,\n  a.therapistUserId,\n  a.therapyType,\n  a.startTime,\n  'present',\n  'Presença registrada para teste de relatório',\n  (SELECT id FROM users WHERE role = 'admin' LIMIT 1),\n  NOW(),\n  NOW()\nFROM appointments a\nJOIN patients p ON a.patientId = p.id\nWHERE p.name LIKE '%Antonella%Salles%'\n  AND YEAR(a.startTime) = 2026\n  AND MONTH(a.startTime) = 2;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \nINSERT INTO attendance (appointmentId, patientId, familyUserId, therapistUserId, therapyType, scheduledDate, status, notes, markedByUserId, createdAt, updatedAt)\nSELECT \n  a.id,\n  a.patientId,\n  p.familyUserId,\n  a.therapistUserId,\n  a.therapyType,\n  a.startTime,\n  'present',\n  'Presença registrada para teste de relatório',\n  (SELECT id FROM users WHERE role = 'admin' LIMIT 1),\n  NOW(),\n  NOW()\nFROM appointments a\nJOIN patients p ON a.patientId = p.id\nWHERE p.name LIKE '%Antonella%Salles%'\n  AND YEAR(a.startTime) = 2026\n  AND MONTH(a.startTime) = 2;\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 76
+}

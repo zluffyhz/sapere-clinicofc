@@ -272,6 +272,7 @@ export const appRouter = router({
         startTime: z.date(),
         endTime: z.date(),
         notes: z.string().optional(),
+        replicateWeekly: z.boolean().optional(), // Admin only: replicate weekly for 30 days
       }))
       .mutation(async ({ input, ctx }) => {
         // Determine therapist: admin can specify, therapist uses self, family not allowed
@@ -341,7 +342,78 @@ export const appRouter = router({
           });
         }
         
-        return { success: true, id: result[0].insertId };
+        // If replicateWeekly is true and user is admin, create weekly appointments for 30 days
+        const createdIds = [result[0].insertId];
+        
+        if (input.replicateWeekly && ctx.user.role === 'admin') {
+          const appointmentsToCreate = [];
+          const currentDate = new Date(input.startTime);
+          
+          // Create appointments for the next 4 weeks (approximately 30 days)
+          for (let week = 1; week <= 4; week++) {
+            const newStartTime = new Date(currentDate);
+            newStartTime.setDate(currentDate.getDate() + (week * 7));
+            
+            const newEndTime = new Date(input.endTime);
+            newEndTime.setDate(input.endTime.getDate() + (week * 7));
+            
+            // Check for conflicts before adding
+            const weekConflicts = await db.checkScheduleConflicts(
+              newStartTime,
+              newEndTime,
+              therapistUserId,
+              input.patientId
+            );
+            
+            // Only create if no conflicts
+            if (!weekConflicts.therapistConflict && !weekConflicts.patientConflict) {
+              appointmentsToCreate.push({
+                patientId: input.patientId,
+                therapistUserId,
+                therapyType: input.therapyType,
+                startTime: newStartTime,
+                endTime: newEndTime,
+                notes: input.notes,
+                status: 'scheduled' as const,
+              });
+            }
+          }
+          
+          // Create all appointments
+          for (const appointment of appointmentsToCreate) {
+            const weekResult = await db.createAppointment(appointment);
+            createdIds.push(weekResult[0].insertId);
+            
+            // Create notification for family for each replicated appointment
+            if (patient) {
+              await db.createNotification({
+                userId: patient.familyUserId,
+                type: 'schedule_change',
+                title: 'Nova sessão agendada',
+                message: `Uma nova sessão de ${appointment.therapyType} foi agendada para ${appointment.startTime.toLocaleDateString('pt-BR')}`,
+                relatedId: weekResult[0].insertId,
+              });
+            }
+            
+            // Notify therapist if different from creator
+            if (therapistUserId !== ctx.user.id) {
+              await db.createNotification({
+                userId: therapistUserId,
+                type: 'schedule_change',
+                title: 'Nova sessão agendada',
+                message: `Uma nova sessão de ${appointment.therapyType} foi agendada com ${patient?.name || 'paciente'} em ${appointment.startTime.toLocaleDateString('pt-BR')} às ${appointment.startTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`,
+                relatedId: weekResult[0].insertId,
+              });
+            }
+          }
+        }
+        
+        return { 
+          success: true, 
+          id: result[0].insertId,
+          replicatedCount: createdIds.length - 1, // Exclude the original
+          totalCreated: createdIds.length,
+        };
       }),
 
     listByDateRange: protectedProcedure

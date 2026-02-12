@@ -809,3 +809,33 @@
 - [x] Identificar causa dos agendamentos faltando
 - [x] Corrigir query ou lógica do backend
 - [x] Testar e validar correção
+
+## Registro de Presenças Confirmadas (11/02/2026)
+- [x] Verificar agendamentos de hoje sem registro de presença
+- [x] Registrar presença confirmada para cada agendamento pendente
+
+## Investigação de Presenças Não Aparecendo no Relatório (11/02/2026)
+- [x] Verificar registros de presença da paciente Antonella Salles no banco
+- [x] Analisar query de geração de relatório mensal
+- [x] Identificar causa das presenças não aparecerem
+- [x] Corrigir query ou lógica de relatório
+- [x] Testar geração de relatório
+
+## Verificação e Debug das Alterações Principais (11/02/2026)
+- [x] Verificar exibição de nome do criador em evoluções
+- [x] Verificar botão "Ver" para visualização de evoluções de colegas
+- [x] Verificar remoção de opção de exclusão de pacientes para terapeutas
+- [x] Verificar detecção de evoluções incompletas
+- [x] Verificar criação de notificações para evoluções incompletas
+- [x] Verificar badge de alerta na página de Prontuários
+- [x] Verificar remoção automática de notificações ao completar evolução
+- [x] Verificar exibição de todos os agendamentos no Controle de Presença
+- [x] Documentar e corrigir problemas encontrados
+
+## Replicação de Agendamentos Recorrentes (11/02/2026)
+- [x] Analisar código atual do formulário de agendamento
+- [x] Implementar lógica backend para replicar agendamentos semanalmente por 30 dias
+- [x] Adicionar checkbox "Replicar semanalmente por 30 dias" no formulário (apenas admins)
+- [x] Validar conflitos de horário para cada agendamento replicado
+- [x] Testar criação de agendamentos recorrentes
+- [x] Verificar notificações para agendamentos replicados

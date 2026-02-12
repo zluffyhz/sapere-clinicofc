@@ -1,0 +1,48 @@
+{
+  "query": "\nSELECT \n  e.id,\n  e.sessionSummary,\n  e.therapistUserId,\n  u.name as therapist_name,\n  p.name as patient_name,\n  e.createdAt\nFROM evolutions e\nLEFT JOIN users u ON e.therapistUserId = u.id\nLEFT JOIN patients p ON e.patientId = p.id\nORDER BY e.createdAt DESC\nLIMIT 5;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \nSELECT \n  e.id,\n  e.sessionSummary,\n  e.therapistUserId,\n  u.name as therapist_name,\n  p.name as patient_name,\n  e.createdAt\nFROM evolutions e\nLEFT JOIN users u ON e.therapistUserId = u.id\nLEFT JOIN patients p ON e.patientId = p.id\nORDER BY e.createdAt DESC\nLIMIT 5;\n",
+  "rows": [
+    {
+      "id": "720007",
+      "sessionSummary": "Ela estava bem. Engajada e cooperativa ",
+      "therapistUserId": "468419",
+      "therapist_name": "Marcely Almeida Silva",
+      "patient_name": "AYLA PIETRA DINIZ GOMES",
+      "createdAt": "2026-02-11 15:50:29"
+    },
+    {
+      "id": "720004",
+      "sessionSummary": "Last week session",
+      "therapistUserId": "2",
+      "therapist_name": "NULL",
+      "patient_name": "Test Patient Collab 2",
+      "createdAt": "2026-02-11 14:47:10"
+    },
+    {
+      "id": "720005",
+      "sessionSummary": "Last month session",
+      "therapistUserId": "2",
+      "therapist_name": "NULL",
+      "patient_name": "Test Patient Collab 1",
+      "createdAt": "2026-02-11 14:47:10"
+    },
+    {
+      "id": "720003",
+      "sessionSummary": "Yesterday session",
+      "therapistUserId": "2",
+      "therapist_name": "NULL",
+      "patient_name": "Test Patient Collab 1",
+      "createdAt": "2026-02-11 14:47:10"
+    }
+  ],
+  "messages": [
+    "720006\tRecebi paciente das mãos da mãe na recepção da clínica.",
+    "Paciente estava bem responsivo, atendeu a toda demanda que foi proposta.",
+    "Realizamos treino de marcha em escada horizontal suspensa, onde o objeito era elevação de joelho , equilíbrio e controle postural.",
+    "Utilizamos tambem outros acessórios instáveis no percurso.",
+    "Deixei paciente aos cuidados da mãe e relatei o ocorrido.\t2725474\tVitória Santos Lira\tLORENZO SALLES ROMANINI\t2026-02-11 14:57:56"
+  ],
+  "stdout": "id\tsessionSummary\ttherapistUserId\ttherapist_name\tpatient_name\tcreatedAt\n720007\tEla estava bem. Engajada e cooperativa \t468419\tMarcely Almeida Silva\tAYLA PIETRA DINIZ GOMES\t2026-02-11 15:50:29\n720006\tRecebi paciente das mãos da mãe na recepção da clínica.\n\nPaciente estava bem responsivo, atendeu a toda demanda que foi proposta.\n\nRealizamos treino de marcha em escada horizontal suspensa, onde o objeito era elevação de joelho , equilíbrio e controle postural.\n\nUtilizamos tambem outros acessórios instáveis no percurso.\n\nDeixei paciente aos cuidados da mãe e relatei o ocorrido.\t2725474\tVitória Santos Lira\tLORENZO SALLES ROMANINI\t2026-02-11 14:57:56\n720004\tLast week session\t2\tNULL\tTest Patient Collab 2\t2026-02-11 14:47:10\n720005\tLast month session\t2\tNULL\tTest Patient Collab 1\t2026-02-11 14:47:10\n720003\tYesterday session\t2\tNULL\tTest Patient Collab 1\t2026-02-11 14:47:10\n",
+  "stderr": "",
+  "execution_time_ms": 62
+}

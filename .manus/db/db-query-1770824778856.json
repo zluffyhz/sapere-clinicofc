@@ -1,0 +1,46 @@
+{
+  "query": "\nSELECT \n  a.id,\n  a.startTime,\n  a.therapyType,\n  a.status,\n  p.name as patient_name,\n  YEAR(a.startTime) as year,\n  MONTH(a.startTime) as month\nFROM appointments a\nJOIN patients p ON a.patientId = p.id\nWHERE p.name LIKE '%Antonella%Salles%'\nORDER BY a.startTime DESC\nLIMIT 20;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \nSELECT \n  a.id,\n  a.startTime,\n  a.therapyType,\n  a.status,\n  p.name as patient_name,\n  YEAR(a.startTime) as year,\n  MONTH(a.startTime) as month\nFROM appointments a\nJOIN patients p ON a.patientId = p.id\nWHERE p.name LIKE '%Antonella%Salles%'\nORDER BY a.startTime DESC\nLIMIT 20;\n",
+  "rows": [
+    {
+      "id": "870028",
+      "startTime": "2026-02-10 21:00:00",
+      "therapyType": "outro",
+      "status": "completed",
+      "patient_name": "Antonella Salles Romanini",
+      "year": "2026",
+      "month": "2"
+    },
+    {
+      "id": "870010",
+      "startTime": "2026-02-10 20:00:00",
+      "therapyType": "neuropsicopedagogia",
+      "status": "completed",
+      "patient_name": "Antonella Salles Romanini",
+      "year": "2026",
+      "month": "2"
+    },
+    {
+      "id": "840001",
+      "startTime": "2026-02-09 19:00:00",
+      "therapyType": "fisioterapia",
+      "status": "scheduled",
+      "patient_name": "Antonella Salles Romanini",
+      "year": "2026",
+      "month": "2"
+    },
+    {
+      "id": "840008",
+      "startTime": "2026-02-09 18:00:00",
+      "therapyType": "neuropsicopedagogia",
+      "status": "completed",
+      "patient_name": "Antonella Salles Romanini",
+      "year": "2026",
+      "month": "2"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tstartTime\ttherapyType\tstatus\tpatient_name\tyear\tmonth\n870028\t2026-02-10 21:00:00\toutro\tcompleted\tAntonella Salles Romanini\t2026\t2\n870010\t2026-02-10 20:00:00\tneuropsicopedagogia\tcompleted\tAntonella Salles Romanini\t2026\t2\n840001\t2026-02-09 19:00:00\tfisioterapia\tscheduled\tAntonella Salles Romanini\t2026\t2\n840008\t2026-02-09 18:00:00\tneuropsicopedagogia\tcompleted\tAntonella Salles Romanini\t2026\t2\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}
