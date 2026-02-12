@@ -302,10 +302,16 @@ export const appRouter = router({
           });
         }
 
+        // Generate seriesId if replicating weekly
+        const seriesId = (input.replicateWeekly && ctx.user.role === 'admin') 
+          ? `series-${Date.now()}-${Math.random().toString(36).substring(7)}`
+          : undefined;
+        
         const result = await db.createAppointment({
           ...input,
           therapistUserId,
           status: 'scheduled',
+          seriesId,
         });
         
         // Create notification for family
@@ -375,6 +381,7 @@ export const appRouter = router({
                 endTime: newEndTime,
                 notes: input.notes,
                 status: 'scheduled' as const,
+                seriesId, // Link to the same series
               });
             }
           }
@@ -528,6 +535,66 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         await db.deleteAppointment(input.id);
         return { success: true };
+      }),
+
+    updateSeries: therapistProcedure
+      .input(z.object({
+        seriesId: z.string(),
+        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]).optional(),
+        notes: z.string().optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const { seriesId, ...updates } = input;
+        
+        // Get all appointments in the series
+        const seriesAppointments = await db.getAppointmentsBySeries(seriesId);
+        
+        if (seriesAppointments.length === 0) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Série de agendamentos não encontrada',
+          });
+        }
+        
+        // Update all appointments in the series
+        for (const appointment of seriesAppointments) {
+          await db.updateAppointment(appointment.id, updates);
+        }
+        
+        return { success: true, updatedCount: seriesAppointments.length };
+      }),
+
+    cancelSeries: therapistProcedure
+      .input(z.object({ seriesId: z.string() }))
+      .mutation(async ({ input, ctx }) => {
+        // Get all appointments in the series
+        const seriesAppointments = await db.getAppointmentsBySeries(input.seriesId);
+        
+        if (seriesAppointments.length === 0) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Série de agendamentos não encontrada',
+          });
+        }
+        
+        // Cancel all appointments in the series
+        for (const appointment of seriesAppointments) {
+          await db.updateAppointment(appointment.id, { status: 'cancelled' });
+          
+          // Notify family about cancellation
+          const patient = await db.getPatientById(appointment.patientId);
+          if (patient) {
+            await db.createNotification({
+              userId: patient.familyUserId,
+              type: 'schedule_change',
+              title: 'Sessão cancelada',
+              message: `A sessão de ${appointment.therapyType} agendada para ${appointment.startTime.toLocaleDateString('pt-BR')} foi cancelada`,
+              relatedId: appointment.id,
+            });
+          }
+        }
+        
+        return { success: true, cancelledCount: seriesAppointments.length };
       }),
   }),
 

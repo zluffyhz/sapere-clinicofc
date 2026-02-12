@@ -839,3 +839,13 @@
 - [x] Validar conflitos de horário para cada agendamento replicado
 - [x] Testar criação de agendamentos recorrentes
 - [x] Verificar notificações para agendamentos replicados
+
+## Edição em Lote e Visualização de Séries Recorrentes (12/02/2026)
+- [x] Adicionar campo seriesId à tabela appointments para agrupar séries
+- [x] Atualizar lógica de criação para gerar seriesId único
+- [x] Implementar procedure de edição em lote (updateSeries)
+- [x] Implementar procedure de cancelamento em lote (cancelSeries)
+- [ ] Adicionar indicador visual de séries no calendário (ícone de repetição)
+- [ ] Adicionar tooltip mostrando quantas sessões restam na série
+- [ ] Adicionar opções "Editar apenas esta" e "Editar toda a série" no modal
+- [ ] Testar criação, edição e cancelamento de séries

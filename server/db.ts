@@ -242,6 +242,15 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
     .orderBy(appointments.startTime);
 }
 
+export async function getAppointmentsBySeries(seriesId: string) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(appointments)
+    .where(eq(appointments.seriesId, seriesId))
+    .orderBy(appointments.startTime);
+}
+
 export async function updateAppointment(id: number, data: Partial<InsertAppointment>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");

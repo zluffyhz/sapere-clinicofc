@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isSameDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X, Repeat } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -70,6 +70,11 @@ export default function AgendaPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deletingAppointmentId, setDeletingAppointmentId] = useState<number | null>(null);
   
+  // Series edit/delete state
+  const [editingSeriesId, setEditingSeriesId] = useState<string | null>(null);
+  const [editSeriesMode, setEditSeriesMode] = useState<"single" | "all">("single");
+  const [deleteSeriesMode, setDeleteSeriesMode] = useState<"single" | "all">("single");
+  
   const [formData, setFormData] = useState<AppointmentFormData>({
     patientId: 0,
     therapistId: 0,
@@ -131,11 +136,41 @@ export default function AgendaPage() {
       toast.success("Agendamento atualizado com sucesso!");
       setIsEditModalOpen(false);
       setEditingAppointmentId(null);
+      setEditingSeriesId(null);
       resetForm();
       utils.appointments.listByDateRange.invalidate();
     },
     onError: (error) => {
       toast.error(`Erro ao atualizar agendamento: ${error.message}`);
+    },
+  });
+  
+  // Update series mutation
+  const updateSeriesMutation = trpc.appointments.updateSeries.useMutation({
+    onSuccess: (data) => {
+      toast.success(`${data.updatedCount} agendamentos da série atualizados com sucesso!`);
+      setIsEditModalOpen(false);
+      setEditingAppointmentId(null);
+      setEditingSeriesId(null);
+      resetForm();
+      utils.appointments.listByDateRange.invalidate();
+    },
+    onError: (error) => {
+      toast.error(`Erro ao atualizar série: ${error.message}`);
+    },
+  });
+  
+  // Cancel series mutation
+  const cancelSeriesMutation = trpc.appointments.cancelSeries.useMutation({
+    onSuccess: (data) => {
+      toast.success(`${data.cancelledCount} agendamentos da série cancelados com sucesso!`);
+      setIsDeleteDialogOpen(false);
+      setDeletingAppointmentId(null);
+      setEditingSeriesId(null);
+      utils.appointments.listByDateRange.invalidate();
+    },
+    onError: (error) => {
+      toast.error(`Erro ao cancelar série: ${error.message}`);
     },
   });
 
@@ -145,6 +180,7 @@ export default function AgendaPage() {
       toast.success("Agendamento excluído com sucesso!");
       setIsDeleteDialogOpen(false);
       setDeletingAppointmentId(null);
+      setEditingSeriesId(null);
       utils.appointments.listByDateRange.invalidate();
     },
     onError: (error) => {
@@ -191,18 +227,29 @@ export default function AgendaPage() {
     const startDateTime = new Date(`${formData.date}T${formData.startTime}:00`);
     const endDateTime = new Date(`${formData.date}T${formData.endTime}:00`);
 
-    updateAppointmentMutation.mutate({
-      id: editingAppointmentId,
-      therapyType: formData.therapyType,
-      startTime: startDateTime,
-      endTime: endDateTime,
-      status: formData.status,
-      notes: formData.notes || undefined,
-    });
+    // If editing all in series, use updateSeries mutation
+    if (editSeriesMode === "all" && editingSeriesId) {
+      updateSeriesMutation.mutate({
+        seriesId: editingSeriesId,
+        therapyType: formData.therapyType,
+        notes: formData.notes || undefined,
+      });
+    } else {
+      // Edit only this appointment
+      updateAppointmentMutation.mutate({
+        id: editingAppointmentId,
+        therapyType: formData.therapyType,
+        startTime: startDateTime,
+        endTime: endDateTime,
+        status: formData.status,
+        notes: formData.notes || undefined,
+      });
+    }
   };
 
   const openEditModal = (apt: any) => {
     setEditingAppointmentId(apt.id);
+    setEditingSeriesId(apt.seriesId || null);
     setFormData({
       patientId: apt.patientId,
       therapistId: apt.therapistUserId,
@@ -216,13 +263,16 @@ export default function AgendaPage() {
     setIsEditModalOpen(true);
   };
 
-  const openDeleteDialog = (aptId: number) => {
-    setDeletingAppointmentId(aptId);
+  const openDeleteDialog = (apt: any) => {
+    setDeletingAppointmentId(apt.id);
+    setEditingSeriesId(apt.seriesId || null);
     setIsDeleteDialogOpen(true);
   };
 
   const handleDeleteAppointment = () => {
-    if (deletingAppointmentId) {
+    if (deleteSeriesMode === "all" && editingSeriesId) {
+      cancelSeriesMutation.mutate({ seriesId: editingSeriesId });
+    } else if (deletingAppointmentId) {
       deleteAppointmentMutation.mutate({ id: deletingAppointmentId });
     }
   };
@@ -695,6 +745,15 @@ export default function AgendaPage() {
                             >
                               {statusLabels[apt.status]}
                             </Badge>
+                            {apt.seriesId && (
+                              <div 
+                                className="flex items-center gap-1 text-xs text-muted-foreground bg-amber-100 px-2 py-1 rounded"
+                                title="Este agendamento faz parte de uma série recorrente"
+                              >
+                                <Repeat className="h-3 w-3" />
+                                Série
+                              </div>
+                            )}
                           </div>
                           <p className="text-sm text-muted-foreground">
                             Paciente: {patient?.name || "Não identificado"}
@@ -731,7 +790,7 @@ export default function AgendaPage() {
                             <Button
                               variant="outline"
                               size="icon"
-                              onClick={() => openDeleteDialog(apt.id)}
+                              onClick={() => openDeleteDialog(apt)}
                               className="text-destructive hover:text-destructive"
                               title="Excluir agendamento"
                             >
@@ -798,6 +857,36 @@ export default function AgendaPage() {
               Altere os dados do agendamento.
             </DialogDescription>
           </DialogHeader>
+          
+          {/* Series edit options */}
+          {editingSeriesId && (
+            <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
+              <p className="text-sm font-medium text-gray-900">Este agendamento faz parte de uma série recorrente:</p>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="editMode"
+                    checked={editSeriesMode === "single"}
+                    onChange={() => setEditSeriesMode("single")}
+                    className="h-4 w-4 text-orange-600 focus:ring-orange-500"
+                  />
+                  <span className="text-sm">Editar apenas este agendamento</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="editMode"
+                    checked={editSeriesMode === "all"}
+                    onChange={() => setEditSeriesMode("all")}
+                    className="h-4 w-4 text-orange-600 focus:ring-orange-500"
+                  />
+                  <span className="text-sm font-semibold">Editar toda a série</span>
+                </label>
+              </div>
+            </div>
+          )}
+          
           <AppointmentForm isEdit={true} />
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>
@@ -823,6 +912,38 @@ export default function AgendaPage() {
               Tem certeza que deseja excluir este agendamento? Esta ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
+          
+          {/* Series delete options */}
+          {editingSeriesId && (
+            <div className="px-6 pb-4">
+              <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
+                <p className="text-sm font-medium text-gray-900">Este agendamento faz parte de uma série recorrente:</p>
+                <div className="flex flex-col gap-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="deleteMode"
+                      checked={deleteSeriesMode === "single"}
+                      onChange={() => setDeleteSeriesMode("single")}
+                      className="h-4 w-4 text-orange-600 focus:ring-orange-500"
+                    />
+                    <span className="text-sm">Excluir apenas este agendamento</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="deleteMode"
+                      checked={deleteSeriesMode === "all"}
+                      onChange={() => setDeleteSeriesMode("all")}
+                      className="h-4 w-4 text-orange-600 focus:ring-orange-500"
+                    />
+                    <span className="text-sm font-semibold text-destructive">Cancelar toda a série</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          )}
+          
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction

@@ -52,6 +52,7 @@ export const appointments = mysqlTable("appointments", {
   endTime: timestamp("endTime").notNull(),
   status: mysqlEnum("status", ["scheduled", "completed", "cancelled", "rescheduled"]).default("scheduled").notNull(),
   notes: text("notes"),
+  seriesId: varchar("seriesId", { length: 64 }), // Groups recurring appointments together
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
