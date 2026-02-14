@@ -867,3 +867,10 @@
 - [x] Implementar salvamento do estado do timer no localStorage
 - [x] Implementar cálculo de tempo decorrido ao retornar ao app
 - [x] Testar timer ao fechar/abrir app, trocar de app, e bloquear celular
+
+## Bug: Agendamentos não marcados como concluídos após encerrar sessão (14/02/2026)
+- [x] Investigar código de finalização de sessão no SessionTimer
+- [x] Verificar lógica de atualização de status de agendamento no backend
+- [x] Identificar por que alguns agendamentos não são atualizados
+- [x] Implementar correção para garantir atualização automática
+- [x] Testar com diferentes cenários (agendamento do dia, agendamento futuro, etc)

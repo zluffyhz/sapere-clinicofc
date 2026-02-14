@@ -760,7 +760,28 @@ export const appRouter = router({
         });
         
         // Update appointment status to completed
-        await db.updateAppointmentStatus(input.appointmentId, 'completed');
+        let appointmentIdToComplete = input.appointmentId;
+        
+        // If no appointment was selected (or invalid), try to find a scheduled appointment for this patient on this date
+        if (!appointmentIdToComplete || appointmentIdToComplete === 0) {
+          const sessionDateStr = input.sessionDate.toISOString().split('T')[0];
+          const appointments = await db.getAppointmentsByPatient(input.patientId);
+          
+          // Find a scheduled appointment on the same day
+          const matchingAppointment = appointments.find((apt: any) => {
+            const aptDateStr = new Date(apt.startTime).toISOString().split('T')[0];
+            return aptDateStr === sessionDateStr && apt.status === 'scheduled';
+          });
+          
+          if (matchingAppointment) {
+            appointmentIdToComplete = matchingAppointment.id;
+          }
+        }
+        
+        // Update the appointment status if we have a valid ID
+        if (appointmentIdToComplete && appointmentIdToComplete > 0) {
+          await db.updateAppointmentStatus(appointmentIdToComplete, 'completed');
+        }
         
         // Send collaboration notification to family
         const patient = await db.getPatientById(input.patientId);

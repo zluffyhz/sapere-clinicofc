@@ -68,30 +68,98 @@ export default function ProntuarioPage() {
     collaborationLevel: "" as any,
   });
 
-  // Check for session data from timer
+  // Track if we've already processed session data to avoid running multiple times
+  const [sessionDataProcessed, setSessionDataProcessed] = useState(false);
+
+  const { data: appointments } = trpc.appointments.listByPatient.useQuery(
+    { patientId: patientId! },
+    { enabled: !!patientId }
+  );
+
+  // Debug: Log component state
+  console.log('[Debug] ProntuarioPage render:', {
+    newEvolution,
+    patientId,
+    appointmentsCount: appointments?.length,
+    sessionDataProcessed,
+    hasSessionData: !!sessionStorage.getItem('sessionData')
+  });
+
+  // Check for session data from timer and auto-select appointment
   useEffect(() => {
-    if (newEvolution) {
-      const sessionDataStr = sessionStorage.getItem('sessionData');
-      if (sessionDataStr) {
-        try {
-          const sessionData = JSON.parse(sessionDataStr);
-          if (sessionData.patientId === patientId) {
-            // Pre-fill evolution with session data
-            setEvolutionData(prev => ({
-              ...prev,
-              sessionDate: new Date(sessionData.startTime).toISOString().split("T")[0],
-              goalsAchieved: `Duração da sessão: ${sessionData.durationMinutes} minutos`,
-            }));
-            toast.success(`Sessão finalizada! Duração: ${sessionData.durationMinutes} minutos. Preencha a evolução completa abaixo.`);
-            // Clear session data
-            sessionStorage.removeItem('sessionData');
-          }
-        } catch (error) {
-          console.error('Error parsing session data:', error);
-        }
-      }
+    console.log('[useEffect] Running with deps:', { newEvolution, patientId, appointmentsLength: appointments?.length });
+    // Only run when we have the newEvolution flag and appointments are loaded
+    if (!newEvolution || !appointments || appointments.length === 0) {
+      console.log('[Auto-select] Waiting for data:', { newEvolution, appointmentsCount: appointments?.length });
+      return;
     }
-  }, [newEvolution, patientId]);
+
+    // Prevent running multiple times
+    if (sessionDataProcessed) {
+      console.log('[Auto-select] Already processed, skipping');
+      return;
+    }
+
+    const sessionDataStr = sessionStorage.getItem('sessionData');
+    if (!sessionDataStr) {
+      console.log('[Auto-select] No session data found');
+      return;
+    }
+
+    try {
+      const sessionData = JSON.parse(sessionDataStr);
+      
+      // Verify this is the correct patient
+      if (sessionData.patientId !== patientId) {
+        console.log('[Auto-select] Patient ID mismatch, clearing session data');
+        sessionStorage.removeItem('sessionData');
+        return;
+      }
+
+      const sessionStartTime = new Date(sessionData.startTime);
+      console.log('[Auto-select] Session start time:', sessionStartTime.toISOString());
+      console.log('[Auto-select] Available appointments:', appointments.length);
+      
+      // Find matching appointment based on date and status
+      const matchingAppointment = appointments.find((apt: any) => {
+        const aptDate = new Date(apt.startTime);
+        const isSameDay = aptDate.toDateString() === sessionStartTime.toDateString();
+        const isScheduled = apt.status === 'scheduled';
+        console.log(`[Auto-select] Checking apt ${apt.id}: date=${aptDate.toISOString()}, status=${apt.status}, sameDay=${isSameDay}, scheduled=${isScheduled}`);
+        return isSameDay && isScheduled;
+      });
+      
+      console.log('[Auto-select] Matched appointment:', matchingAppointment);
+      
+      // Pre-fill evolution with session data and auto-select appointment
+      const newEvolutionData = {
+        appointmentId: matchingAppointment?.id || 0,
+        sessionDate: sessionStartTime.toISOString().split("T")[0],
+        sessionSummary: "",
+        patientMood: "" as any,
+        patientBehavior: "",
+        goalsAchieved: `Duração da sessão: ${sessionData.durationMinutes} minutos`,
+        nextSessionPlan: "",
+        collaborationLevel: "" as any,
+      };
+      
+      console.log('[Auto-select] Setting evolution data:', newEvolutionData);
+      setEvolutionData(newEvolutionData);
+      
+      if (matchingAppointment) {
+        toast.success(`Sessão finalizada! Agendamento "${new Date(matchingAppointment.startTime).toLocaleString('pt-BR')}" selecionado automaticamente.`);
+      } else {
+        toast.warning(`Sessão finalizada! Não foi encontrado um agendamento "scheduled" para hoje. Selecione manualmente.`);
+      }
+      
+      // Mark as processed and clear session data
+      setSessionDataProcessed(true);
+      sessionStorage.removeItem('sessionData');
+    } catch (error) {
+      console.error('[Auto-select] Error parsing session data:', error);
+      sessionStorage.removeItem('sessionData');
+    }
+  }, [newEvolution, patientId, appointments]);
 
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [uploadData, setUploadData] = useState({
@@ -119,11 +187,6 @@ export default function ProntuarioPage() {
     );
 
   const { data: documents, isLoading: documentsLoading } = trpc.documents.listByPatient.useQuery(
-    { patientId: patientId! },
-    { enabled: !!patientId }
-  );
-
-  const { data: appointments } = trpc.appointments.listByPatient.useQuery(
     { patientId: patientId! },
     { enabled: !!patientId }
   );
