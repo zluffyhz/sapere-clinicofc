@@ -1,0 +1,26 @@
+{
+  "query": "SELECT id, patientId, therapistUserId, startTime, endTime, status FROM appointments WHERE therapistUserId = 4 ORDER BY id DESC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, patientId, therapistUserId, startTime, endTime, status FROM appointments WHERE therapistUserId = 4 ORDER BY id DESC LIMIT 5;",
+  "rows": [
+    {
+      "id": "1140002",
+      "patientId": "1",
+      "therapistUserId": "4",
+      "startTime": "2026-02-07 10:00:00",
+      "endTime": "2026-02-07 10:50:00",
+      "status": "completed"
+    },
+    {
+      "id": "1140001",
+      "patientId": "2",
+      "therapistUserId": "4",
+      "startTime": "2026-02-07 09:00:00",
+      "endTime": "2026-02-07 09:50:00",
+      "status": "completed"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tpatientId\ttherapistUserId\tstartTime\tendTime\tstatus\n1140002\t1\t4\t2026-02-07 10:00:00\t2026-02-07 10:50:00\tcompleted\n1140001\t2\t4\t2026-02-07 09:00:00\t2026-02-07 09:50:00\tcompleted\n",
+  "stderr": "",
+  "execution_time_ms": 46
+}

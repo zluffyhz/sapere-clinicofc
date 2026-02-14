@@ -849,3 +849,21 @@
 - [ ] Adicionar tooltip mostrando quantas sessões restam na série
 - [ ] Adicionar opções "Editar apenas esta" e "Editar toda a série" no modal
 - [ ] Testar criação, edição e cancelamento de séries
+
+## Redefinição de Senha de Usuária (12/02/2026)
+- [x] Redefinir senha da usuária toreginamcabral@gmail.com para nova senha
+
+## Agendamentos Retroativos para Terapeuta olvmavit@gmail.com (14/02/2026)
+- [x] Localizar terapeuta olvmavit@gmail.com e pacientes Adam e Adriel
+- [x] Criar agendamentos retroativos para 7 de fevereiro de 2026
+
+## Correção de Agendamentos Retroativos Não Aparecendo (14/02/2026)
+- [x] Verificar query de busca de agendamentos para evolução
+- [x] Identificar por que agendamentos de 7/02 não aparecem
+- [x] Corrigir filtro ou lógica de exibição
+
+## Persistência do Timer de Sessão (14/02/2026)
+- [x] Analisar código atual do timer de sessão
+- [x] Implementar salvamento do estado do timer no localStorage
+- [x] Implementar cálculo de tempo decorrido ao retornar ao app
+- [x] Testar timer ao fechar/abrir app, trocar de app, e bloquear celular

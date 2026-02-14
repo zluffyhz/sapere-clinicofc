@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO appointments (patientId, therapistUserId, timestamp, startTime, endTime, therapyType, status, createdAt) VALUES\n(2, 4, UNIX_TIMESTAMP('2026-02-07 09:00:00') * 1000, '09:00:00', '09:50:00', 'psicologia', 'completed', UNIX_TIMESTAMP(NOW()) * 1000),\n(1, 4, UNIX_TIMESTAMP('2026-02-07 10:00:00') * 1000, '10:00:00', '10:50:00', 'psicologia', 'completed', UNIX_TIMESTAMP(NOW()) * 1000);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute INSERT INTO appointments (patientId, therapistUserId, timestamp, startTime, endTime, therapyType, status, createdAt) VALUES\n(2, 4, UNIX_TIMESTAMP('2026-02-07 09:00:00') * 1000, '09:00:00', '09:50:00', 'psicologia', 'completed', UNIX_TIMESTAMP(NOW()) * 1000),\n(1, 4, UNIX_TIMESTAMP('2026-02-07 10:00:00') * 1000, '10:00:00', '10:50:00', 'psicologia', 'completed', UNIX_TIMESTAMP(NOW()) * 1000);",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'timestamp' in 'field list'"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO appointments (patientId, therapistUserId, scheduledAt, startTime, endTime, therapyType, status, createdAt) VALUES\n(2, 4, '2026-02-07 09:00:00', '09:00:00', '09:50:00', 'psicologia', 'completed', NOW()),\n(1, 4, '2026-02-07 10:00:00', '10:00:00', '10:50:00', 'psicologia', 'completed', NOW());",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute INSERT INTO appointments (patientId, therapistUserId, scheduledAt, startTime, endTime, therapyType, status, createdAt) VALUES\n(2, 4, '2026-02-07 09:00:00', '09:00:00', '09:50:00', 'psicologia', 'completed', NOW()),\n(1, 4, '2026-02-07 10:00:00', '10:00:00', '10:50:00', 'psicologia', 'completed', NOW());",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'scheduledAt' in 'field list'"
+  ]
+}

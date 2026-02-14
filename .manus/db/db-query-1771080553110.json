@@ -1,0 +1,23 @@
+{
+  "query": "SELECT * FROM appointments LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT * FROM appointments LIMIT 1;",
+  "rows": [
+    {
+      "id": "570012",
+      "patientId": "570011",
+      "therapistUserId": "1",
+      "therapyType": "psicologia",
+      "startTime": "2030-01-15 19:50:00",
+      "endTime": "2030-01-15 20:50:00",
+      "status": "scheduled",
+      "notes": "NULL",
+      "createdAt": "2026-01-15 19:50:00",
+      "updatedAt": "2026-01-15 19:50:00",
+      "seriesId": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tpatientId\ttherapistUserId\ttherapyType\tstartTime\tendTime\tstatus\tnotes\tcreatedAt\tupdatedAt\tseriesId\n570012\t570011\t1\tpsicologia\t2030-01-15 19:50:00\t2030-01-15 20:50:00\tscheduled\tNULL\t2026-01-15 19:50:00\t2026-01-15 19:50:00\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

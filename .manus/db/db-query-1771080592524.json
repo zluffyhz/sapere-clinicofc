@@ -1,0 +1,9 @@
+{
+  "query": "SELECT a.id, p.name as paciente, u.name as terapeuta, a.startTime, a.endTime, a.therapyType, a.status \nFROM appointments a\nJOIN patients p ON a.patientId = p.id\nJOIN users u ON a.therapistUserId = u.id\nWHERE a.startTime >= '2026-02-07 00:00:00' AND a.startTime < '2026-02-08 00:00:00'\nORDER BY a.startTime;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT a.id, p.name as paciente, u.name as terapeuta, a.startTime, a.endTime, a.therapyType, a.status \nFROM appointments a\nJOIN patients p ON a.patientId = p.id\nJOIN users u ON a.therapistUserId = u.id\nWHERE a.startTime >= '2026-02-07 00:00:00' AND a.startTime < '2026-02-08 00:00:00'\nORDER BY a.startTime;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 55
+}

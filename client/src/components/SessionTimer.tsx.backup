@@ -10,18 +10,6 @@ interface SessionTimerProps {
   onSessionEnd?: (durationMinutes: number, startTime: Date) => void;
 }
 
-interface TimerState {
-  patientId: number;
-  patientName: string;
-  startTime: string;
-  pausedAt: string | null;
-  elapsedSecondsWhenPaused: number;
-  isRunning: boolean;
-  isPaused: boolean;
-}
-
-const STORAGE_KEY = "sapere-session-timer";
-
 export function SessionTimer({ patientId, patientName, onSessionEnd }: SessionTimerProps) {
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -29,64 +17,11 @@ export function SessionTimer({ patientId, patientName, onSessionEnd }: SessionTi
   const [startTime, setStartTime] = useState<Date | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Timer logic
   useEffect(() => {
-    const savedStateStr = localStorage.getItem(STORAGE_KEY);
-    if (!savedStateStr) return;
-
-    try {
-      const savedState: TimerState = JSON.parse(savedStateStr);
-      
-      if (savedState.patientId !== patientId) {
-        localStorage.removeItem(STORAGE_KEY);
-        return;
-      }
-
-      const savedStartTime = new Date(savedState.startTime);
-      setStartTime(savedStartTime);
-      setIsRunning(savedState.isRunning);
-      setIsPaused(savedState.isPaused);
-
-      if (savedState.isPaused && savedState.pausedAt) {
-        setElapsedSeconds(savedState.elapsedSecondsWhenPaused);
-      } else if (savedState.isRunning && !savedState.isPaused) {
-        const now = new Date();
-        const totalElapsed = Math.floor((now.getTime() - savedStartTime.getTime()) / 1000);
-        setElapsedSeconds(totalElapsed);
-      }
-
-      toast.info("Timer restaurado");
-    } catch (error) {
-      console.error("Erro ao restaurar timer:", error);
-      localStorage.removeItem(STORAGE_KEY);
-    }
-  }, [patientId]);
-
-  useEffect(() => {
-    if (!isRunning && !startTime) {
-      localStorage.removeItem(STORAGE_KEY);
-      return;
-    }
-
-    if (startTime) {
-      const state: TimerState = {
-        patientId,
-        patientName,
-        startTime: startTime.toISOString(),
-        pausedAt: isPaused ? new Date().toISOString() : null,
-        elapsedSecondsWhenPaused: isPaused ? elapsedSeconds : 0,
-        isRunning,
-        isPaused,
-      };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }
-  }, [isRunning, isPaused, elapsedSeconds, startTime, patientId, patientName]);
-
-  useEffect(() => {
-    if (isRunning && !isPaused && startTime) {
+    if (isRunning && !isPaused) {
       intervalRef.current = setInterval(() => {
-        const now = new Date();
-        const totalElapsed = Math.floor((now.getTime() - startTime.getTime()) / 1000);
-        setElapsedSeconds(totalElapsed);
+        setElapsedSeconds((prev) => prev + 1);
       }, 1000);
     } else {
       if (intervalRef.current) {
@@ -100,7 +35,7 @@ export function SessionTimer({ patientId, patientName, onSessionEnd }: SessionTi
         clearInterval(intervalRef.current);
       }
     };
-  }, [isRunning, isPaused, startTime]);
+  }, [isRunning, isPaused]);
 
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
@@ -111,11 +46,11 @@ export function SessionTimer({ patientId, patientName, onSessionEnd }: SessionTi
   };
 
   const handleStart = () => {
-    const now = new Date();
     setIsRunning(true);
     setIsPaused(false);
-    setStartTime(now);
-    setElapsedSeconds(0);
+    if (!startTime) {
+      setStartTime(new Date());
+    }
     toast.success("Sessão iniciada");
   };
 
@@ -130,13 +65,13 @@ export function SessionTimer({ patientId, patientName, onSessionEnd }: SessionTi
 
     toast.success(`Sessão finalizada! Duração: ${durationMinutes} minutos`);
     
-    localStorage.removeItem(STORAGE_KEY);
-    
+    // Reset timer
     setIsRunning(false);
     setIsPaused(false);
     setElapsedSeconds(0);
     setStartTime(null);
 
+    // Call parent callback with session data
     if (onSessionEnd) {
       onSessionEnd(durationMinutes, sessionStartTime);
     }
@@ -154,6 +89,7 @@ export function SessionTimer({ patientId, patientName, onSessionEnd }: SessionTi
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Timer Display */}
         <div className="flex flex-col items-center justify-center p-8 bg-muted rounded-lg">
           <div className="text-6xl font-bold font-mono text-orange-500 mb-4">
             {formatTime(elapsedSeconds)}
@@ -165,6 +101,7 @@ export function SessionTimer({ patientId, patientName, onSessionEnd }: SessionTi
           </div>
         </div>
 
+        {/* Control Buttons */}
         <div className="flex gap-2 justify-center">
           {!isRunning && (
             <Button onClick={handleStart} size="lg" className="gap-2">
