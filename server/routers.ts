@@ -1011,9 +1011,14 @@ export const appRouter = router({
         return { success: true };
       }),
 
-    // Get today's appointments for attendance marking (admin)
-    todayAppointments: adminProcedure.query(async () => {
-      const appointments = await db.getTodayAppointmentsForAttendance();
+    // Get month's appointments for attendance marking (admin)
+    monthAppointments: adminProcedure
+      .input(z.object({
+        month: z.number().min(1).max(12),
+        year: z.number().min(2020).max(2030),
+      }))
+      .query(async ({ input }) => {
+      const appointments = await db.getMonthAppointmentsForAttendance(input.month, input.year);
       
       // Enrich with patient and attendance info
       const enriched = await Promise.all(

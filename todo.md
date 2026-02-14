@@ -881,3 +881,12 @@
 - [x] Identificar por que todos os pacientes aparecem mesmo com filtro ativo
 - [x] Implementar correção do filtro
 - [x] Testar filtro selecionando diferentes pacientes
+
+## Alteração: Filtro de presença deve buscar por mês (14/02/2026)
+- [x] Investigar query atual de todayAppointments no backend
+- [x] Modificar backend para aceitar parâmetros de mês/ano
+- [x] Alterar query para buscar agendamentos do mês inteiro
+- [x] Atualizar frontend para passar mês/ano selecionados para a query
+- [x] Atualizar título da página de "Sessões de Hoje" para "Sessões do Mês"
+- [x] Criar script Playwright para testar filtro com diferentes meses
+- [x] Testar com diferentes combinações de mês/ano

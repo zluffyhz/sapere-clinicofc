@@ -1,4 +1,4 @@
-import { eq, and, gte, lte, desc, ne, or, lt, gt, inArray } from "drizzle-orm";
+import { eq, and, gte, lte, desc, asc, ne, or, lt, gt, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { 
   InsertUser, users, 
@@ -652,23 +652,26 @@ export async function getAttendanceByDateRange(startDate: Date, endDate: Date) {
     .orderBy(desc(attendance.scheduledDate));
 }
 
-export async function getTodayAppointmentsForAttendance() {
+export async function getMonthAppointmentsForAttendance(month: number, year: number) {
   const db = await getDb();
   if (!db) return [];
   
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
+  // First day of the month
+  const startDate = new Date(year, month - 1, 1);
+  startDate.setHours(0, 0, 0, 0);
+  
+  // First day of next month
+  const endDate = new Date(year, month, 1);
+  endDate.setHours(0, 0, 0, 0);
   
   return await db.select().from(appointments)
     .where(
       and(
-        gte(appointments.startTime, today),
-        lte(appointments.startTime, tomorrow)
+        gte(appointments.startTime, startDate),
+        lt(appointments.startTime, endDate)
       )
     )
-    .orderBy(appointments.startTime);
+    .orderBy(asc(appointments.startTime));
 }
 
 export async function checkScheduleConflicts(

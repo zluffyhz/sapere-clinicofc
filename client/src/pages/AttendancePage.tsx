@@ -44,7 +44,10 @@ export default function AttendancePage() {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   const utils = trpc.useUtils();
-  const { data: todayAppointments, isLoading } = trpc.attendance.todayAppointments.useQuery();
+  const { data: monthAppointments, isLoading } = trpc.attendance.monthAppointments.useQuery({
+    month: selectedMonth,
+    year: selectedYear,
+  });
   const { data: patients } = trpc.patients.list.useQuery();
   
   const generateReport = trpc.attendance.generateReport.useMutation({
@@ -75,7 +78,7 @@ export default function AttendancePage() {
 
   const markAttendanceMutation = trpc.attendance.mark.useMutation({
     onSuccess: (_, variables) => {
-      utils.attendance.todayAppointments.invalidate();
+      utils.attendance.monthAppointments.invalidate();
       toast.success("Presença registrada com sucesso!");
       // Clear the selection for this appointment
       setSelectedStatus(prev => {
@@ -123,12 +126,11 @@ export default function AttendancePage() {
     });
   };
 
-  const today = new Date().toLocaleDateString("pt-BR", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const monthNames = [
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+  ];
+  const selectedMonthName = `${monthNames[selectedMonth - 1]} de ${selectedYear}`;
 
   if (isLoading) {
     return (
@@ -152,7 +154,7 @@ export default function AttendancePage() {
           </div>
           <div className="flex-1">
             <h1 className="text-2xl font-bold text-gray-900">Controle de Presença</h1>
-            <p className="text-gray-500 capitalize">{today}</p>
+            <p className="text-gray-500">{selectedMonthName}</p>
           </div>
           <div className="flex items-center gap-3">
             <Select value={selectedPatientId?.toString() || ""} onValueChange={(v) => setSelectedPatientId(parseInt(v))}>
@@ -213,7 +215,7 @@ export default function AttendancePage() {
               <span className="text-sm text-blue-700">Agendadas</span>
             </div>
             <p className="text-2xl font-bold text-blue-900 mt-1">
-              {todayAppointments?.filter(a => !selectedPatientId || a.patientId === selectedPatientId).length || 0}
+              {monthAppointments?.filter(a => !selectedPatientId || a.patientId === selectedPatientId).length || 0}
             </p>
           </CardContent>
         </Card>
@@ -225,7 +227,7 @@ export default function AttendancePage() {
               <span className="text-sm text-green-700">Presentes</span>
             </div>
             <p className="text-2xl font-bold text-green-900 mt-1">
-              {todayAppointments?.filter(a => (!selectedPatientId || a.patientId === selectedPatientId) && a.attendance?.status === "present").length || 0}
+              {monthAppointments?.filter(a => (!selectedPatientId || a.patientId === selectedPatientId) && a.attendance?.status === "present").length || 0}
             </p>
           </CardContent>
         </Card>
@@ -237,7 +239,7 @@ export default function AttendancePage() {
               <span className="text-sm text-yellow-700">Pendentes</span>
             </div>
             <p className="text-2xl font-bold text-yellow-900 mt-1">
-              {todayAppointments?.filter(a => (!selectedPatientId || a.patientId === selectedPatientId) && !a.attendance).length || 0}
+              {monthAppointments?.filter(a => (!selectedPatientId || a.patientId === selectedPatientId) && !a.attendance).length || 0}
             </p>
           </CardContent>
         </Card>
@@ -249,7 +251,7 @@ export default function AttendancePage() {
               <span className="text-sm text-red-700">Ausentes</span>
             </div>
             <p className="text-2xl font-bold text-red-900 mt-1">
-              {todayAppointments?.filter(a => (!selectedPatientId || a.patientId === selectedPatientId) && a.attendance?.status === "absent").length || 0}
+              {monthAppointments?.filter(a => (!selectedPatientId || a.patientId === selectedPatientId) && a.attendance?.status === "absent").length || 0}
             </p>
           </CardContent>
         </Card>
@@ -260,22 +262,22 @@ export default function AttendancePage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <User className="w-5 h-5 text-orange-500" />
-            Sessões de Hoje
+            Sessões do Mês
           </CardTitle>
           <CardDescription>
             Marque a presença dos pacientes conforme chegam à clínica
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {!todayAppointments || todayAppointments.length === 0 ? (
+          {!monthAppointments || monthAppointments.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-              <p className="text-lg font-medium">Nenhuma sessão agendada para hoje</p>
+              <p className="text-lg font-medium">Nenhuma sessão agendada para este mês</p>
               <p className="text-sm">As sessões aparecerão aqui quando forem agendadas</p>
             </div>
           ) : (
             <div className="space-y-4">
-              {todayAppointments
+              {monthAppointments
                 .filter(appointment => !selectedPatientId || appointment.patientId === selectedPatientId)
                 .map((appointment) => (
                 <div
