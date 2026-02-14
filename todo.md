@@ -874,3 +874,10 @@
 - [x] Identificar por que alguns agendamentos não são atualizados
 - [x] Implementar correção para garantir atualização automática
 - [x] Testar com diferentes cenários (agendamento do dia, agendamento futuro, etc)
+
+## Bug: Filtro de pacientes na aba Presença não funciona (14/02/2026)
+- [x] Investigar código da página de Presença (PresencaPage)
+- [x] Verificar lógica de filtragem de pacientes
+- [x] Identificar por que todos os pacientes aparecem mesmo com filtro ativo
+- [x] Implementar correção do filtro
+- [x] Testar filtro selecionando diferentes pacientes

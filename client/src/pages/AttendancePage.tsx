@@ -213,7 +213,7 @@ export default function AttendancePage() {
               <span className="text-sm text-blue-700">Agendadas</span>
             </div>
             <p className="text-2xl font-bold text-blue-900 mt-1">
-              {todayAppointments?.length || 0}
+              {todayAppointments?.filter(a => !selectedPatientId || a.patientId === selectedPatientId).length || 0}
             </p>
           </CardContent>
         </Card>
@@ -225,7 +225,7 @@ export default function AttendancePage() {
               <span className="text-sm text-green-700">Presentes</span>
             </div>
             <p className="text-2xl font-bold text-green-900 mt-1">
-              {todayAppointments?.filter(a => a.attendance?.status === "present").length || 0}
+              {todayAppointments?.filter(a => (!selectedPatientId || a.patientId === selectedPatientId) && a.attendance?.status === "present").length || 0}
             </p>
           </CardContent>
         </Card>
@@ -237,7 +237,7 @@ export default function AttendancePage() {
               <span className="text-sm text-yellow-700">Pendentes</span>
             </div>
             <p className="text-2xl font-bold text-yellow-900 mt-1">
-              {todayAppointments?.filter(a => !a.attendance).length || 0}
+              {todayAppointments?.filter(a => (!selectedPatientId || a.patientId === selectedPatientId) && !a.attendance).length || 0}
             </p>
           </CardContent>
         </Card>
@@ -249,7 +249,7 @@ export default function AttendancePage() {
               <span className="text-sm text-red-700">Ausentes</span>
             </div>
             <p className="text-2xl font-bold text-red-900 mt-1">
-              {todayAppointments?.filter(a => a.attendance?.status === "absent").length || 0}
+              {todayAppointments?.filter(a => (!selectedPatientId || a.patientId === selectedPatientId) && a.attendance?.status === "absent").length || 0}
             </p>
           </CardContent>
         </Card>
@@ -275,7 +275,9 @@ export default function AttendancePage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {todayAppointments.map((appointment) => (
+              {todayAppointments
+                .filter(appointment => !selectedPatientId || appointment.patientId === selectedPatientId)
+                .map((appointment) => (
                 <div
                   key={appointment.id}
                   className={`p-4 rounded-lg border-2 transition-all ${
