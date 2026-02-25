@@ -890,3 +890,11 @@
 - [x] Atualizar título da página de "Sessões de Hoje" para "Sessões do Mês"
 - [x] Criar script Playwright para testar filtro com diferentes meses
 - [x] Testar com diferentes combinações de mês/ano
+
+## Alteração: Ordenar agendamentos alfabeticamente por paciente (14/02/2026)
+- [x] Identificar todas as queries de agendamentos no backend
+- [x] Modificar queries para ordenar por nome do paciente (alfabética)
+- [x] Testar ordenação na página de Presença
+- [x] Testar ordenação na página de Agenda
+- [x] Testar ordenação na página inicial (Dashboard)
+- [x] Criar teste Playwright para validar ordenação alfabética

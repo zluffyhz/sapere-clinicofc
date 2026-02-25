@@ -1034,6 +1034,9 @@ export const appRouter = router({
         })
       );
       
+      // Sort alphabetically by patient name
+      enriched.sort((a, b) => a.patientName.localeCompare(b.patientName, 'pt-BR'));
+      
       return enriched;
     }),
 

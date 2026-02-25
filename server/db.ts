@@ -221,7 +221,21 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
   if (!db) return [];
   
   if (role === 'therapist' && userId) {
-    return await db.select().from(appointments)
+    return await db.select({
+      id: appointments.id,
+      patientId: appointments.patientId,
+      therapistUserId: appointments.therapistUserId,
+      startTime: appointments.startTime,
+      endTime: appointments.endTime,
+      therapyType: appointments.therapyType,
+      status: appointments.status,
+      notes: appointments.notes,
+      seriesId: appointments.seriesId,
+      createdAt: appointments.createdAt,
+      patientName: patients.name,
+    })
+      .from(appointments)
+      .leftJoin(patients, eq(appointments.patientId, patients.id))
       .where(
         and(
           eq(appointments.therapistUserId, userId),
@@ -229,17 +243,31 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
           lte(appointments.startTime, endDate)
         )
       )
-      .orderBy(appointments.startTime);
+      .orderBy(asc(patients.name));
   }
   
-  return await db.select().from(appointments)
+  return await db.select({
+    id: appointments.id,
+    patientId: appointments.patientId,
+    therapistUserId: appointments.therapistUserId,
+    startTime: appointments.startTime,
+    endTime: appointments.endTime,
+    therapyType: appointments.therapyType,
+    status: appointments.status,
+    notes: appointments.notes,
+    seriesId: appointments.seriesId,
+    createdAt: appointments.createdAt,
+    patientName: patients.name,
+  })
+    .from(appointments)
+    .leftJoin(patients, eq(appointments.patientId, patients.id))
     .where(
       and(
         gte(appointments.startTime, startDate),
         lte(appointments.startTime, endDate)
       )
     )
-    .orderBy(appointments.startTime);
+    .orderBy(asc(patients.name));
 }
 
 export async function getAppointmentsBySeries(seriesId: string) {
