@@ -898,3 +898,12 @@
 - [x] Testar ordenação na página de Agenda
 - [x] Testar ordenação na página inicial (Dashboard)
 - [x] Criar teste Playwright para validar ordenação alfabética
+
+## Bug: Frontend reordenando por horário (26/02/2026)
+- [x] Identificar que TherapistDashboard estava ordenando por startTime
+- [x] Identificar que AgendaPage estava ordenando por startTime
+- [x] Remover ordenação por horário do TherapistDashboard
+- [x] Remover ordenação por horário do AgendaPage
+- [x] Testar ordenação alfabética no Dashboard
+- [x] Testar ordenação alfabética na Agenda
+- [x] Validar com o usuário

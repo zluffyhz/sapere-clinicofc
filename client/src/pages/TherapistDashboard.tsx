@@ -167,10 +167,6 @@ export default function TherapistDashboard() {
             ) : (
               <div className="space-y-4">
                 {todayAppointments
-                  .sort(
-                    (a, b) =>
-                      new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-                  )
                   .map((apt) => {
                     const patient = patients?.find((p) => p.id === apt.patientId);
                     return (

@@ -285,8 +285,7 @@ export default function AgendaPage() {
         const matchesDate = isSameDay(new Date(apt.startTime), selectedDate);
         const matchesTherapist = selectedTherapistId === null || apt.therapistUserId === selectedTherapistId;
         return matchesDate && matchesTherapist;
-      })
-      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+      });
   }, [appointments, selectedDate, selectedTherapistId]);
 
   // Get dates with appointments for calendar highlighting
