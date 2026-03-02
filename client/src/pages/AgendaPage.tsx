@@ -362,9 +362,23 @@ export default function AgendaPage() {
           <Label htmlFor="therapist">Terapeuta *</Label>
           <Select
             value={formData.therapistId ? formData.therapistId.toString() : ""}
-            onValueChange={(value) =>
-              setFormData({ ...formData, therapistId: parseInt(value) })
-            }
+            onValueChange={(value) => {
+              const therapistId = parseInt(value);
+              const selectedTherapist = therapists?.find((t) => t.id === therapistId);
+              // Auto-fill therapy type from therapist's specialties
+              let autoTherapyType = formData.therapyType;
+              if (selectedTherapist?.specialties) {
+                try {
+                  const specialties: string[] = JSON.parse(selectedTherapist.specialties);
+                  if (specialties.length > 0) {
+                    const validTypes = ["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "outro"];
+                    const firstValid = specialties.find((s) => validTypes.includes(s));
+                    if (firstValid) autoTherapyType = firstValid as typeof formData.therapyType;
+                  }
+                } catch {}
+              }
+              setFormData({ ...formData, therapistId, therapyType: autoTherapyType });
+            }}
           >
             <SelectTrigger>
               <SelectValue placeholder="Selecione o terapeuta" />
@@ -372,11 +386,32 @@ export default function AgendaPage() {
             <SelectContent>
               {therapists
                 ?.filter((u) => u.role === "therapist" || u.role === "admin")
-                .map((therapist) => (
-                  <SelectItem key={therapist.id} value={therapist.id.toString()}>
-                    {therapist.name}
-                  </SelectItem>
-                ))}
+                .map((therapist) => {
+                  // Parse specialties for display
+                  let specialtyLabel = "";
+                  if (therapist.specialties) {
+                    try {
+                      const specs: string[] = JSON.parse(therapist.specialties);
+                      const labels: Record<string, string> = {
+                        fonoaudiologia: "Fono",
+                        psicologia: "Psico",
+                        terapia_ocupacional: "T.O.",
+                        psicopedagogia: "Psicopedagogia",
+                        musicoterapia: "Música",
+                        fisioterapia: "Fisio",
+                        neuropsicopedagogia: "Neuropedagogia",
+                        nutricao: "Nutrição",
+                        outro: "Outro",
+                      };
+                      specialtyLabel = specs.map((s) => labels[s] || s).join(", ");
+                    } catch {}
+                  }
+                  return (
+                    <SelectItem key={therapist.id} value={therapist.id.toString()}>
+                      {therapist.name}{specialtyLabel ? ` — ${specialtyLabel}` : ""}
+                    </SelectItem>
+                  );
+                })}
             </SelectContent>
           </Select>
         </div>

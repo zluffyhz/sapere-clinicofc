@@ -1,0 +1,85 @@
+{
+  "query": "SELECT id, name, specialties FROM users WHERE role IN ('therapist', 'admin') AND specialties IS NOT NULL ORDER BY name;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, specialties FROM users WHERE role IN ('therapist', 'admin') AND specialties IS NOT NULL ORDER BY name;",
+  "rows": [
+    {
+      "id": "4380053",
+      "name": "ANA PAULA GIRARD",
+      "specialties": "[\"Terapia Ocupacional\"]"
+    },
+    {
+      "id": "4413761",
+      "name": "ANDREA AFONSO",
+      "specialties": "[\"Fonoaudiologia\"]"
+    },
+    {
+      "id": "4620078",
+      "name": "DELLANY",
+      "specialties": "[\"Psicologia\"]"
+    },
+    {
+      "id": "4530171",
+      "name": "MAGNA CRUZ",
+      "specialties": "[\"Nutrição\"]"
+    },
+    {
+      "id": "4530139",
+      "name": "MARCIA RATIS",
+      "specialties": "[\"Nutrição\"]"
+    },
+    {
+      "id": "4380044",
+      "name": "MARIA VITORIA",
+      "specialties": "[\"Terapia Ocupacional\"]"
+    },
+    {
+      "id": "4530223",
+      "name": "MARIANA",
+      "specialties": "[\"Fonoaudiologia\"]"
+    },
+    {
+      "id": "4412996",
+      "name": "MAX",
+      "specialties": "[\"Musicoterapia\"]"
+    },
+    {
+      "id": "4741028",
+      "name": "MAYARA COHEN",
+      "specialties": "[\"Terapia Ocupacional\"]"
+    },
+    {
+      "id": "4620105",
+      "name": "MONALISA",
+      "specialties": "[\"Psicomotricidade\"]"
+    },
+    {
+      "id": "3180017",
+      "name": "Rayana Santos ",
+      "specialties": "[\"Psicologia\"]"
+    },
+    {
+      "id": "4620148",
+      "name": "REGINA MENEZES",
+      "specialties": "[\"Fisioterapia\"]"
+    },
+    {
+      "id": "5820038",
+      "name": "Renata Guimarães",
+      "specialties": "[\"Aplicadora DENVER e ABA\"]"
+    },
+    {
+      "id": "4530094",
+      "name": "SUAMY",
+      "specialties": "[\"Fisioterapia\"]"
+    },
+    {
+      "id": "2725474",
+      "name": "Vitória Santos Lira",
+      "specialties": "[\"Fisioterapia\"]"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tspecialties\n4380053\tANA PAULA GIRARD\t[\"Terapia Ocupacional\"]\n4413761\tANDREA AFONSO\t[\"Fonoaudiologia\"]\n4620078\tDELLANY\t[\"Psicologia\"]\n4530171\tMAGNA CRUZ\t[\"Nutrição\"]\n4530139\tMARCIA RATIS\t[\"Nutrição\"]\n4380044\tMARIA VITORIA\t[\"Terapia Ocupacional\"]\n4530223\tMARIANA\t[\"Fonoaudiologia\"]\n4412996\tMAX\t[\"Musicoterapia\"]\n4741028\tMAYARA COHEN\t[\"Terapia Ocupacional\"]\n4620105\tMONALISA\t[\"Psicomotricidade\"]\n3180017\tRayana Santos \t[\"Psicologia\"]\n4620148\tREGINA MENEZES\t[\"Fisioterapia\"]\n5820038\tRenata Guimarães\t[\"Aplicadora DENVER e ABA\"]\n4530094\tSUAMY\t[\"Fisioterapia\"]\n2725474\tVitória Santos Lira\t[\"Fisioterapia\"]\n",
+  "stderr": "",
+  "execution_time_ms": 82
+}

@@ -1,0 +1,150 @@
+{
+  "query": "SELECT u.id, u.name, u.specialties, GROUP_CONCAT(DISTINCT a.therapyType ORDER BY a.therapyType SEPARATOR ', ') as therapy_types_used, COUNT(a.id) as total_appointments FROM users u LEFT JOIN appointments a ON a.therapistUserId = u.id WHERE u.role IN ('therapist', 'admin') GROUP BY u.id, u.name, u.specialties ORDER BY u.name;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT u.id, u.name, u.specialties, GROUP_CONCAT(DISTINCT a.therapyType ORDER BY a.therapyType SEPARATOR ', ') as therapy_types_used, COUNT(a.id) as total_appointments FROM users u LEFT JOIN appointments a ON a.therapistUserId = u.id WHERE u.role IN ('therapist', 'admin') GROUP BY u.id, u.name, u.specialties ORDER BY u.name;",
+  "rows": [
+    {
+      "id": "4380053",
+      "name": "ANA PAULA GIRARD",
+      "specialties": "[\"Terapia Ocupacional\"]",
+      "therapy_types_used": "psicologia, terapia_ocupacional",
+      "total_appointments": "20"
+    },
+    {
+      "id": "4413761",
+      "name": "ANDREA AFONSO",
+      "specialties": "[\"Fonoaudiologia\"]",
+      "therapy_types_used": "fonoaudiologia, psicologia",
+      "total_appointments": "147"
+    },
+    {
+      "id": "124682",
+      "name": "Cesar Henrique Santos ",
+      "specialties": "NULL",
+      "therapy_types_used": "NULL",
+      "total_appointments": "0"
+    },
+    {
+      "id": "4620078",
+      "name": "DELLANY",
+      "specialties": "[\"Psicologia\"]",
+      "therapy_types_used": "fonoaudiologia, psicologia",
+      "total_appointments": "110"
+    },
+    {
+      "id": "9990210",
+      "name": "Giselle",
+      "specialties": "NULL",
+      "therapy_types_used": "NULL",
+      "total_appointments": "0"
+    },
+    {
+      "id": "1",
+      "name": "Lucas Henrique",
+      "specialties": "NULL",
+      "therapy_types_used": "psicologia",
+      "total_appointments": "10"
+    },
+    {
+      "id": "4530171",
+      "name": "MAGNA CRUZ",
+      "specialties": "[\"Nutrição\"]",
+      "therapy_types_used": "nutricao",
+      "total_appointments": "1"
+    },
+    {
+      "id": "468419",
+      "name": "Marcely Almeida Silva",
+      "specialties": "NULL",
+      "therapy_types_used": "fonoaudiologia, neuropsicopedagogia, psicologia, psicopedagogia, terapia_ocupacional",
+      "total_appointments": "192"
+    },
+    {
+      "id": "4530139",
+      "name": "MARCIA RATIS",
+      "specialties": "[\"Nutrição\"]",
+      "therapy_types_used": "nutricao",
+      "total_appointments": "30"
+    },
+    {
+      "id": "4380044",
+      "name": "MARIA VITORIA",
+      "specialties": "[\"Terapia Ocupacional\"]",
+      "therapy_types_used": "terapia_ocupacional",
+      "total_appointments": "11"
+    },
+    {
+      "id": "4530223",
+      "name": "MARIANA",
+      "specialties": "[\"Fonoaudiologia\"]",
+      "therapy_types_used": "fonoaudiologia, psicologia",
+      "total_appointments": "23"
+    },
+    {
+      "id": "4412996",
+      "name": "MAX",
+      "specialties": "[\"Musicoterapia\"]",
+      "therapy_types_used": "musicoterapia",
+      "total_appointments": "1"
+    },
+    {
+      "id": "4741028",
+      "name": "MAYARA COHEN",
+      "specialties": "[\"Terapia Ocupacional\"]",
+      "therapy_types_used": "terapia_ocupacional",
+      "total_appointments": "40"
+    },
+    {
+      "id": "4620105",
+      "name": "MONALISA",
+      "specialties": "[\"Psicomotricidade\"]",
+      "therapy_types_used": "psicologia",
+      "total_appointments": "1"
+    },
+    {
+      "id": "3180017",
+      "name": "Rayana Santos ",
+      "specialties": "[\"Psicologia\"]",
+      "therapy_types_used": "psicologia",
+      "total_appointments": "76"
+    },
+    {
+      "id": "5130006",
+      "name": "Recepção Sapere",
+      "specialties": "NULL",
+      "therapy_types_used": "NULL",
+      "total_appointments": "0"
+    },
+    {
+      "id": "4620148",
+      "name": "REGINA MENEZES",
+      "specialties": "[\"Fisioterapia\"]",
+      "therapy_types_used": "psicologia, terapia_ocupacional",
+      "total_appointments": "75"
+    },
+    {
+      "id": "5820038",
+      "name": "Renata Guimarães",
+      "specialties": "[\"Aplicadora DENVER e ABA\"]",
+      "therapy_types_used": "outro",
+      "total_appointments": "33"
+    },
+    {
+      "id": "4530094",
+      "name": "SUAMY",
+      "specialties": "[\"Fisioterapia\"]",
+      "therapy_types_used": "NULL",
+      "total_appointments": "0"
+    },
+    {
+      "id": "2725474",
+      "name": "Vitória Santos Lira",
+      "specialties": "[\"Fisioterapia\"]",
+      "therapy_types_used": "fisioterapia",
+      "total_appointments": "46"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tspecialties\ttherapy_types_used\ttotal_appointments\n4380053\tANA PAULA GIRARD\t[\"Terapia Ocupacional\"]\tpsicologia, terapia_ocupacional\t20\n4413761\tANDREA AFONSO\t[\"Fonoaudiologia\"]\tfonoaudiologia, psicologia\t147\n124682\tCesar Henrique Santos \tNULL\tNULL\t0\n4620078\tDELLANY\t[\"Psicologia\"]\tfonoaudiologia, psicologia\t110\n9990210\tGiselle\tNULL\tNULL\t0\n1\tLucas Henrique\tNULL\tpsicologia\t10\n4530171\tMAGNA CRUZ\t[\"Nutrição\"]\tnutricao\t1\n468419\tMarcely Almeida Silva\tNULL\tfonoaudiologia, neuropsicopedagogia, psicologia, psicopedagogia, terapia_ocupacional\t192\n4530139\tMARCIA RATIS\t[\"Nutrição\"]\tnutricao\t30\n4380044\tMARIA VITORIA\t[\"Terapia Ocupacional\"]\tterapia_ocupacional\t11\n4530223\tMARIANA\t[\"Fonoaudiologia\"]\tfonoaudiologia, psicologia\t23\n4412996\tMAX\t[\"Musicoterapia\"]\tmusicoterapia\t1\n4741028\tMAYARA COHEN\t[\"Terapia Ocupacional\"]\tterapia_ocupacional\t40\n4620105\tMONALISA\t[\"Psicomotricidade\"]\tpsicologia\t1\n3180017\tRayana Santos \t[\"Psicologia\"]\tpsicologia\t76\n5130006\tRecepção Sapere\tNULL\tNULL\t0\n4620148\tREGINA MENEZES\t[\"Fisioterapia\"]\tpsicologia, terapia_ocupacional\t75\n5820038\tRenata Guimarães\t[\"Aplicadora DENVER e ABA\"]\toutro\t33\n4530094\tSUAMY\t[\"Fisioterapia\"]\tNULL\t0\n2725474\tVitória Santos Lira\t[\"Fisioterapia\"]\tfisioterapia\t46\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

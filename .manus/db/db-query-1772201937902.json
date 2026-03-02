@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, name, role, specialties FROM users WHERE name LIKE '%Marcely%' OR name LIKE '%MARCELY%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, role, specialties FROM users WHERE name LIKE '%Marcely%' OR name LIKE '%MARCELY%';",
+  "rows": [
+    {
+      "id": "468419",
+      "name": "Marcely Almeida Silva",
+      "role": "therapist",
+      "specialties": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\trole\tspecialties\n468419\tMarcely Almeida Silva\ttherapist\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 67
+}

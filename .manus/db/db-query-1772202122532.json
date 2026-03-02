@@ -1,0 +1,130 @@
+{
+  "query": "SELECT id, name, role, specialties FROM users WHERE role IN ('therapist', 'admin') ORDER BY name;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, role, specialties FROM users WHERE role IN ('therapist', 'admin') ORDER BY name;",
+  "rows": [
+    {
+      "id": "4380053",
+      "name": "ANA PAULA GIRARD",
+      "role": "therapist",
+      "specialties": "[\"Terapia Ocupacional\"]"
+    },
+    {
+      "id": "4413761",
+      "name": "ANDREA AFONSO",
+      "role": "therapist",
+      "specialties": "[\"Fonoaudiologia\"]"
+    },
+    {
+      "id": "124682",
+      "name": "Cesar Henrique Santos ",
+      "role": "admin",
+      "specialties": "NULL"
+    },
+    {
+      "id": "4620078",
+      "name": "DELLANY",
+      "role": "therapist",
+      "specialties": "[\"Psicologia\"]"
+    },
+    {
+      "id": "9990210",
+      "name": "Giselle",
+      "role": "admin",
+      "specialties": "NULL"
+    },
+    {
+      "id": "1",
+      "name": "Lucas Henrique",
+      "role": "admin",
+      "specialties": "NULL"
+    },
+    {
+      "id": "4530171",
+      "name": "MAGNA CRUZ",
+      "role": "therapist",
+      "specialties": "[\"Nutrição\"]"
+    },
+    {
+      "id": "468419",
+      "name": "Marcely Almeida Silva",
+      "role": "therapist",
+      "specialties": "NULL"
+    },
+    {
+      "id": "4530139",
+      "name": "MARCIA RATIS",
+      "role": "therapist",
+      "specialties": "[\"Nutrição\"]"
+    },
+    {
+      "id": "4380044",
+      "name": "MARIA VITORIA",
+      "role": "therapist",
+      "specialties": "[\"Terapia Ocupacional\"]"
+    },
+    {
+      "id": "4530223",
+      "name": "MARIANA",
+      "role": "therapist",
+      "specialties": "[\"Fonoaudiologia\"]"
+    },
+    {
+      "id": "4412996",
+      "name": "MAX",
+      "role": "therapist",
+      "specialties": "[\"Musicoterapia\"]"
+    },
+    {
+      "id": "4741028",
+      "name": "MAYARA COHEN",
+      "role": "therapist",
+      "specialties": "[\"Terapia Ocupacional\"]"
+    },
+    {
+      "id": "4620105",
+      "name": "MONALISA",
+      "role": "therapist",
+      "specialties": "[\"Psicomotricidade\"]"
+    },
+    {
+      "id": "3180017",
+      "name": "Rayana Santos ",
+      "role": "therapist",
+      "specialties": "[\"Psicologia\"]"
+    },
+    {
+      "id": "5130006",
+      "name": "Recepção Sapere",
+      "role": "admin",
+      "specialties": "NULL"
+    },
+    {
+      "id": "4620148",
+      "name": "REGINA MENEZES",
+      "role": "therapist",
+      "specialties": "[\"Fisioterapia\"]"
+    },
+    {
+      "id": "5820038",
+      "name": "Renata Guimarães",
+      "role": "therapist",
+      "specialties": "[\"Aplicadora DENVER e ABA\"]"
+    },
+    {
+      "id": "4530094",
+      "name": "SUAMY",
+      "role": "therapist",
+      "specialties": "[\"Fisioterapia\"]"
+    },
+    {
+      "id": "2725474",
+      "name": "Vitória Santos Lira",
+      "role": "therapist",
+      "specialties": "[\"Fisioterapia\"]"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\trole\tspecialties\n4380053\tANA PAULA GIRARD\ttherapist\t[\"Terapia Ocupacional\"]\n4413761\tANDREA AFONSO\ttherapist\t[\"Fonoaudiologia\"]\n124682\tCesar Henrique Santos \tadmin\tNULL\n4620078\tDELLANY\ttherapist\t[\"Psicologia\"]\n9990210\tGiselle\tadmin\tNULL\n1\tLucas Henrique\tadmin\tNULL\n4530171\tMAGNA CRUZ\ttherapist\t[\"Nutrição\"]\n468419\tMarcely Almeida Silva\ttherapist\tNULL\n4530139\tMARCIA RATIS\ttherapist\t[\"Nutrição\"]\n4380044\tMARIA VITORIA\ttherapist\t[\"Terapia Ocupacional\"]\n4530223\tMARIANA\ttherapist\t[\"Fonoaudiologia\"]\n4412996\tMAX\ttherapist\t[\"Musicoterapia\"]\n4741028\tMAYARA COHEN\ttherapist\t[\"Terapia Ocupacional\"]\n4620105\tMONALISA\ttherapist\t[\"Psicomotricidade\"]\n3180017\tRayana Santos \ttherapist\t[\"Psicologia\"]\n5130006\tRecepção Sapere\tadmin\tNULL\n4620148\tREGINA MENEZES\ttherapist\t[\"Fisioterapia\"]\n5820038\tRenata Guimarães\ttherapist\t[\"Aplicadora DENVER e ABA\"]\n4530094\tSUAMY\ttherapist\t[\"Fisioterapia\"]\n2725474\tVitória Santos Lira\ttherapist\t[\"Fisioterapia\"]\n",
+  "stderr": "",
+  "execution_time_ms": 59
+}

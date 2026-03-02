@@ -907,3 +907,12 @@
 - [x] Testar ordenação alfabética no Dashboard
 - [x] Testar ordenação alfabética na Agenda
 - [x] Validar com o usuário
+
+## Feature: Auto-preencher especialidade ao selecionar terapeuta no agendamento (27/02/2026)
+- [x] Investigar schema de terapeutas e especialidades no banco
+- [x] Verificar como especialidades estão vinculadas a cada terapeuta
+- [x] Criar query para buscar especialidade(s) de uma terapeuta
+- [x] Atualizar formulário de agendamento para auto-preencher especialidade ao selecionar terapeuta
+- [x] Tratar caso de terapeuta com múltiplas especialidades
+- [x] Corrigir valores de specialties no banco para formato válido do sistema
+- [x] Testar com Marcely Almeida (psicopedagogia) e outras terapeutas

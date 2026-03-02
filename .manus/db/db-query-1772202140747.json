@@ -1,0 +1,16 @@
+{
+  "query": "SELECT u.id, u.name, u.specialties, GROUP_CONCAT(DISTINCT a.therapyType) as therapy_types_used FROM users u LEFT JOIN appointments a ON a.therapistUserId = u.id WHERE u.name LIKE '%Marcely%' GROUP BY u.id, u.name, u.specialties;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT u.id, u.name, u.specialties, GROUP_CONCAT(DISTINCT a.therapyType) as therapy_types_used FROM users u LEFT JOIN appointments a ON a.therapistUserId = u.id WHERE u.name LIKE '%Marcely%' GROUP BY u.id, u.name, u.specialties;",
+  "rows": [
+    {
+      "id": "468419",
+      "name": "Marcely Almeida Silva",
+      "specialties": "NULL",
+      "therapy_types_used": "neuropsicopedagogia,psicopedagogia,psicologia,fonoaudiologia,terapia_ocupacional"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tspecialties\ttherapy_types_used\n468419\tMarcely Almeida Silva\tNULL\tneuropsicopedagogia,psicopedagogia,psicologia,fonoaudiologia,terapia_ocupacional\n",
+  "stderr": "",
+  "execution_time_ms": 60
+}

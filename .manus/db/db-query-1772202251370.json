@@ -1,0 +1,9 @@
+{
+  "query": "\nUPDATE users SET specialties = '[\"psicopedagogia\",\"neuropsicopedagogia\"]' WHERE id = 468419;\nUPDATE users SET specialties = '[\"terapia_ocupacional\"]' WHERE id IN (4380053, 4380044, 4741028);\nUPDATE users SET specialties = '[\"nutricao\"]' WHERE id IN (4530171, 4530139);\nUPDATE users SET specialties = '[\"fonoaudiologia\"]' WHERE id IN (4413761, 4530223);\nUPDATE users SET specialties = '[\"psicologia\"]' WHERE id IN (4620078, 3180017);\nUPDATE users SET specialties = '[\"musicoterapia\"]' WHERE id = 4412996;\nUPDATE users SET specialties = '[\"fisioterapia\"]' WHERE id IN (4620148, 4530094, 2725474);\nUPDATE users SET specialties = '[\"outro\"]' WHERE id IN (4620105, 5820038);\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \nUPDATE users SET specialties = '[\"psicopedagogia\",\"neuropsicopedagogia\"]' WHERE id = 468419;\nUPDATE users SET specialties = '[\"terapia_ocupacional\"]' WHERE id IN (4380053, 4380044, 4741028);\nUPDATE users SET specialties = '[\"nutricao\"]' WHERE id IN (4530171, 4530139);\nUPDATE users SET specialties = '[\"fonoaudiologia\"]' WHERE id IN (4413761, 4530223);\nUPDATE users SET specialties = '[\"psicologia\"]' WHERE id IN (4620078, 3180017);\nUPDATE users SET specialties = '[\"musicoterapia\"]' WHERE id = 4412996;\nUPDATE users SET specialties = '[\"fisioterapia\"]' WHERE id IN (4620148, 4530094, 2725474);\nUPDATE users SET specialties = '[\"outro\"]' WHERE id IN (4620105, 5820038);\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 119
+}
