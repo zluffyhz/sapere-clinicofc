@@ -1,7 +1,7 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, FileText, Users, ClipboardList, Timer } from "lucide-react";
+import { Calendar, FileText, Users, ClipboardList, Timer, ChevronRight } from "lucide-react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
@@ -28,11 +28,11 @@ function QuickActionButton({
   return (
     <Button
       variant={variant}
-      className={`w-full h-24 flex flex-col gap-2 ${className}`}
+      className={`w-full h-20 flex flex-col gap-2 ${className}`}
       onClick={() => setLocation(href)}
     >
-      <Icon className="h-6 w-6" />
-      <span>{label}</span>
+      <Icon className="h-5 w-5" />
+      <span className="text-sm">{label}</span>
     </Button>
   );
 }
@@ -90,15 +90,34 @@ export default function TherapistDashboard() {
     endDate: weekEnd,
   });
 
+  const scheduledToday = todayAppointments?.filter((a) => a.status === "scheduled").length || 0;
+
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">
-          Bem-vindo{user?.role === 'therapist' ? ', Dr(a).' : ','} {user?.name || "Terapeuta"}
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Gerencie seus pacientes, agendamentos e prontuários
-        </p>
+    <div className="space-y-6">
+      {/* Hero Section: Boas-vindas + Iniciar Sessão */}
+      <div className="rounded-2xl bg-gradient-to-r from-orange-500 to-orange-400 p-6 text-white shadow-md">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold leading-tight">
+              Bem-vindo{user?.role === 'therapist' ? ', Dr(a).' : ','}{" "}
+              {user?.name?.split(" ")[0] || "Terapeuta"}
+            </h1>
+            <p className="mt-1 text-orange-100 text-sm">
+              {scheduledToday > 0
+                ? `Você tem ${scheduledToday} sess${scheduledToday === 1 ? "ão" : "ões"} agendada${scheduledToday === 1 ? "" : "s"} para hoje`
+                : "Nenhuma sessão agendada para hoje"}
+            </p>
+          </div>
+          <Button
+            size="lg"
+            className="bg-white text-orange-600 hover:bg-orange-50 font-semibold shadow-sm flex items-center gap-2 shrink-0"
+            onClick={() => setLocation("/session")}
+          >
+            <Timer className="h-5 w-5" />
+            Iniciar Sessão
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -120,9 +139,7 @@ export default function TherapistDashboard() {
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {todayAppointments?.filter((a) => a.status === "scheduled").length || 0}
-            </div>
+            <div className="text-2xl font-bold">{scheduledToday}</div>
             <p className="text-xs text-muted-foreground">Agendadas para hoje</p>
           </CardContent>
         </Card>
@@ -277,21 +294,14 @@ export default function TherapistDashboard() {
         />
       )}
 
-      {/* Quick Actions */}
+      {/* Quick Actions (secondary actions only, Iniciar Sessão moved to hero) */}
       <Card>
         <CardHeader>
           <CardTitle>Ações Rápidas</CardTitle>
           <CardDescription>Acesse as funcionalidades principais</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-4">
-            <QuickActionButton
-              href="/session"
-              icon={Timer}
-              label="Iniciar Sessão"
-              variant="default"
-              className="bg-orange-500 hover:bg-orange-600"
-            />
+          <div className="grid gap-4 md:grid-cols-3">
             {user?.role === 'admin' && (
               <QuickActionButton
                 href="/pacientes"
@@ -308,6 +318,11 @@ export default function TherapistDashboard() {
               href="/prontuarios"
               icon={ClipboardList}
               label="Prontuários"
+            />
+            <QuickActionButton
+              href="/documentos"
+              icon={FileText}
+              label="Documentos"
             />
           </div>
         </CardContent>

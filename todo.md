@@ -921,3 +921,9 @@
 - [x] Localizar onde o texto de especialidade é exibido no dropdown
 - [x] Remover texto de especialidade mantendo apenas o nome da terapeuta
 - [x] Testar dropdown para confirmar remoção
+
+## UX: Reposicionar botão "Iniciar Sessão" no topo do dashboard (02/03/2026)
+- [x] Analisar layout atual do TherapistDashboard
+- [x] Mover botão "Iniciar Sessão" para área visível sem scroll (hero/topo)
+- [x] Garantir destaque visual adequado no mobile e desktop
+- [x] Testar layout com Playwright
