@@ -916,3 +916,8 @@
 - [x] Tratar caso de terapeuta com múltiplas especialidades
 - [x] Corrigir valores de specialties no banco para formato válido do sistema
 - [x] Testar com Marcely Almeida (psicopedagogia) e outras terapeutas
+
+## Ajuste: Remover especialidade ao lado do nome da terapeuta no dropdown (01/03/2026)
+- [x] Localizar onde o texto de especialidade é exibido no dropdown
+- [x] Remover texto de especialidade mantendo apenas o nome da terapeuta
+- [x] Testar dropdown para confirmar remoção

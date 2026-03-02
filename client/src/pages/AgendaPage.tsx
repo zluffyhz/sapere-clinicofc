@@ -387,11 +387,11 @@ export default function AgendaPage() {
               {therapists
                 ?.filter((u) => u.role === "therapist" || u.role === "admin")
                 .map((therapist) => {
-                  // Parse specialties for display
+                  // Parse specialties for auto-fill (not for display)
                   let specialtyLabel = "";
-                  if (therapist.specialties) {
+                  if (false && therapist.specialties != null) {
                     try {
-                      const specs: string[] = JSON.parse(therapist.specialties);
+                      const specs: string[] = JSON.parse(therapist.specialties as string);
                       const labels: Record<string, string> = {
                         fonoaudiologia: "Fono",
                         psicologia: "Psico",
@@ -408,7 +408,7 @@ export default function AgendaPage() {
                   }
                   return (
                     <SelectItem key={therapist.id} value={therapist.id.toString()}>
-                      {therapist.name}{specialtyLabel ? ` — ${specialtyLabel}` : ""}
+                      {therapist.name}
                     </SelectItem>
                   );
                 })}
