@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { trpc } from "@/lib/trpc";
 import { Bell, Calendar, FileText, Home, Users, ClipboardList, LogOut, Menu, X, Key, ClipboardCheck, BarChart3, Database } from "lucide-react";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation, Redirect } from "wouter";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useNotificationSound } from "@/hooks/useNotificationSound";
@@ -50,9 +50,11 @@ export default function SapereLayout({ children }: { children: React.ReactNode }
   // Play sound when new notification arrives
   useNotificationSound(notificationData?.count);
 
+  const [, setLocation] = useLocation();
+
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: () => {
-      window.location.href = "/";
+      setLocation("/");
     },
   });
 
@@ -69,12 +71,10 @@ export default function SapereLayout({ children }: { children: React.ReactNode }
   }
 
   if (!user) {
-    // Redirect to login page (but not if already there)
-    if (typeof window !== "undefined" && window.location.pathname !== "/login" && window.location.pathname !== "/change-password") {
-      window.location.href = "/login";
-      return null;
+    // Redirect to login page using wouter (preserves browser history)
+    if (location !== "/login" && location !== "/change-password") {
+      return <Redirect to="/login" />;
     }
-    // If on login page, don't render layout
     return null;
   }
 

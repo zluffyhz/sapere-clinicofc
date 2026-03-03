@@ -18,7 +18,11 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
 
   if (!isUnauthorized) return;
 
-  window.location.href = getLoginUrl();
+  // Use history.pushState to preserve browser history instead of replacing it
+  if (window.location.pathname !== "/login") {
+    window.history.pushState({}, "", "/login");
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  }
 };
 
 queryClient.getQueryCache().subscribe(event => {

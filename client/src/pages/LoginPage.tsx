@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,10 +12,11 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [, setLocation] = useLocation();
 
   const loginMutation = trpc.auth.loginWithPassword.useMutation({
     onSuccess: () => {
-      window.location.href = "/";
+      setLocation("/");
     },
     onError: (error) => {
       setError(error.message);

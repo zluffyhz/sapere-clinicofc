@@ -927,3 +927,11 @@
 - [x] Mover botão "Iniciar Sessão" para área visível sem scroll (hero/topo)
 - [x] Garantir destaque visual adequado no mobile e desktop
 - [x] Testar layout com Playwright
+
+## Bug: Botão voltar do navegador não direciona para o dashboard (02/03/2026)
+- [x] Investigar fluxo de navegação atual no App.tsx e SessionTimer
+- [x] Identificar onde o histórico de navegação está sendo manipulado incorretamente (window.location.href)
+- [x] Corrigir SapereLayout: window.location.href → <Redirect> do wouter
+- [x] Corrigir LoginPage: window.location.href → setLocation()
+- [x] Corrigir main.tsx: window.location.href → history.pushState + popstate
+- [x] Testar navegação em diferentes fluxos (sessão → dashboard, agenda → dashboard, etc)
