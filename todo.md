@@ -935,3 +935,10 @@
 - [x] Corrigir LoginPage: window.location.href → setLocation()
 - [x] Corrigir main.tsx: window.location.href → history.pushState + popstate
 - [x] Testar navegação em diferentes fluxos (sessão → dashboard, agenda → dashboard, etc)
+
+## Bug CRÍTICO: NotFoundError removeChild na página /session (03/03/2026)
+- [x] Investigar código da SessionPage e SessionTimer para manipulação direta de DOM
+- [x] Identificar causa raiz: Radix UI Select com portal causa removeChild no mobile
+- [x] Substituir Select do Radix por dropdown customizado nativo (sem portal)
+- [x] Adicionar campo de busca no dropdown para facilitar seleção com muitos pacientes
+- [x] Testar fluxo completo: selecionar paciente → timer → iniciar sessão
