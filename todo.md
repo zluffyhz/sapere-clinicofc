@@ -942,3 +942,9 @@
 - [x] Substituir Select do Radix por dropdown customizado nativo (sem portal)
 - [x] Adicionar campo de busca no dropdown para facilitar seleção com muitos pacientes
 - [x] Testar fluxo completo: selecionar paciente → timer → iniciar sessão
+
+## Bug: Botão "Voltar para Dashboard" na SessionPage redireciona para tela branca (04/03/2026)
+- [x] Investigar código do botão voltar na SessionPage
+- [x] Identificar causa: setLocation("/inicio") apontava para rota inexistente
+- [x] Corrigir para setLocation("/") que é a rota correta do dashboard
+- [x] Testar navegação - redirecionamento funcionando corretamente

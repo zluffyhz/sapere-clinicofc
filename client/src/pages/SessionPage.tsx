@@ -82,7 +82,7 @@ export default function SessionPage() {
       <Button
         variant="ghost"
         className="mb-6"
-        onClick={() => setLocation("/inicio")}
+        onClick={() => setLocation("/")}
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
         Voltar para Dashboard
