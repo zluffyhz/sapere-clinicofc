@@ -14,13 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { NativeSelect } from "@/components/ui/native-select";
 import { Users, Plus, Search, Calendar, FileText, Filter, X } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -187,28 +181,20 @@ export default function PacientesPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="familyUserId">Responsável (Família) *</Label>
-                  <Select
+                  <NativeSelect
                     value={newPatient.familyUserId?.toString() || ""}
-                    onValueChange={(value) =>
+                    onChange={(e) =>
                       setNewPatient({
                         ...newPatient,
-                        familyUserId: value ? parseInt(value) : undefined,
+                        familyUserId: e.target.value ? parseInt(e.target.value) : undefined,
                       })
                     }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione o responsável" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {familyUsers
-                        ?.filter((u) => u.role === "family")
-                        .map((user) => (
-                          <SelectItem key={user.id} value={user.id.toString()}>
-                            {user.name} ({user.email}) - ID: {user.id}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder="Selecione o responsável"
+                    options={(familyUsers || []).filter((u) => u.role === "family").map((u) => ({
+                      value: u.id.toString(),
+                      label: `${u.name ?? ""} (${u.email ?? ""}) - ID: ${u.id}`
+                    }))}
+                  />
                   <p className="text-xs text-muted-foreground">
                     Selecione o usuário responsável pelo paciente
                   </p>
@@ -301,25 +287,21 @@ export default function PacientesPage() {
 
             {/* Therapy Type Filter */}
             <div className="w-full">
-              <Select value={therapyTypeFilter} onValueChange={setTherapyTypeFilter}>
-                <SelectTrigger>
-                  <div className="flex items-center gap-2">
-                    <Filter className="h-4 w-4" />
-                    <SelectValue placeholder="Tipo de terapia" />
-                  </div>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todas as terapias</SelectItem>
-                  <SelectItem value="fonoaudiologia">Fonoaudiologia</SelectItem>
-                  <SelectItem value="psicologia">Psicologia</SelectItem>
-                  <SelectItem value="terapia_ocupacional">Terapia Ocupacional</SelectItem>
-                  <SelectItem value="psicopedagogia">Psicopedagogia</SelectItem>
-                  <SelectItem value="musicoterapia">Musicoterapia</SelectItem>
-                  <SelectItem value="fisioterapia">Fisioterapia</SelectItem>
-                  <SelectItem value="neuropsicopedagogia">Neuropsicopedagogia</SelectItem>
-                  <SelectItem value="nutricao">Nutrição</SelectItem>
-                </SelectContent>
-              </Select>
+              <NativeSelect
+                value={therapyTypeFilter}
+                onChange={(e) => setTherapyTypeFilter(e.target.value)}
+                options={[
+                  { value: "all", label: "Todas as terapias" },
+                  { value: "fonoaudiologia", label: "Fonoaudiologia" },
+                  { value: "psicologia", label: "Psicologia" },
+                  { value: "terapia_ocupacional", label: "Terapia Ocupacional" },
+                  { value: "psicopedagogia", label: "Psicopedagogia" },
+                  { value: "musicoterapia", label: "Musicoterapia" },
+                  { value: "fisioterapia", label: "Fisioterapia" },
+                  { value: "neuropsicopedagogia", label: "Neuropsicopedagogia" },
+                  { value: "nutricao", label: "Nutrição" },
+                ]}
+              />
             </div>
           </div>
 

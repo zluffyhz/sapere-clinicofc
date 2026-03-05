@@ -118,15 +118,11 @@ describe('Appointment Scheduling Conflicts', () => {
 
   it('should exclude current appointment when checking conflicts on update', async () => {
     // Use unique timestamp to avoid conflicts with other tests
-    const uniqueTime = new Date();
-    uniqueTime.setFullYear(2030);
-    uniqueTime.setMonth(0); // January
-    uniqueTime.setDate(16);
-    uniqueTime.setHours(10 + Math.floor(Math.random() * 5)); // Random hour 10-14
-    uniqueTime.setMinutes(Math.floor(Math.random() * 60));
-    uniqueTime.setSeconds(0);
-    uniqueTime.setMilliseconds(0);
-    const startTime = uniqueTime;
+    // Use 2037 June with unique day based on current timestamp
+    const ts = Date.now();
+    const uniqueDay = (ts % 28) + 1; // 1-28
+    const uniqueHour = Math.floor(Math.random() * 20); // 0-19
+    const startTime = new Date(2037, 5, uniqueDay, uniqueHour, 0, 0, 0); // June 2037
     const endTime = new Date(startTime);
     endTime.setHours(endTime.getHours() + 1);
 

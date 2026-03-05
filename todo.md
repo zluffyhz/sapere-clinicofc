@@ -948,3 +948,9 @@
 - [x] Identificar causa: setLocation("/inicio") apontava para rota inexistente
 - [x] Corrigir para setLocation("/") que é a rota correta do dashboard
 - [x] Testar navegação - redirecionamento funcionando corretamente
+
+## Bug CRÍTICO: NotFoundError removeChild em múltiplos Select do Radix UI (05/03/2026)
+- [x] Mapear todos os arquivos com Select do Radix UI no projeto
+- [x] Substituir Select do Radix por dropdowns customizados nativos em todas as páginas
+- [x] Verificar TypeScript e testar no navegador
+- [x] Publicar correção em produção

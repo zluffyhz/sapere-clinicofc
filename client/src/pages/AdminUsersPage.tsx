@@ -12,13 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { NativeSelect } from "@/components/ui/native-select";
 import {
   Table,
   TableBody,
@@ -191,21 +185,18 @@ export default function AdminUsersPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="role">Perfil *</Label>
-                <Select
+                <NativeSelect
                   value={newUser.role}
-                  onValueChange={(value: any) => {
+                  onChange={(e) => {
+                    const value = e.target.value as any;
                     setNewUser({ ...newUser, role: value, specialties: value === 'therapist' ? newUser.specialties : [] });
                   }}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="family">Família</SelectItem>
-                    <SelectItem value="therapist">Terapeuta</SelectItem>
-                    <SelectItem value="admin">Administrador</SelectItem>
-                  </SelectContent>
-                </Select>
+                  options={[
+                    { value: "family", label: "Família" },
+                    { value: "therapist", label: "Terapeuta" },
+                    { value: "admin", label: "Administrador" },
+                  ]}
+                />
               </div>
 
               {newUser.role === 'therapist' && (
@@ -423,21 +414,17 @@ export default function AdminUsersPage() {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="editRole">Perfil</Label>
-              <Select
-                value={selectedUser?.role}
-                onValueChange={(value: any) =>
-                  setSelectedUser({ ...selectedUser, role: value })
+              <NativeSelect
+                value={selectedUser?.role || ""}
+                onChange={(e) =>
+                  setSelectedUser({ ...selectedUser, role: e.target.value as any })
                 }
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="family">Família</SelectItem>
-                  <SelectItem value="therapist">Terapeuta</SelectItem>
-                  <SelectItem value="admin">Administrador</SelectItem>
-                </SelectContent>
-              </Select>
+                options={[
+                  { value: "family", label: "Família" },
+                  { value: "therapist", label: "Terapeuta" },
+                  { value: "admin", label: "Administrador" },
+                ]}
+              />
             </div>
 
             <div className="flex justify-end gap-2">

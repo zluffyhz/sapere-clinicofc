@@ -2,7 +2,7 @@ import { useState } from "react";
 import { trpc } from "../lib/trpc";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { NativeSelect } from "./ui/native-select";
 import { Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
 
@@ -126,34 +126,25 @@ export function PatientTherapistAssignments({ patientId, patientName }: PatientT
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="text-sm font-medium mb-2 block">Terapia</label>
-            <Select value={selectedTherapy} onValueChange={setSelectedTherapy}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione a terapia" />
-              </SelectTrigger>
-              <SelectContent>
-                {THERAPY_TYPES.map((therapy) => (
-                  <SelectItem key={therapy.value} value={therapy.value}>
-                    {therapy.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <NativeSelect
+              value={selectedTherapy || ""}
+              onChange={(e) => setSelectedTherapy(e.target.value)}
+              placeholder="Selecione a terapia"
+              options={THERAPY_TYPES}
+            />
           </div>
 
           <div>
             <label className="text-sm font-medium mb-2 block">Terapeuta</label>
-            <Select value={selectedTherapist?.toString()} onValueChange={(v) => setSelectedTherapist(Number(v))}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione o terapeuta" />
-              </SelectTrigger>
-              <SelectContent>
-                {therapistsList.map((therapist) => (
-                  <SelectItem key={therapist.id} value={therapist.id.toString()}>
-                    {therapist.name} ({therapist.email})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <NativeSelect
+              value={selectedTherapist?.toString() || ""}
+              onChange={(e) => setSelectedTherapist(Number(e.target.value))}
+              placeholder="Selecione o terapeuta"
+              options={therapistsList.map((t) => ({
+                value: t.id.toString(),
+                label: `${t.name ?? ""} (${t.email ?? ""})`
+              }))}
+            />
           </div>
         </div>
 

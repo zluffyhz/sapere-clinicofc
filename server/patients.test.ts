@@ -110,10 +110,11 @@ describe("Appointments Router", () => {
     });
 
     // Use unique timestamp to avoid conflicts with other tests
-    const uniqueTime = new Date();
-    uniqueTime.setFullYear(2030); // Far future to avoid conflicts
-    uniqueTime.setMilliseconds(Date.now() % 1000); // Add uniqueness
-    const startTime = uniqueTime;
+    // MySQL TIMESTAMP max is 2038-01-19, use 2037 with unique day/hour
+    const ts = Date.now();
+    const uniqueDay = (ts % 28) + 1; // 1-28
+    const uniqueHour = Math.floor(Math.random() * 20); // 0-19
+    const startTime = new Date(2037, 5, uniqueDay, uniqueHour, 0, 0, 0); // June 2037
     const endTime = new Date(startTime);
     endTime.setHours(endTime.getHours() + 1);
 
@@ -142,7 +143,7 @@ describe("Appointments Router", () => {
         startTime,
         endTime,
       })
-    ).rejects.toThrow("Acesso restrito a terapeutas");
+    ).rejects.toThrow("Famílias não podem criar agendamentos diretamente");
   });
 });
 

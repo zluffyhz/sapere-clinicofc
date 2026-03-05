@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { NativeSelect } from "@/components/ui/native-select";
 import { trpc } from "@/lib/trpc";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Loader2, Trash2 } from "lucide-react";
@@ -137,21 +137,15 @@ export function EditPatientDialog({ patient, open, onOpenChange, onSuccess }: Ed
 
             <div className="space-y-2">
               <Label htmlFor="familyUser">Responsável (Usuário Família)</Label>
-              <Select
-                value={familyUserId?.toString()}
-                onValueChange={(value) => setFamilyUserId(Number(value))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione o responsável" />
-                </SelectTrigger>
-                <SelectContent>
-                  {familyUsers?.map((user) => (
-                    <SelectItem key={user.id} value={user.id.toString()}>
-                      {user.name} ({user.email}) - ID: {user.id}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <NativeSelect
+                value={familyUserId?.toString() || ""}
+                onChange={(e) => setFamilyUserId(Number(e.target.value))}
+                placeholder="Selecione o responsável"
+                options={(familyUsers || []).map((u) => ({
+                  value: u.id.toString(),
+                  label: `${u.name ?? ""} (${u.email ?? ""}) - ID: ${u.id}`
+                }))}
+              />
             </div>
 
             <div className="space-y-2">

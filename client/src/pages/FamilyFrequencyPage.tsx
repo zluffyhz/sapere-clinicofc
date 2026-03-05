@@ -16,7 +16,7 @@ import {
   Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { NativeSelect } from "@/components/ui/native-select";
 import { toast } from "sonner";
 
 type AttendanceStatus = "present" | "absent";
@@ -165,35 +165,33 @@ export default function FamilyFrequencyPage() {
             <p className="text-gray-500">Acompanhe a presença nas sessões de terapia</p>
           </div>
           <div className="flex items-center gap-3">
-            <Select value={selectedMonth.toString()} onValueChange={(v) => setSelectedMonth(parseInt(v))}>
-              <SelectTrigger className="w-[140px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">Janeiro</SelectItem>
-                <SelectItem value="2">Fevereiro</SelectItem>
-                <SelectItem value="3">Março</SelectItem>
-                <SelectItem value="4">Abril</SelectItem>
-                <SelectItem value="5">Maio</SelectItem>
-                <SelectItem value="6">Junho</SelectItem>
-                <SelectItem value="7">Julho</SelectItem>
-                <SelectItem value="8">Agosto</SelectItem>
-                <SelectItem value="9">Setembro</SelectItem>
-                <SelectItem value="10">Outubro</SelectItem>
-                <SelectItem value="11">Novembro</SelectItem>
-                <SelectItem value="12">Dezembro</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={selectedYear.toString()} onValueChange={(v) => setSelectedYear(parseInt(v))}>
-              <SelectTrigger className="w-[100px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="2024">2024</SelectItem>
-                <SelectItem value="2025">2025</SelectItem>
-                <SelectItem value="2026">2026</SelectItem>
-              </SelectContent>
-            </Select>
+            <NativeSelect
+              value={selectedMonth.toString()}
+              onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+              options={[
+                { value: "1", label: "Janeiro" },
+                { value: "2", label: "Fevereiro" },
+                { value: "3", label: "Março" },
+                { value: "4", label: "Abril" },
+                { value: "5", label: "Maio" },
+                { value: "6", label: "Junho" },
+                { value: "7", label: "Julho" },
+                { value: "8", label: "Agosto" },
+                { value: "9", label: "Setembro" },
+                { value: "10", label: "Outubro" },
+                { value: "11", label: "Novembro" },
+                { value: "12", label: "Dezembro" },
+              ]}
+            />
+            <NativeSelect
+              value={selectedYear.toString()}
+              onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+              options={[
+                { value: "2024", label: "2024" },
+                { value: "2025", label: "2025" },
+                { value: "2026", label: "2026" },
+              ]}
+            />
             <Button onClick={handleGenerateReport} disabled={isGeneratingPDF}>
               <Download className="w-4 h-4 mr-2" />
               {isGeneratingPDF ? 'Gerando...' : 'Exportar PDF'}

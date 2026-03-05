@@ -3,7 +3,7 @@ import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { NativeSelect } from "@/components/ui/native-select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { 
@@ -157,47 +157,36 @@ export default function AttendancePage() {
             <p className="text-gray-500">{selectedMonthName}</p>
           </div>
           <div className="flex items-center gap-3">
-            <Select value={selectedPatientId?.toString() || ""} onValueChange={(v) => setSelectedPatientId(parseInt(v))}>
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Selecione o paciente" />
-              </SelectTrigger>
-              <SelectContent>
-                {patients?.map(patient => (
-                  <SelectItem key={patient.id} value={patient.id.toString()}>
-                    {patient.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={selectedMonth.toString()} onValueChange={(v) => setSelectedMonth(parseInt(v))}>
-              <SelectTrigger className="w-[120px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">Janeiro</SelectItem>
-                <SelectItem value="2">Fevereiro</SelectItem>
-                <SelectItem value="3">Março</SelectItem>
-                <SelectItem value="4">Abril</SelectItem>
-                <SelectItem value="5">Maio</SelectItem>
-                <SelectItem value="6">Junho</SelectItem>
-                <SelectItem value="7">Julho</SelectItem>
-                <SelectItem value="8">Agosto</SelectItem>
-                <SelectItem value="9">Setembro</SelectItem>
-                <SelectItem value="10">Outubro</SelectItem>
-                <SelectItem value="11">Novembro</SelectItem>
-                <SelectItem value="12">Dezembro</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={selectedYear.toString()} onValueChange={(v) => setSelectedYear(parseInt(v))}>
-              <SelectTrigger className="w-[90px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="2024">2024</SelectItem>
-                <SelectItem value="2025">2025</SelectItem>
-                <SelectItem value="2026">2026</SelectItem>
-              </SelectContent>
-            </Select>
+            <NativeSelect
+              className="w-[200px]"
+              value={selectedPatientId?.toString() || ""}
+              onChange={(e) => setSelectedPatientId(e.target.value ? parseInt(e.target.value) : null)}
+              placeholder="Selecione o paciente"
+              options={(patients || []).map(p => ({ value: p.id.toString(), label: p.name }))}
+            />
+            <NativeSelect
+              className="w-[120px]"
+              value={selectedMonth.toString()}
+              onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+              options={[
+                { value: "1", label: "Janeiro" }, { value: "2", label: "Fevereiro" },
+                { value: "3", label: "Março" }, { value: "4", label: "Abril" },
+                { value: "5", label: "Maio" }, { value: "6", label: "Junho" },
+                { value: "7", label: "Julho" }, { value: "8", label: "Agosto" },
+                { value: "9", label: "Setembro" }, { value: "10", label: "Outubro" },
+                { value: "11", label: "Novembro" }, { value: "12", label: "Dezembro" },
+              ]}
+            />
+            <NativeSelect
+              className="w-[90px]"
+              value={selectedYear.toString()}
+              onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+              options={[
+                { value: "2024", label: "2024" },
+                { value: "2025", label: "2025" },
+                { value: "2026", label: "2026" },
+              ]}
+            />
             <Button onClick={handleGenerateReport} disabled={isGeneratingPDF || !selectedPatientId}>
               <Download className="w-4 h-4 mr-2" />
               {isGeneratingPDF ? 'Gerando...' : 'Exportar PDF'}
@@ -318,29 +307,20 @@ export default function AttendancePage() {
                     {/* Attendance Controls */}
                     {!appointment.attendance ? (
                       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                        <Select
+                        <NativeSelect
+                          className="w-full sm:w-[140px]"
                           value={selectedStatus[appointment.id] || "present"}
-                          onValueChange={(value) =>
+                          onChange={(e) =>
                             setSelectedStatus(prev => ({
                               ...prev,
-                              [appointment.id]: value as AttendanceStatus,
+                              [appointment.id]: e.target.value as AttendanceStatus,
                             }))
                           }
-                        >
-                          <SelectTrigger className="w-full sm:w-[140px]">
-                            <SelectValue placeholder="Status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Object.entries(statusConfig).map(([key, config]) => (
-                              <SelectItem key={key} value={key}>
-                                <div className="flex items-center gap-2">
-                                  {config.icon}
-                                  {config.label}
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                          options={Object.entries(statusConfig).map(([key, config]) => ({
+                            value: key,
+                            label: config.label,
+                          }))}
+                        />
                         
                         <Textarea
                           placeholder="Observações (opcional)"

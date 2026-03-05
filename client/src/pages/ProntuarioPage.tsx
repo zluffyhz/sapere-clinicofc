@@ -7,13 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { NativeSelect } from "@/components/ui/native-select";
 import { FileText, Save, Plus, Calendar, Upload, Edit, Trash2, Eye } from "lucide-react";
 import { PatientTherapistAssignments } from "@/components/PatientTherapistAssignments";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -482,23 +476,17 @@ export default function ProntuarioPage() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="appointment">Sessão</Label>
-                  <Select
+                  <NativeSelect
                     value={evolutionData.appointmentId.toString()}
-                    onValueChange={(value) =>
-                      setEvolutionData({ ...evolutionData, appointmentId: parseInt(value) })
+                    onChange={(e) =>
+                      setEvolutionData({ ...evolutionData, appointmentId: parseInt(e.target.value) })
                     }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione a sessão" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {appointments?.map((apt) => (
-                        <SelectItem key={apt.id} value={apt.id.toString()}>
-                          {format(new Date(apt.startTime), "dd/MM/yyyy HH:mm", { locale: ptBR })}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder="Selecione a sessão"
+                    options={(appointments || []).map((apt) => ({
+                      value: apt.id.toString(),
+                      label: format(new Date(apt.startTime), "dd/MM/yyyy HH:mm", { locale: ptBR })
+                    }))}
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -515,24 +503,21 @@ export default function ProntuarioPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="patientMood">Humor do Paciente</Label>
-                  <Select
+                  <NativeSelect
                     value={evolutionData.patientMood}
-                    onValueChange={(value) =>
-                      setEvolutionData({ ...evolutionData, patientMood: value })
+                    onChange={(e) =>
+                      setEvolutionData({ ...evolutionData, patientMood: e.target.value })
                     }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione o humor" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="muito_bem">Muito Bem</SelectItem>
-                      <SelectItem value="bem">Bem</SelectItem>
-                      <SelectItem value="neutro">Neutro</SelectItem>
-                      <SelectItem value="ansioso">Ansioso</SelectItem>
-                      <SelectItem value="irritado">Irritado</SelectItem>
-                      <SelectItem value="triste">Triste</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    placeholder="Selecione o humor"
+                    options={[
+                      { value: "muito_bem", label: "Muito Bem" },
+                      { value: "bem", label: "Bem" },
+                      { value: "neutro", label: "Neutro" },
+                      { value: "ansioso", label: "Ansioso" },
+                      { value: "irritado", label: "Irritado" },
+                      { value: "triste", label: "Triste" },
+                    ]}
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -595,21 +580,18 @@ export default function ProntuarioPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="collaborationLevel">Nível de Colaboração *</Label>
-                  <Select
+                  <NativeSelect
                     value={evolutionData.collaborationLevel}
-                    onValueChange={(value) =>
-                      setEvolutionData({ ...evolutionData, collaborationLevel: value })
+                    onChange={(e) =>
+                      setEvolutionData({ ...evolutionData, collaborationLevel: e.target.value })
                     }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione o nível de colaboração" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="full">Colaborou durante toda a sessão</SelectItem>
-                      <SelectItem value="partial">Colaborou durante parte da sessão</SelectItem>
-                      <SelectItem value="none">Não colaborou</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    placeholder="Selecione o nível de colaboração"
+                    options={[
+                      { value: "full", label: "Colaborou durante toda a sessão" },
+                      { value: "partial", label: "Colaborou durante parte da sessão" },
+                      { value: "none", label: "Não colaborou" },
+                    ]}
+                  />
                 </div>
 
                 <Button
@@ -690,24 +672,21 @@ export default function ProntuarioPage() {
                         <div className="space-y-4">
                           <div className="space-y-2">
                             <Label>Humor do Paciente</Label>
-                            <Select
+                            <NativeSelect
                               value={editEvolutionData.patientMood}
-                              onValueChange={(value) =>
-                                setEditEvolutionData({ ...editEvolutionData, patientMood: value })
+                              onChange={(e) =>
+                                setEditEvolutionData({ ...editEvolutionData, patientMood: e.target.value })
                               }
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione o humor" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="muito_bem">Muito Bem</SelectItem>
-                                <SelectItem value="bem">Bem</SelectItem>
-                                <SelectItem value="neutro">Neutro</SelectItem>
-                                <SelectItem value="ansioso">Ansioso</SelectItem>
-                                <SelectItem value="irritado">Irritado</SelectItem>
-                                <SelectItem value="triste">Triste</SelectItem>
-                              </SelectContent>
-                            </Select>
+                              placeholder="Selecione o humor"
+                              options={[
+                                { value: "muito_bem", label: "Muito Bem" },
+                                { value: "bem", label: "Bem" },
+                                { value: "neutro", label: "Neutro" },
+                                { value: "ansioso", label: "Ansioso" },
+                                { value: "irritado", label: "Irritado" },
+                                { value: "triste", label: "Triste" },
+                              ]}
+                            />
                           </div>
                           <div className="space-y-2">
                             <Label>Resumo da Sessão</Label>
@@ -751,21 +730,18 @@ export default function ProntuarioPage() {
                           </div>
                           <div className="space-y-2">
                             <Label>Nível de Colaboração</Label>
-                            <Select
+                            <NativeSelect
                               value={editEvolutionData.collaborationLevel}
-                              onValueChange={(value) =>
-                                setEditEvolutionData({ ...editEvolutionData, collaborationLevel: value })
+                              onChange={(e) =>
+                                setEditEvolutionData({ ...editEvolutionData, collaborationLevel: e.target.value })
                               }
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione o nível" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="full">Total</SelectItem>
-                                <SelectItem value="partial">Parcial</SelectItem>
-                                <SelectItem value="none">Nenhuma</SelectItem>
-                              </SelectContent>
-                            </Select>
+                              placeholder="Selecione o nível"
+                              options={[
+                                { value: "full", label: "Total" },
+                                { value: "partial", label: "Parcial" },
+                                { value: "none", label: "Nenhuma" },
+                              ]}
+                            />
                           </div>
                           <div className="flex gap-2">
                             <Button
@@ -891,22 +867,18 @@ export default function ProntuarioPage() {
 
                         <div className="space-y-2">
                           <Label htmlFor="documentType">Tipo de Documento</Label>
-                          <Select
+                          <NativeSelect
                             value={uploadData.documentType}
-                            onValueChange={(value) =>
-                              setUploadData({ ...uploadData, documentType: value })
+                            onChange={(e) =>
+                              setUploadData({ ...uploadData, documentType: e.target.value })
                             }
-                          >
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="anamnese">Anamnese</SelectItem>
-                              <SelectItem value="relatorio_evolucao">Relatório de Evolução</SelectItem>
-                              <SelectItem value="laudo">Laudo</SelectItem>
-                              <SelectItem value="outros">Outros</SelectItem>
-                            </SelectContent>
-                          </Select>
+                            options={[
+                              { value: "anamnese", label: "Anamnese" },
+                              { value: "relatorio_evolucao", label: "Relatório de Evolução" },
+                              { value: "laudo", label: "Laudo" },
+                              { value: "outros", label: "Outros" },
+                            ]}
+                          />
                         </div>
 
                         <div className="space-y-2">

@@ -1,6 +1,6 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Card } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { NativeSelect } from '@/components/ui/native-select';
 
 interface CollaborationDataPoint {
   id: number;
@@ -46,37 +46,25 @@ export function CollaborationChart({
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold">Histórico de Colaboração</h3>
           <div className="flex gap-4">
-            <Select
+            <NativeSelect
               value={selectedPatientId?.toString() || 'all'}
-              onValueChange={(value) => onPatientChange(value === 'all' ? undefined : parseInt(value))}
-            >
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Todos os pacientes" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os pacientes</SelectItem>
-                {patients.map(patient => (
-                  <SelectItem key={patient.id} value={patient.id.toString()}>
-                    {patient.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              onChange={(e) => onPatientChange(e.target.value === 'all' ? undefined : parseInt(e.target.value))}
+              options={[
+                { value: 'all', label: 'Todos os pacientes' },
+                ...patients.map(patient => ({ value: patient.id.toString(), label: patient.name }))
+              ]}
+            />
 
-            <Select
+            <NativeSelect
               value={selectedDays.toString()}
-              onValueChange={(value) => onDaysChange(parseInt(value))}
-            >
-              <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder="Período" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="7">Últimos 7 dias</SelectItem>
-                <SelectItem value="15">Últimos 15 dias</SelectItem>
-                <SelectItem value="30">Últimos 30 dias</SelectItem>
-                <SelectItem value="60">Últimos 60 dias</SelectItem>
-              </SelectContent>
-            </Select>
+              onChange={(e) => onDaysChange(parseInt(e.target.value))}
+              options={[
+                { value: '7', label: 'Últimos 7 dias' },
+                { value: '15', label: 'Últimos 15 dias' },
+                { value: '30', label: 'Últimos 30 dias' },
+                { value: '60', label: 'Últimos 60 dias' },
+              ]}
+            />
           </div>
         </div>
 

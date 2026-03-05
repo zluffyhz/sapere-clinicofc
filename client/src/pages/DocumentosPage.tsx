@@ -3,7 +3,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { NativeSelect } from "@/components/ui/native-select";
 import { FileText, Download, Calendar, User } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -68,21 +68,15 @@ export default function DocumentosPage() {
               </p>
             </div>
           ) : (
-            <Select
+            <NativeSelect
               value={selectedPatientId?.toString() || ""}
-              onValueChange={(value) => setSelectedPatientId(parseInt(value))}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Selecione um paciente" />
-              </SelectTrigger>
-              <SelectContent>
-                {patients.map((patient) => (
-                  <SelectItem key={patient.id} value={patient.id.toString()}>
-                    {patient.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              onChange={(e) => setSelectedPatientId(parseInt(e.target.value))}
+              placeholder="Selecione um paciente"
+              options={(patients || []).map((patient) => ({
+                value: patient.id.toString(),
+                label: patient.name
+              }))}
+            />
           )}
         </CardContent>
       </Card>

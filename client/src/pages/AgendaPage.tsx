@@ -8,13 +8,7 @@ import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isSameDay } f
 import { ptBR } from "date-fns/locale";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X, Repeat } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { NativeSelect } from "@/components/ui/native-select";
 import {
   Dialog,
   DialogContent,
@@ -336,36 +330,24 @@ export default function AgendaPage() {
       {/* Patient Selection - disabled in edit mode */}
       <div className="grid gap-2">
         <Label htmlFor="patient">Paciente *</Label>
-        <Select
+        <NativeSelect
           value={formData.patientId ? formData.patientId.toString() : ""}
-          onValueChange={(value) =>
-            setFormData({ ...formData, patientId: parseInt(value) })
-          }
+          onChange={(e) => setFormData({ ...formData, patientId: parseInt(e.target.value) })}
           disabled={isEdit}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Selecione o paciente" />
-          </SelectTrigger>
-          <SelectContent>
-            {patients?.map((patient) => (
-              <SelectItem key={patient.id} value={patient.id.toString()}>
-                {patient.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          placeholder="Selecione o paciente"
+          options={(patients || []).map((p) => ({ value: p.id.toString(), label: p.name }))}
+        />
       </div>
 
       {/* Therapist Selection - disabled in edit mode */}
       {!isEdit && (
         <div className="grid gap-2">
           <Label htmlFor="therapist">Terapeuta *</Label>
-          <Select
+          <NativeSelect
             value={formData.therapistId ? formData.therapistId.toString() : ""}
-            onValueChange={(value) => {
-              const therapistId = parseInt(value);
+            onChange={(e) => {
+              const therapistId = parseInt(e.target.value);
               const selectedTherapist = therapists?.find((t) => t.id === therapistId);
-              // Auto-fill therapy type from therapist's specialties
               let autoTherapyType = formData.therapyType;
               if (selectedTherapist?.specialties) {
                 try {
@@ -379,90 +361,48 @@ export default function AgendaPage() {
               }
               setFormData({ ...formData, therapistId, therapyType: autoTherapyType });
             }}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Selecione o terapeuta" />
-            </SelectTrigger>
-            <SelectContent>
-              {therapists
-                ?.filter((u) => u.role === "therapist" || u.role === "admin")
-                .map((therapist) => {
-                  // Parse specialties for auto-fill (not for display)
-                  let specialtyLabel = "";
-                  if (false && therapist.specialties != null) {
-                    try {
-                      const specs: string[] = JSON.parse(therapist.specialties as string);
-                      const labels: Record<string, string> = {
-                        fonoaudiologia: "Fono",
-                        psicologia: "Psico",
-                        terapia_ocupacional: "T.O.",
-                        psicopedagogia: "Psicopedagogia",
-                        musicoterapia: "Música",
-                        fisioterapia: "Fisio",
-                        neuropsicopedagogia: "Neuropedagogia",
-                        nutricao: "Nutrição",
-                        outro: "Outro",
-                      };
-                      specialtyLabel = specs.map((s) => labels[s] || s).join(", ");
-                    } catch {}
-                  }
-                  return (
-                    <SelectItem key={therapist.id} value={therapist.id.toString()}>
-                      {therapist.name}
-                    </SelectItem>
-                  );
-                })}
-            </SelectContent>
-          </Select>
+            placeholder="Selecione o terapeuta"
+            options={(therapists || [])
+              .filter((u) => u.role === "therapist" || u.role === "admin")
+              .map((t) => ({ value: t.id.toString(), label: t.name ?? "" }))}
+          />
         </div>
       )}
 
       {/* Therapy Type */}
       <div className="grid gap-2">
         <Label htmlFor="therapyType">Tipo de Terapia *</Label>
-        <Select
+        <NativeSelect
           value={formData.therapyType}
-          onValueChange={(value: any) =>
-            setFormData({ ...formData, therapyType: value })
-          }
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Selecione o tipo" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="fonoaudiologia">Fonoaudiologia</SelectItem>
-            <SelectItem value="psicologia">Psicologia</SelectItem>
-            <SelectItem value="terapia_ocupacional">Terapia Ocupacional</SelectItem>
-            <SelectItem value="psicopedagogia">Psicopedagogia</SelectItem>
-            <SelectItem value="musicoterapia">Musicoterapia</SelectItem>
-            <SelectItem value="fisioterapia">Fisioterapia</SelectItem>
-            <SelectItem value="neuropsicopedagogia">Neuropsicopedagogia</SelectItem>
-            <SelectItem value="nutricao">Nutrição</SelectItem>
-            <SelectItem value="outro">Outro</SelectItem>
-          </SelectContent>
-        </Select>
+          onChange={(e) => setFormData({ ...formData, therapyType: e.target.value as any })}
+          options={[
+            { value: "fonoaudiologia", label: "Fonoaudiologia" },
+            { value: "psicologia", label: "Psicologia" },
+            { value: "terapia_ocupacional", label: "Terapia Ocupacional" },
+            { value: "psicopedagogia", label: "Psicopedagogia" },
+            { value: "musicoterapia", label: "Musicoterapia" },
+            { value: "fisioterapia", label: "Fisioterapia" },
+            { value: "neuropsicopedagogia", label: "Neuropsicopedagogia" },
+            { value: "nutricao", label: "Nutrição" },
+            { value: "outro", label: "Outro" },
+          ]}
+        />
       </div>
 
       {/* Status - only in edit mode */}
       {isEdit && (
         <div className="grid gap-2">
           <Label htmlFor="status">Status</Label>
-          <Select
+          <NativeSelect
             value={formData.status}
-            onValueChange={(value: any) =>
-              setFormData({ ...formData, status: value })
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Selecione o status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="scheduled">Agendada</SelectItem>
-              <SelectItem value="completed">Concluída</SelectItem>
-              <SelectItem value="cancelled">Cancelada</SelectItem>
-              <SelectItem value="rescheduled">Remarcada</SelectItem>
-            </SelectContent>
-          </Select>
+            onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+            options={[
+              { value: "scheduled", label: "Agendada" },
+              { value: "completed", label: "Concluída" },
+              { value: "cancelled", label: "Cancelada" },
+              { value: "rescheduled", label: "Remarcada" },
+            ]}
+          />
         </div>
       )}
 
@@ -588,18 +528,15 @@ export default function AgendaPage() {
           {user?.role === 'therapist' && (
             <>
               <div className="flex items-center gap-2">
-                <Select
+                <NativeSelect
+                  className="w-[200px]"
                   value={showMyPatientsOnly ? "my" : "all"}
-                  onValueChange={(value) => setShowMyPatientsOnly(value === "my")}
-                >
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="my">Meus Pacientes</SelectItem>
-                    <SelectItem value="all">Todos os Pacientes</SelectItem>
-                  </SelectContent>
-                </Select>
+                  onChange={(e) => setShowMyPatientsOnly(e.target.value === "my")}
+                  options={[
+                    { value: "my", label: "Meus Pacientes" },
+                    { value: "all", label: "Todos os Pacientes" },
+                  ]}
+                />
               </div>
               <div className="h-6 w-px bg-border" />
             </>
@@ -610,26 +547,15 @@ export default function AgendaPage() {
             <>
               <div className="flex items-center gap-2">
                 <Users className="h-4 w-4 text-muted-foreground" />
-                <Select
+                <NativeSelect
+                  className="w-[200px]"
                   value={selectedTherapistId?.toString() || "all"}
-                  onValueChange={(value) =>
-                    setSelectedTherapistId(value === "all" ? null : parseInt(value))
-                  }
-                >
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Todos os terapeutas" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos os terapeutas</SelectItem>
-                    {therapists
-                      ?.filter((u) => u.role === "therapist")
-                      .map((therapist) => (
-                        <SelectItem key={therapist.id} value={therapist.id.toString()}>
-                          {therapist.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                  onChange={(e) => setSelectedTherapistId(e.target.value === "all" ? null : parseInt(e.target.value))}
+                  options={[
+                    { value: "all", label: "Todos os terapeutas" },
+                    ...((therapists || []).filter((u) => u.role === "therapist").map((t) => ({ value: t.id.toString(), label: t.name ?? "" }))),
+                  ]}
+                />
               </div>
               <div className="h-6 w-px bg-border" />
             </>
