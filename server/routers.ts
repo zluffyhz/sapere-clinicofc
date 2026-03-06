@@ -746,7 +746,7 @@ export const appRouter = router({
         appointmentId: z.number(),
         patientId: z.number(),
         sessionDate: z.date(),
-        sessionSummary: z.string().min(1),
+        sessionSummary: z.string().optional().default(""),
         patientMood: z.enum(["muito_bem", "bem", "neutro", "ansioso", "irritado", "triste"]).optional(),
         patientBehavior: z.string().optional(),
         goalsAchieved: z.string().optional(),

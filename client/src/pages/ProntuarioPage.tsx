@@ -312,7 +312,20 @@ export default function ProntuarioPage() {
 
   const handleSaveSessionRecord = () => {
     if (!patientId || !evolutionData.appointmentId) {
-      toast.error("Selecione uma sessão");
+      toast.error("Selecione uma sessão antes de salvar.");
+      return;
+    }
+
+    if (!evolutionData.sessionSummary.trim()) {
+      toast.error("✏️ Preencha o campo \"Resumo da Sessão\" antes de salvar. Descreva brevemente o que foi trabalhado com o paciente.");
+      // Scroll suave até o campo com erro
+      document.getElementById("sessionSummary")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      document.getElementById("sessionSummary")?.focus();
+      return;
+    }
+
+    if (!evolutionData.collaborationLevel) {
+      toast.error("⚠️ Selecione o \"Nível de Colaboração\" do paciente antes de salvar.");
       return;
     }
 
@@ -522,7 +535,9 @@ export default function ProntuarioPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="sessionSummary">Resumo da Sessão</Label>
+                  <Label htmlFor="sessionSummary">
+                    Resumo da Sessão <span className="text-destructive font-semibold">*</span>
+                  </Label>
                   <Textarea
                     id="sessionSummary"
                     value={evolutionData.sessionSummary}
@@ -531,7 +546,11 @@ export default function ProntuarioPage() {
                     }
                     placeholder="Descreva o que foi trabalhado na sessão..."
                     rows={3}
+                    className={!evolutionData.sessionSummary.trim() && createEvolutionMutation.isError ? "border-destructive ring-1 ring-destructive" : ""}
                   />
+                  <p className="text-xs text-muted-foreground">
+                    Campo obrigatório. Descreva brevemente as atividades e observações da sessão.
+                  </p>
                 </div>
 
                 <div className="space-y-2">

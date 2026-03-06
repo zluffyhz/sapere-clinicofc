@@ -978,3 +978,11 @@
 - [x] Verificar como o formulário de criação de agendamento envia os horários
 - [x] Corrigir conversão de timezone em todos os pontos relevantes (date-fns-tz, America/Sao_Paulo)
 - [x] Testar com dados reais do banco
+
+## Bug: Erro "Too small: sessionSummary >= 1 characters" ao salvar evolução (06/03/2026)
+- [x] Localizar validação Zod do sessionSummary no backend (routers.ts)
+- [x] Tornar sessionSummary opcional no backend (aceita string vazia)
+- [x] Adicionar validação frontend amigável com destaque visual no campo obrigatório
+- [x] Exibir toast com mensagem clara orientando o terapeuta
+- [x] Fazer scroll automático até o campo com erro
+- [x] Testar salvamento com e sem resumo preenchido
