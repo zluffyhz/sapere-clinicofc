@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -21,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Trash2, Edit, Users, AlertCircle } from "lucide-react";
+import { Plus, Trash2, Edit, Users, AlertCircle, AlertTriangle } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
@@ -38,12 +41,18 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function AdminUsersPage() {
+  const { user: currentUser } = useAuth();
+
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [tempPassword, setTempPassword] = useState<string | null>(null);
-  
+
+  // Bulk selection state
+  const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
+
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
@@ -90,15 +99,27 @@ export default function AdminUsersPage() {
     },
   });
 
+  const bulkDeleteUsersMutation = trpc.admin.bulkDeleteUsers.useMutation({
+    onSuccess: (data) => {
+      utils.admin.listUsers.invalidate();
+      setIsBulkDeleteDialogOpen(false);
+      setSelectedUserIds([]);
+      toast.success(`${data.deleted} usuário(s) excluído(s) com sucesso`);
+    },
+    onError: (error) => {
+      toast.error(`Erro ao excluir usuários: ${error.message}`);
+    },
+  });
+
   const handleCreateUser = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!newUser.name || !newUser.email) {
       toast.error("Nome e email são obrigatórios");
       return;
     }
 
-    if (newUser.role === 'therapist' && newUser.specialties.length === 0) {
+    if (newUser.role === "therapist" && newUser.specialties.length === 0) {
       toast.error("Selecione pelo menos uma especialidade para o terapeuta");
       return;
     }
@@ -108,7 +129,6 @@ export default function AdminUsersPage() {
 
   const handleUpdateRole = () => {
     if (!selectedUser) return;
-    
     updateUserRoleMutation.mutate({
       userId: selectedUser.id,
       role: selectedUser.role,
@@ -117,11 +137,41 @@ export default function AdminUsersPage() {
 
   const handleDeleteUser = () => {
     if (!selectedUser) return;
-    
-    deleteUserMutation.mutate({
-      userId: selectedUser.id,
-    });
+    deleteUserMutation.mutate({ userId: selectedUser.id });
   };
+
+  const handleBulkDelete = () => {
+    if (selectedUserIds.length === 0) return;
+    bulkDeleteUsersMutation.mutate({ userIds: selectedUserIds });
+  };
+
+  // Bulk selection helpers
+  const handleSelectUser = (userId: number, checked: boolean) => {
+    if (checked) {
+      setSelectedUserIds((prev) => [...prev, userId]);
+    } else {
+      setSelectedUserIds((prev) => prev.filter((id) => id !== userId));
+    }
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked && users) {
+      // Exclude current user from select-all (can't delete yourself)
+      setSelectedUserIds(
+        users.filter((u) => u.id !== currentUser?.id).map((u) => u.id)
+      );
+    } else {
+      setSelectedUserIds([]);
+    }
+  };
+
+  const selectableUsers = users?.filter((u) => u.id !== currentUser?.id) ?? [];
+  const allSelectableSelected =
+    selectableUsers.length > 0 &&
+    selectableUsers.every((u) => selectedUserIds.includes(u.id));
+  const someSelected = selectedUserIds.length > 0;
+
+  const selectedUsersData = users?.filter((u) => selectedUserIds.includes(u.id)) ?? [];
 
   const roleLabels: Record<string, string> = {
     family: "Família",
@@ -144,7 +194,7 @@ export default function AdminUsersPage() {
             Crie e gerencie usuários da plataforma Sapere
           </p>
         </div>
-        
+
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
             <Button>
@@ -155,9 +205,7 @@ export default function AdminUsersPage() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Criar Novo Usuário</DialogTitle>
-              <DialogDescription>
-                Preencha os dados do novo usuário
-              </DialogDescription>
+              <DialogDescription>Preencha os dados do novo usuário</DialogDescription>
             </DialogHeader>
             <form onSubmit={handleCreateUser} className="space-y-4">
               <div className="space-y-2">
@@ -189,7 +237,11 @@ export default function AdminUsersPage() {
                   value={newUser.role}
                   onChange={(e) => {
                     const value = e.target.value as any;
-                    setNewUser({ ...newUser, role: value, specialties: value === 'therapist' ? newUser.specialties : [] });
+                    setNewUser({
+                      ...newUser,
+                      role: value,
+                      specialties: value === "therapist" ? newUser.specialties : [],
+                    });
                   }}
                   options={[
                     { value: "family", label: "Família" },
@@ -199,11 +251,21 @@ export default function AdminUsersPage() {
                 />
               </div>
 
-              {newUser.role === 'therapist' && (
+              {newUser.role === "therapist" && (
                 <div className="space-y-2">
                   <Label>Especialidades *</Label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {['Fonoaudiologia', 'Psicologia', 'Terapia Ocupacional', 'Psicopedagogia', 'Musicoterapia', 'Fisioterapia', 'Nutrição', 'Psicomotricidade', 'Aplicadora DENVER e ABA'].map((specialty) => (
+                    {[
+                      "Fonoaudiologia",
+                      "Psicologia",
+                      "Terapia Ocupacional",
+                      "Psicopedagogia",
+                      "Musicoterapia",
+                      "Fisioterapia",
+                      "Nutrição",
+                      "Psicomotricidade",
+                      "Aplicadora DENVER e ABA",
+                    ].map((specialty) => (
                       <label key={specialty} className="flex items-center space-x-2 cursor-pointer">
                         <input
                           type="checkbox"
@@ -212,7 +274,10 @@ export default function AdminUsersPage() {
                             if (e.target.checked) {
                               setNewUser({ ...newUser, specialties: [...newUser.specialties, specialty] });
                             } else {
-                              setNewUser({ ...newUser, specialties: newUser.specialties.filter(s => s !== specialty) });
+                              setNewUser({
+                                ...newUser,
+                                specialties: newUser.specialties.filter((s) => s !== specialty),
+                              });
                             }
                           }}
                           className="rounded border-gray-300"
@@ -321,8 +386,34 @@ export default function AdminUsersPage() {
       {/* Users Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Lista de Usuários</CardTitle>
-          <CardDescription>Gerencie todos os usuários da plataforma</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Lista de Usuários</CardTitle>
+              <CardDescription>Gerencie todos os usuários da plataforma</CardDescription>
+            </div>
+            {someSelected && (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-muted-foreground">
+                  {selectedUserIds.length} selecionado(s)
+                </span>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => setIsBulkDeleteDialogOpen(true)}
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Excluir Selecionados
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedUserIds([])}
+                >
+                  Limpar Seleção
+                </Button>
+              </div>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -339,6 +430,13 @@ export default function AdminUsersPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">
+                      <Checkbox
+                        checked={allSelectableSelected}
+                        onCheckedChange={handleSelectAll}
+                        aria-label="Selecionar todos"
+                      />
+                    </TableHead>
                     <TableHead>ID</TableHead>
                     <TableHead>Nome</TableHead>
                     <TableHead>Email</TableHead>
@@ -349,52 +447,76 @@ export default function AdminUsersPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell className="font-mono text-sm text-muted-foreground">{user.id}</TableCell>
-                      <TableCell className="font-medium">{user.name}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            roleColors[user.role]
-                          }`}
-                        >
-                          {roleLabels[user.role]}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        {format(new Date(user.createdAt), "PP", { locale: ptBR })}
-                      </TableCell>
-                      <TableCell>
-                        {format(new Date(user.lastSignedIn), "PP", { locale: ptBR })}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setSelectedUser(user);
-                              setIsEditDialogOpen(true);
-                            }}
+                  {users.map((user) => {
+                    const isCurrentUser = user.id === currentUser?.id;
+                    return (
+                      <TableRow
+                        key={user.id}
+                        className={selectedUserIds.includes(user.id) ? "bg-muted/50" : ""}
+                      >
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedUserIds.includes(user.id)}
+                            onCheckedChange={(checked) =>
+                              handleSelectUser(user.id, checked as boolean)
+                            }
+                            disabled={isCurrentUser}
+                            aria-label={`Selecionar ${user.name}`}
+                          />
+                        </TableCell>
+                        <TableCell className="font-mono text-sm text-muted-foreground">
+                          {user.id}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          <span>{user.name}</span>
+                          {isCurrentUser && (
+                            <span className="ml-2 text-xs text-muted-foreground">(você)</span>
+                          )}
+                        </TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              roleColors[user.role]
+                            }`}
                           >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setSelectedUser(user);
-                              setIsDeleteDialogOpen(true);
-                            }}
-                          >
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                            {roleLabels[user.role]}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          {format(new Date(user.createdAt), "PP", { locale: ptBR })}
+                        </TableCell>
+                        <TableCell>
+                          {format(new Date(user.lastSignedIn), "PP", { locale: ptBR })}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setIsEditDialogOpen(true);
+                              }}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              disabled={isCurrentUser}
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setIsDeleteDialogOpen(true);
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </div>
@@ -407,9 +529,7 @@ export default function AdminUsersPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Editar Perfil do Usuário</DialogTitle>
-            <DialogDescription>
-              Altere o perfil de {selectedUser?.name}
-            </DialogDescription>
+            <DialogDescription>Altere o perfil de {selectedUser?.name}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
@@ -437,10 +557,7 @@ export default function AdminUsersPage() {
               >
                 Cancelar
               </Button>
-              <Button
-                onClick={handleUpdateRole}
-                disabled={updateUserRoleMutation.isPending}
-              >
+              <Button onClick={handleUpdateRole} disabled={updateUserRoleMutation.isPending}>
                 {updateUserRoleMutation.isPending ? "Salvando..." : "Salvar"}
               </Button>
             </div>
@@ -448,25 +565,76 @@ export default function AdminUsersPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
+      {/* Single Delete Confirmation Dialog */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir o usuário <strong>{selectedUser?.name}</strong>?
-              Esta ação não pode ser desfeita.
+              Tem certeza que deseja excluir o usuário{" "}
+              <strong>{selectedUser?.name}</strong>? Esta ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setSelectedUser(null)}>
-              Cancelar
-            </AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setSelectedUser(null)}>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteUser}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {deleteUserMutation.isPending ? "Excluindo..." : "Excluir"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Bulk Delete Confirmation Dialog */}
+      <AlertDialog open={isBulkDeleteDialogOpen} onOpenChange={setIsBulkDeleteDialogOpen}>
+        <AlertDialogContent className="max-w-lg">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-destructive">
+              <AlertTriangle className="h-5 w-5" />
+              Excluir {selectedUserIds.length} Usuário(s)
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta ação é <strong>irreversível</strong>. Os seguintes usuários serão excluídos permanentemente:
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="max-h-60 overflow-y-auto space-y-2 my-2">
+            {selectedUsersData.map((u) => (
+              <div key={u.id} className="flex items-center justify-between p-2 border rounded-lg bg-muted/30">
+                <div>
+                  <p className="font-medium text-sm">{u.name}</p>
+                  <p className="text-xs text-muted-foreground">{u.email}</p>
+                </div>
+                <span
+                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                    roleColors[u.role]
+                  }`}
+                >
+                  {roleLabels[u.role]}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription className="text-xs">
+              Administradores não podem ser excluídos se forem os únicos administradores do sistema.
+            </AlertDescription>
+          </Alert>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleBulkDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={bulkDeleteUsersMutation.isPending}
+            >
+              {bulkDeleteUsersMutation.isPending
+                ? "Excluindo..."
+                : `Excluir ${selectedUserIds.length} usuário(s)`}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

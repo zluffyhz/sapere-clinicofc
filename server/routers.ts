@@ -1311,6 +1311,37 @@ export const appRouter = router({
     exportBackup: adminProcedure.query(async () => {
       return await db.exportFullBackup();
     }),
+
+    bulkDeleteUsers: adminProcedure
+      .input(z.object({
+        userIds: z.array(z.number()).min(1),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        // Prevent deleting yourself
+        if (input.userIds.includes(ctx.user.id)) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Você não pode excluir sua própria conta.',
+          });
+        }
+
+        // Prevent deleting all admins — ensure at least one admin remains
+        const allUsers = await db.getAllUsers();
+        const remainingAdmins = allUsers.filter(
+          (u) => u.role === 'admin' && !input.userIds.includes(u.id)
+        );
+        if (remainingAdmins.length === 0) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Não é possível excluir todos os administradores. Pelo menos um administrador deve permanecer.',
+          });
+        }
+
+        for (const userId of input.userIds) {
+          await db.deleteUser(userId);
+        }
+        return { success: true, deleted: input.userIds.length };
+      }),
   }),
 });
 

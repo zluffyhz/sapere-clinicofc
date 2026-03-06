@@ -962,3 +962,12 @@
 - [x] Substituir botão placeholder por botão funcional com loading state
 - [x] Adicionar informações de data/hora do backup gerado
 - [x] Testar geração e download do arquivo de backup
+
+## Feature: Exclusão em lote de usuários na aba Usuários (06/03/2026)
+- [x] Adicionar endpoint tRPC admin.bulkDeleteUsers no backend
+- [x] Adicionar checkboxes de seleção na tabela de usuários
+- [x] Implementar seleção de todos / limpar seleção
+- [x] Bloquear exclusão do próprio usuário logado e do último admin
+- [x] Adicionar botão "Excluir Selecionados" com contador
+- [x] Implementar dialog de confirmação com lista dos usuários a excluir
+- [x] Testar fluxo completo de exclusão em lote
