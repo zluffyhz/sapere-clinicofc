@@ -954,3 +954,11 @@
 - [x] Substituir Select do Radix por dropdowns customizados nativos em todas as páginas
 - [x] Verificar TypeScript e testar no navegador
 - [x] Publicar correção em produção
+
+## Feature: Backup real de dados (06/03/2026)
+- [x] Criar endpoint tRPC admin.exportBackup que busca todos os dados do banco
+- [x] Incluir no backup: pacientes, usuários, agendamentos, evoluções, anamneses, documentos, presenças, vinculações terapeuta-paciente
+- [x] Implementar download do JSON no frontend com nome de arquivo com timestamp
+- [x] Substituir botão placeholder por botão funcional com loading state
+- [x] Adicionar informações de data/hora do backup gerado
+- [x] Testar geração e download do arquivo de backup

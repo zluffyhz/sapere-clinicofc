@@ -1307,6 +1307,10 @@ export const appRouter = router({
         await db.deleteUser(input.userId);
         return { success: true };
       }),
+
+    exportBackup: adminProcedure.query(async () => {
+      return await db.exportFullBackup();
+    }),
   }),
 });
 

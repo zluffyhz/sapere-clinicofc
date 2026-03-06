@@ -923,3 +923,56 @@ export async function updateUserSpecialties(userId: number, specialties: string[
     .set({ specialties: JSON.stringify(specialties) })
     .where(eq(users.id, userId));
 }
+
+// ============ BACKUP OPERATIONS ============
+
+export async function exportFullBackup() {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const [
+    allUsers,
+    allPatients,
+    allAppointments,
+    allDocuments,
+    allPatientData,
+    allEvolutions,
+    allAttendance,
+    allAssignments,
+  ] = await Promise.all([
+    db.select().from(users),
+    db.select().from(patients),
+    db.select().from(appointments),
+    db.select().from(documents),
+    db.select().from(patientData),
+    db.select().from(evolutions),
+    db.select().from(attendance),
+    db.select().from(patientTherapistAssignments),
+  ]);
+
+  // Remove sensitive fields from users
+  const sanitizedUsers = allUsers.map(({ passwordHash, openId, ...rest }) => rest);
+
+  return {
+    exportedAt: new Date().toISOString(),
+    version: "1.0",
+    tables: {
+      users: sanitizedUsers,
+      patients: allPatients,
+      appointments: allAppointments,
+      documents: allDocuments,
+      patientData: allPatientData,
+      evolutions: allEvolutions,
+      attendance: allAttendance,
+      patientTherapistAssignments: allAssignments,
+    },
+    summary: {
+      totalUsers: allUsers.length,
+      totalPatients: allPatients.length,
+      totalAppointments: allAppointments.length,
+      totalDocuments: allDocuments.length,
+      totalEvolutions: allEvolutions.length,
+      totalAttendance: allAttendance.length,
+    },
+  };
+}

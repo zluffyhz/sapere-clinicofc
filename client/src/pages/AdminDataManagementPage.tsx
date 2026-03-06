@@ -4,9 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -23,7 +23,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Database, Trash2, AlertTriangle, Download } from "lucide-react";
+import { Database, Trash2, AlertTriangle, Download, Loader2, CheckCircle2, Users, Calendar, FileText, ClipboardList } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
@@ -33,9 +33,12 @@ export default function AdminDataManagementPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [confirmationText, setConfirmationText] = useState("");
   const [showPreview, setShowPreview] = useState(false);
+  const [isDownloadingBackup, setIsDownloadingBackup] = useState(false);
+  const [lastBackupTime, setLastBackupTime] = useState<string | null>(null);
 
   const { data: patients, refetch: refetchPatients } = trpc.patients.listAll.useQuery();
   const deletePatientsMutation = trpc.patients.bulkDelete.useMutation();
+  const backupQuery = trpc.admin.exportBackup.useQuery(undefined, { enabled: false });
 
   const handleSelectPatient = (patientId: number, checked: boolean) => {
     if (checked) {
@@ -92,6 +95,46 @@ export default function AdminDataManagementPage() {
     setIsDeleteDialogOpen(true);
   };
 
+  const handleDownloadBackup = async () => {
+    setIsDownloadingBackup(true);
+    try {
+      const result = await backupQuery.refetch();
+      if (!result.data) {
+        toast.error("Não foi possível gerar o backup. Tente novamente.");
+        return;
+      }
+
+      const backupData = result.data;
+      const jsonString = JSON.stringify(backupData, null, 2);
+      const blob = new Blob([jsonString], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+
+      const now = new Date();
+      const timestamp = format(now, "yyyy-MM-dd_HH-mm", { locale: ptBR });
+      const filename = `sapere-backup-${timestamp}.json`;
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      const timeStr = format(now, "dd/MM/yyyy 'às' HH:mm", { locale: ptBR });
+      setLastBackupTime(timeStr);
+
+      const { summary } = backupData;
+      toast.success(
+        `Backup gerado com sucesso! ${summary.totalPatients} pacientes, ${summary.totalAppointments} agendamentos, ${summary.totalEvolutions} evoluções exportados.`
+      );
+    } catch (error: any) {
+      toast.error(`Erro ao gerar backup: ${error.message}`);
+    } finally {
+      setIsDownloadingBackup(false);
+    }
+  };
+
   return (
     <div className="container py-8 space-y-8">
       <div>
@@ -105,10 +148,100 @@ export default function AdminDataManagementPage() {
       <Alert variant="destructive">
         <AlertTriangle className="h-4 w-4" />
         <AlertDescription>
-          <strong>Atenção:</strong> As operações nesta página são irreversíveis. 
+          <strong>Atenção:</strong> As operações nesta página são irreversíveis.
           Certifique-se de fazer backup antes de remover dados importantes.
         </AlertDescription>
       </Alert>
+
+      {/* Card de Backup FUNCIONAL */}
+      <Card className="border-2 border-orange-200 bg-orange-50/30">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Database className="h-5 w-5 text-orange-600" />
+            Backup do Banco de Dados
+          </CardTitle>
+          <CardDescription>
+            Exporte todos os dados do sistema em formato JSON para armazenamento seguro externo.
+            O arquivo inclui pacientes, agendamentos, evoluções, anamneses, presenças e documentos.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Resumo do que será exportado */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="flex items-center gap-2 p-3 bg-white rounded-lg border">
+              <Users className="h-4 w-4 text-blue-500" />
+              <div>
+                <p className="text-xs text-muted-foreground">Pacientes</p>
+                <p className="font-semibold text-sm">{patients?.length ?? "—"}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 p-3 bg-white rounded-lg border">
+              <Calendar className="h-4 w-4 text-green-500" />
+              <div>
+                <p className="text-xs text-muted-foreground">Agendamentos</p>
+                <p className="font-semibold text-sm">Todos</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 p-3 bg-white rounded-lg border">
+              <ClipboardList className="h-4 w-4 text-purple-500" />
+              <div>
+                <p className="text-xs text-muted-foreground">Evoluções</p>
+                <p className="font-semibold text-sm">Todas</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 p-3 bg-white rounded-lg border">
+              <FileText className="h-4 w-4 text-orange-500" />
+              <div>
+                <p className="text-xs text-muted-foreground">Documentos</p>
+                <p className="font-semibold text-sm">Metadados</p>
+              </div>
+            </div>
+          </div>
+
+          {lastBackupTime && (
+            <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0" />
+              <p className="text-sm text-green-700">
+                Último backup realizado em <strong>{lastBackupTime}</strong>
+              </p>
+            </div>
+          )}
+
+          <div className="flex items-center gap-3 p-4 bg-white border rounded-lg">
+            <div className="flex-1">
+              <p className="font-medium text-sm">Backup Manual Completo</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Gera um arquivo <code className="bg-muted px-1 rounded">.json</code> com todos os dados do sistema.
+                Recomendado antes de qualquer operação de remoção.
+              </p>
+            </div>
+            <Button
+              onClick={handleDownloadBackup}
+              disabled={isDownloadingBackup}
+              className="bg-orange-500 hover:bg-orange-600 text-white flex-shrink-0"
+            >
+              {isDownloadingBackup ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Gerando...
+                </>
+              ) : (
+                <>
+                  <Download className="h-4 w-4 mr-2" />
+                  Fazer Backup
+                </>
+              )}
+            </Button>
+          </div>
+
+          <Alert>
+            <AlertDescription className="text-xs text-muted-foreground">
+              <strong>Nota:</strong> O arquivo de backup contém dados sensíveis dos pacientes.
+              Armazene-o em local seguro e com acesso restrito. Senhas de usuários <strong>não</strong> são incluídas no backup por segurança.
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
 
       {/* Card de Remoção Segura de Pacientes */}
       <Card>
@@ -141,7 +274,7 @@ export default function AdminDataManagementPage() {
                 <TableRow>
                   <TableHead className="w-12">
                     <Checkbox
-                      checked={selectedPatientIds.length === patients?.length && patients?.length > 0}
+                      checked={selectedPatientIds.length === patients?.length && (patients?.length ?? 0) > 0}
                       onCheckedChange={handleSelectAll}
                     />
                   </TableHead>
@@ -232,15 +365,7 @@ export default function AdminDataManagementPage() {
           <Alert variant="destructive">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              <strong>Dados que serão removidos:</strong>
-              <ul className="list-disc list-inside mt-2">
-                <li>Informações do paciente</li>
-                <li>Todos os agendamentos</li>
-                <li>Registros de presença</li>
-                <li>Evoluções clínicas</li>
-                <li>Documentos anexados</li>
-                <li>Vinculações com terapeutas</li>
-              </ul>
+              <strong>Dados que serão removidos:</strong> informações do paciente, agendamentos, registros de presença, evoluções clínicas, documentos anexados e vinculações com terapeutas.
             </AlertDescription>
           </Alert>
 
@@ -302,34 +427,6 @@ export default function AdminDataManagementPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {/* Card de Backup (placeholder para próxima fase) */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Database className="h-5 w-5" />
-            Backup do Banco de Dados
-          </CardTitle>
-          <CardDescription>
-            Sistema de backup automático e manual do banco de dados
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-4 p-4 bg-muted rounded-lg">
-            <Download className="h-8 w-8 text-muted-foreground" />
-            <div className="flex-1">
-              <p className="font-medium">Backup Automático Configurado</p>
-              <p className="text-sm text-muted-foreground">
-                Backups diários às 03:00 • Retenção de 7 dias
-              </p>
-            </div>
-            <Button variant="outline">
-              <Download className="h-4 w-4 mr-2" />
-              Backup Manual
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
