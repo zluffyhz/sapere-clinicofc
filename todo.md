@@ -971,3 +971,10 @@
 - [x] Adicionar botão "Excluir Selecionados" com contador
 - [x] Implementar dialog de confirmação com lista dos usuários a excluir
 - [x] Testar fluxo completo de exclusão em lote
+
+## Bug: Horários aparecendo errado para terapeutas (06/03/2026)
+- [x] Investigar como horários são armazenados (UTC vs local) no banco
+- [x] Verificar como AgendaPage e outros componentes exibem os horários
+- [x] Verificar como o formulário de criação de agendamento envia os horários
+- [x] Corrigir conversão de timezone em todos os pontos relevantes (date-fns-tz, America/Sao_Paulo)
+- [x] Testar com dados reais do banco

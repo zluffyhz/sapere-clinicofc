@@ -4,8 +4,9 @@ import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isSameDay } from "date-fns";
+import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { formatBRT, parseBRTDateTime, getBRTDateString, getBRTTimeString, isSameDayBRT, CLINIC_TIMEZONE } from "@/lib/timezone";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X, Repeat } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { NativeSelect } from "@/components/ui/native-select";
@@ -201,8 +202,9 @@ export default function AgendaPage() {
       return;
     }
 
-    const startDateTime = new Date(`${formData.date}T${formData.startTime}:00`);
-    const endDateTime = new Date(`${formData.date}T${formData.endTime}:00`);
+    // Interpreta os horários digitados como horário de Brasília (America/Sao_Paulo)
+    const startDateTime = parseBRTDateTime(formData.date, formData.startTime);
+    const endDateTime = parseBRTDateTime(formData.date, formData.endTime);
 
     createAppointmentMutation.mutate({
       patientId: formData.patientId,
@@ -218,8 +220,9 @@ export default function AgendaPage() {
   const handleEditAppointment = () => {
     if (!editingAppointmentId) return;
 
-    const startDateTime = new Date(`${formData.date}T${formData.startTime}:00`);
-    const endDateTime = new Date(`${formData.date}T${formData.endTime}:00`);
+    // Interpreta os horários digitados como horário de Brasília (America/Sao_Paulo)
+    const startDateTime = parseBRTDateTime(formData.date, formData.startTime);
+    const endDateTime = parseBRTDateTime(formData.date, formData.endTime);
 
     // If editing all in series, use updateSeries mutation
     if (editSeriesMode === "all" && editingSeriesId) {
@@ -248,9 +251,9 @@ export default function AgendaPage() {
       patientId: apt.patientId,
       therapistId: apt.therapistUserId,
       therapyType: apt.therapyType,
-      date: format(new Date(apt.startTime), "yyyy-MM-dd"),
-      startTime: format(new Date(apt.startTime), "HH:mm"),
-      endTime: format(new Date(apt.endTime), "HH:mm"),
+      date: getBRTDateString(apt.startTime),
+      startTime: getBRTTimeString(apt.startTime),
+      endTime: getBRTTimeString(apt.endTime),
       notes: apt.notes || "",
       status: apt.status,
     });
@@ -276,7 +279,7 @@ export default function AgendaPage() {
     if (!appointments) return [];
     return appointments
       .filter((apt) => {
-        const matchesDate = isSameDay(new Date(apt.startTime), selectedDate);
+        const matchesDate = isSameDayBRT(new Date(apt.startTime), selectedDate);
         const matchesTherapist = selectedTherapistId === null || apt.therapistUserId === selectedTherapistId;
         return matchesDate && matchesTherapist;
       });
@@ -286,7 +289,7 @@ export default function AgendaPage() {
   const datesWithAppointments = useMemo(() => {
     if (!appointments) return new Set<string>();
     return new Set(
-      appointments.map((apt) => format(new Date(apt.startTime), "yyyy-MM-dd"))
+      appointments.map((apt) => getBRTDateString(apt.startTime))
     );
   }, [appointments]);
 
@@ -725,8 +728,8 @@ export default function AgendaPage() {
                           )}
                           <div className="flex items-center gap-4 text-sm">
                             <span className="text-muted-foreground">
-                              {format(new Date(apt.startTime), "HH:mm")} -{" "}
-                              {format(new Date(apt.endTime), "HH:mm")}
+                              {formatBRT(apt.startTime, "HH:mm")} -{" "}
+                              {formatBRT(apt.endTime, "HH:mm")}
                             </span>
                           </div>
                           {apt.notes && (

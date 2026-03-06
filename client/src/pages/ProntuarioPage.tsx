@@ -13,6 +13,7 @@ import { PatientTherapistAssignments } from "@/components/PatientTherapistAssign
 import { useAuth } from "@/_core/hooks/useAuth";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { formatBRT } from "@/lib/timezone";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -484,7 +485,7 @@ export default function ProntuarioPage() {
                     placeholder="Selecione a sessão"
                     options={(appointments || []).map((apt) => ({
                       value: apt.id.toString(),
-                      label: format(new Date(apt.startTime), "dd/MM/yyyy HH:mm", { locale: ptBR })
+                      label: formatBRT(apt.startTime, "dd/MM/yyyy HH:mm")
                     }))}
                   />
                 </div>

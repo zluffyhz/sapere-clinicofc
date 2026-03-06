@@ -15,6 +15,7 @@ import {
   ClipboardCheck,
   Download
 } from "lucide-react";
+import { getBRTTimeString } from "@/lib/timezone";
 
 type AttendanceStatus = "present" | "absent";
 
@@ -120,10 +121,7 @@ export default function AttendancePage() {
   };
 
   const formatTime = (date: Date) => {
-    return new Date(date).toLocaleTimeString("pt-BR", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    return getBRTTimeString(date);
   };
 
   const monthNames = [

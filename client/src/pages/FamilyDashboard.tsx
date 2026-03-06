@@ -6,6 +6,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { formatBRT } from "@/lib/timezone";
 import { CollaborationChart } from "@/components/CollaborationChart";
 import { useState } from "react";
 
@@ -130,7 +131,7 @@ export default function FamilyDashboard() {
                           {patient?.name || "Paciente"}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {format(new Date(apt.startTime), "PPP 'às' HH:mm", { locale: ptBR })}
+                          {formatBRT(apt.startTime, "PPP 'às' HH:mm")}
                         </p>
                       </div>
                       <div className={`text-xs px-2 py-1 rounded-full ${

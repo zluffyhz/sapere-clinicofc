@@ -6,6 +6,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { formatBRT } from "@/lib/timezone";
 import { CollaborationChart } from "@/components/CollaborationChart";
 import { useState } from "react";
 
@@ -190,8 +191,8 @@ export default function TherapistDashboard() {
                       <div key={apt.id} className="flex items-start gap-4 p-3 rounded-lg border">
                         <div className="flex-1 space-y-1">
                           <p className="text-sm font-medium">
-                            {format(new Date(apt.startTime), "HH:mm")} -{" "}
-                            {format(new Date(apt.endTime), "HH:mm")}
+                            {formatBRT(apt.startTime, "HH:mm")} -{" "}
+                            {formatBRT(apt.endTime, "HH:mm")}
                           </p>
                           <p className="text-sm text-muted-foreground">
                             {patient?.name || "Paciente"}
