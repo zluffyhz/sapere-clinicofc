@@ -1006,3 +1006,9 @@
 - [x] Exibir agendamentos em conjunto na agenda das co-terapeutas vinculadas
 - [x] Atualizar query getAppointmentsByDateRange para incluir agendamentos onde o usuário é co-terapeuta
 - [x] 80 testes passando sem regressões
+
+## Bug: Modal de agendamento sem scroll - botões ficam fora da tela (09/03/2026)
+- [x] Adicionar overflow-y-auto no conteúdo do Dialog de agendamento
+- [x] Fixar botões de ação (Cancelar/Salvar) no rodapé do modal com border-t
+- [x] Definir max-h-[90vh] e flex-col no DialogContent para não ultrapassar a viewport
+- [x] Aplicado nos modais de Novo Agendamento e Editar Agendamento

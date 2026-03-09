@@ -640,15 +640,17 @@ export default function AgendaPage() {
                   Novo Agendamento
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[500px]">
-                <DialogHeader>
+              <DialogContent className="sm:max-w-[500px] flex flex-col max-h-[90vh]">
+                <DialogHeader className="flex-shrink-0">
                   <DialogTitle>Novo Agendamento</DialogTitle>
                   <DialogDescription>
                     Preencha os dados para criar um novo agendamento.
                   </DialogDescription>
                 </DialogHeader>
-                <AppointmentForm isEdit={false} />
-                <DialogFooter>
+                <div className="flex-1 overflow-y-auto pr-1">
+                  <AppointmentForm isEdit={false} />
+                </div>
+                <DialogFooter className="flex-shrink-0 border-t pt-4 mt-2">
                   <Button variant="outline" onClick={() => setIsCreateModalOpen(false)}>
                     Cancelar
                   </Button>
@@ -962,45 +964,48 @@ export default function AgendaPage() {
           resetForm();
         }
       }}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-[500px] flex flex-col max-h-[90vh]">
+          <DialogHeader className="flex-shrink-0">
             <DialogTitle>Editar Agendamento</DialogTitle>
             <DialogDescription>
               Altere os dados do agendamento.
             </DialogDescription>
           </DialogHeader>
           
-          {/* Series edit options */}
-          {editingSeriesId && (
-            <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
-              <p className="text-sm font-medium text-gray-900">Este agendamento faz parte de uma série recorrente:</p>
-              <div className="flex gap-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="editMode"
-                    checked={editSeriesMode === "single"}
-                    onChange={() => setEditSeriesMode("single")}
-                    className="h-4 w-4 text-orange-600 focus:ring-orange-500"
-                  />
-                  <span className="text-sm">Editar apenas este agendamento</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="editMode"
-                    checked={editSeriesMode === "all"}
-                    onChange={() => setEditSeriesMode("all")}
-                    className="h-4 w-4 text-orange-600 focus:ring-orange-500"
-                  />
-                  <span className="text-sm font-semibold">Editar toda a série</span>
-                </label>
+          <div className="flex-1 overflow-y-auto pr-1 space-y-4">
+            {/* Series edit options */}
+            {editingSeriesId && (
+              <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
+                <p className="text-sm font-medium text-gray-900">Este agendamento faz parte de uma série recorrente:</p>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="editMode"
+                      checked={editSeriesMode === "single"}
+                      onChange={() => setEditSeriesMode("single")}
+                      className="h-4 w-4 text-orange-600 focus:ring-orange-500"
+                    />
+                    <span className="text-sm">Editar apenas este agendamento</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="editMode"
+                      checked={editSeriesMode === "all"}
+                      onChange={() => setEditSeriesMode("all")}
+                      className="h-4 w-4 text-orange-600 focus:ring-orange-500"
+                    />
+                    <span className="text-sm font-semibold">Editar toda a série</span>
+                  </label>
+                </div>
               </div>
-            </div>
-          )}
-          
-          <AppointmentForm isEdit={true} />
-          <DialogFooter>
+            )}
+            
+            <AppointmentForm isEdit={true} />
+          </div>
+
+          <DialogFooter className="flex-shrink-0 border-t pt-4 mt-2">
             <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>
               Cancelar
             </Button>
