@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `appointment_co_therapists` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`appointmentId` int NOT NULL,\n\t`therapistUserId` int NOT NULL,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\tCONSTRAINT `appointment_co_therapists_id` PRIMARY KEY(`id`)\n);\nALTER TABLE `appointments` ADD COLUMN IF NOT EXISTS `isJointSession` boolean DEFAULT false NOT NULL;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute CREATE TABLE IF NOT EXISTS `appointment_co_therapists` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`appointmentId` int NOT NULL,\n\t`therapistUserId` int NOT NULL,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\tCONSTRAINT `appointment_co_therapists_id` PRIMARY KEY(`id`)\n);\nALTER TABLE `appointments` ADD COLUMN IF NOT EXISTS `isJointSession` boolean DEFAULT false NOT NULL;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 340
+}

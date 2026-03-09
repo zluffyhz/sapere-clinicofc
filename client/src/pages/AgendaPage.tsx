@@ -7,7 +7,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { formatBRT, parseBRTDateTime, getBRTDateString, getBRTTimeString, isSameDayBRT, CLINIC_TIMEZONE } from "@/lib/timezone";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X, Repeat } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X, Repeat, UserPlus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { NativeSelect } from "@/components/ui/native-select";
 import {
@@ -44,6 +44,8 @@ type AppointmentFormData = {
   notes: string;
   status?: "scheduled" | "completed" | "cancelled" | "rescheduled";
   replicateWeekly?: boolean;
+  isJointSession?: boolean;
+  coTherapistIds?: number[];
 };
 
 export default function AgendaPage() {
@@ -69,6 +71,9 @@ export default function AgendaPage() {
   const [editingSeriesId, setEditingSeriesId] = useState<string | null>(null);
   const [editSeriesMode, setEditSeriesMode] = useState<"single" | "all">("single");
   const [deleteSeriesMode, setDeleteSeriesMode] = useState<"single" | "all">("single");
+
+  // Co-therapists state
+  const [coTherapistSearch, setCoTherapistSearch] = useState("");
   
   const [formData, setFormData] = useState<AppointmentFormData>({
     patientId: 0,
@@ -80,6 +85,8 @@ export default function AgendaPage() {
     notes: "",
     status: "scheduled",
     replicateWeekly: false,
+    isJointSession: false,
+    coTherapistIds: [],
   });
 
   // Calculate date range based on view mode
@@ -108,6 +115,9 @@ export default function AgendaPage() {
   const { data: patients } = trpc.patients.list.useQuery();
   const { data: therapists } = trpc.admin.listUsers.useQuery();
 
+  // Sync co-therapists mutation
+  const syncCoTherapistsMutation = trpc.appointments.syncCoTherapists.useMutation();
+
   // Create mutation
   const createAppointmentMutation = trpc.appointments.create.useMutation({
     onSuccess: (data) => {
@@ -117,6 +127,14 @@ export default function AgendaPage() {
         toast.success("Agendamento criado e adicionado ao calendário!");
       }
       setIsCreateModalOpen(false);
+      // Sync co-therapists if joint session
+      if (formData.isJointSession && formData.coTherapistIds && formData.coTherapistIds.length > 0) {
+        syncCoTherapistsMutation.mutate({
+          appointmentId: data.id,
+          therapistUserIds: formData.coTherapistIds,
+          isJointSession: true,
+        });
+      }
       resetForm();
       utils.appointments.listByDateRange.invalidate();
     },
@@ -193,7 +211,10 @@ export default function AgendaPage() {
       endTime: "09:50",
       notes: "",
       status: "scheduled",
+      isJointSession: false,
+      coTherapistIds: [],
     });
+    setCoTherapistSearch("");
   };
 
   const handleCreateAppointment = () => {
@@ -224,6 +245,13 @@ export default function AgendaPage() {
     const startDateTime = parseBRTDateTime(formData.date, formData.startTime);
     const endDateTime = parseBRTDateTime(formData.date, formData.endTime);
 
+    // Sync co-therapists
+    syncCoTherapistsMutation.mutate({
+      appointmentId: editingAppointmentId,
+      therapistUserIds: formData.isJointSession ? (formData.coTherapistIds || []) : [],
+      isJointSession: formData.isJointSession || false,
+    });
+
     // If editing all in series, use updateSeries mutation
     if (editSeriesMode === "all" && editingSeriesId) {
       updateSeriesMutation.mutate({
@@ -244,9 +272,15 @@ export default function AgendaPage() {
     }
   };
 
-  const openEditModal = (apt: any) => {
+  const openEditModal = async (apt: any) => {
     setEditingAppointmentId(apt.id);
     setEditingSeriesId(apt.seriesId || null);
+    // Load existing co-therapists
+    let coTherapistIds: number[] = [];
+    try {
+      const coTherapists = await utils.appointments.getCoTherapists.fetch({ appointmentId: apt.id });
+      coTherapistIds = coTherapists.map((ct: any) => ct.therapistUserId);
+    } catch {}
     setFormData({
       patientId: apt.patientId,
       therapistId: apt.therapistUserId,
@@ -256,6 +290,8 @@ export default function AgendaPage() {
       endTime: getBRTTimeString(apt.endTime),
       notes: apt.notes || "",
       status: apt.status,
+      isJointSession: apt.isJointSession || coTherapistIds.length > 0,
+      coTherapistIds,
     });
     setIsEditModalOpen(true);
   };
@@ -326,6 +362,17 @@ export default function AgendaPage() {
   };
 
   const isAdmin = user?.role === "admin";
+
+  // Co-therapists display component
+  const CoTherapistsList = ({ appointmentId, therapists: allTherapists }: { appointmentId: number; therapists: any[] }) => {
+    const { data: coTherapists } = trpc.appointments.getCoTherapists.useQuery({ appointmentId }, { enabled: !!appointmentId });
+    if (!coTherapists || coTherapists.length === 0) return null;
+    return (
+      <p className="text-sm text-blue-700">
+        Co-terapeutas: {coTherapists.map((ct: any) => ct.therapistName || `ID ${ct.therapistUserId}`).join(", ")}
+      </p>
+    );
+  };
 
   // Appointment Form Component (reused for create and edit)
   const AppointmentForm = ({ isEdit = false }: { isEdit?: boolean }) => (
@@ -461,7 +508,97 @@ export default function AgendaPage() {
         />
       </div>
       
-      {/* Replicate Weekly - Admin Only */}
+      {/* Joint Session - Admin Only */}
+      {isAdmin && (
+        <div className="space-y-3">
+          <div className="flex items-center space-x-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <input
+              type="checkbox"
+              id="isJointSession"
+              checked={formData.isJointSession || false}
+              onChange={(e) => {
+                setFormData({ ...formData, isJointSession: e.target.checked, coTherapistIds: e.target.checked ? formData.coTherapistIds : [] });
+                setCoTherapistSearch("");
+              }}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <div>
+              <Label htmlFor="isJointSession" className="text-sm font-medium text-gray-900 cursor-pointer flex items-center gap-2">
+                <UserPlus className="h-4 w-4 text-blue-600" />
+                Atendimento em Conjunto
+              </Label>
+              <p className="text-xs text-muted-foreground mt-0.5">Vincule outras terapeutas a esta sessão</p>
+            </div>
+          </div>
+
+          {/* Co-therapist selector */}
+          {formData.isJointSession && (
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-3">
+              <Label className="text-sm font-medium text-gray-900">Co-terapeutas</Label>
+              {/* Search */}
+              <Input
+                placeholder="Buscar terapeuta..."
+                value={coTherapistSearch}
+                onChange={(e) => setCoTherapistSearch(e.target.value)}
+                className="h-8 text-sm"
+              />
+              {/* Therapist list */}
+              <div className="max-h-40 overflow-y-auto space-y-1">
+                {(therapists || [])
+                  .filter((t) => (t.role === "therapist" || t.role === "admin") && t.id !== formData.therapistId)
+                  .filter((t) => !coTherapistSearch || (t.name || "").toLowerCase().includes(coTherapistSearch.toLowerCase()))
+                  .map((t) => {
+                    const isSelected = (formData.coTherapistIds || []).includes(t.id);
+                    return (
+                      <label key={t.id} className={`flex items-center gap-2 p-2 rounded cursor-pointer transition-colors ${
+                        isSelected ? "bg-blue-100 border border-blue-300" : "hover:bg-white border border-transparent"
+                      }`}>
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={(e) => {
+                            const ids = formData.coTherapistIds || [];
+                            setFormData({
+                              ...formData,
+                              coTherapistIds: e.target.checked
+                                ? [...ids, t.id]
+                                : ids.filter((id) => id !== t.id),
+                            });
+                          }}
+                          className="h-3.5 w-3.5 text-blue-600 border-gray-300 rounded"
+                        />
+                        <span className="text-sm">{t.name}</span>
+                        {isSelected && <span className="ml-auto text-xs text-blue-600 font-medium">Selecionado</span>}
+                      </label>
+                    );
+                  })}
+              </div>
+              {/* Selected summary */}
+              {(formData.coTherapistIds || []).length > 0 && (
+                <div className="flex flex-wrap gap-1 pt-1">
+                  {(formData.coTherapistIds || []).map((id) => {
+                    const t = therapists?.find((th) => th.id === id);
+                    return (
+                      <span key={id} className="inline-flex items-center gap-1 bg-blue-200 text-blue-800 text-xs px-2 py-0.5 rounded-full">
+                        {t?.name || id}
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, coTherapistIds: (formData.coTherapistIds || []).filter((i) => i !== id) })}
+                          className="hover:text-blue-900"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Replicate Weekly - Admin Only, only in create mode */}
       {!isEdit && isAdmin && (
         <div className="flex items-center space-x-2 p-4 bg-amber-50 border border-amber-200 rounded-lg">
           <input
@@ -717,6 +854,15 @@ export default function AgendaPage() {
                                 Série
                               </div>
                             )}
+                          {apt.isJointSession && (
+                              <div 
+                                className="flex items-center gap-1 text-xs text-blue-700 bg-blue-100 px-2 py-1 rounded"
+                                title="Atendimento em conjunto com múltiplas terapeutas"
+                              >
+                                <UserPlus className="h-3 w-3" />
+                                Em Conjunto
+                              </div>
+                            )}
                           </div>
                           <p className="text-sm text-muted-foreground">
                             Paciente: {patient?.name || "Não identificado"}
@@ -725,6 +871,9 @@ export default function AgendaPage() {
                             <p className="text-sm text-muted-foreground">
                               Terapeuta: {therapist.name}
                             </p>
+                          )}
+                          {apt.isJointSession && (
+                            <CoTherapistsList appointmentId={apt.id} therapists={therapists || []} />
                           )}
                           <div className="flex items-center gap-4 text-sm">
                             <span className="text-muted-foreground">

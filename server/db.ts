@@ -9,7 +9,8 @@ import {
   evolutions, InsertEvolution,
   notifications, InsertNotification,
   attendance, InsertAttendance,
-  patientTherapistAssignments, InsertPatientTherapistAssignment
+  patientTherapistAssignments, InsertPatientTherapistAssignment,
+  appointmentCoTherapists, InsertAppointmentCoTherapist
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -231,6 +232,7 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
       status: appointments.status,
       notes: appointments.notes,
       seriesId: appointments.seriesId,
+      isJointSession: appointments.isJointSession,
       createdAt: appointments.createdAt,
       patientName: patients.name,
     })
@@ -256,6 +258,7 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
     status: appointments.status,
     notes: appointments.notes,
     seriesId: appointments.seriesId,
+    isJointSession: appointments.isJointSession,
     createdAt: appointments.createdAt,
     patientName: patients.name,
   })
@@ -298,6 +301,52 @@ export async function deleteAppointment(id: number) {
   if (!db) throw new Error("Database not available");
   
   return await db.delete(appointments).where(eq(appointments.id, id));
+}
+
+// ============ CO-THERAPIST OPERATIONS ============
+
+export async function addCoTherapist(appointmentId: number, therapistUserId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  // Avoid duplicates
+  const existing = await db.select().from(appointmentCoTherapists)
+    .where(and(eq(appointmentCoTherapists.appointmentId, appointmentId), eq(appointmentCoTherapists.therapistUserId, therapistUserId)));
+  if (existing.length > 0) return existing[0];
+  return await db.insert(appointmentCoTherapists).values({ appointmentId, therapistUserId });
+}
+
+export async function removeCoTherapist(appointmentId: number, therapistUserId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return await db.delete(appointmentCoTherapists)
+    .where(and(eq(appointmentCoTherapists.appointmentId, appointmentId), eq(appointmentCoTherapists.therapistUserId, therapistUserId)));
+}
+
+export async function getCoTherapistsByAppointment(appointmentId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  const rows = await db.select({
+    id: appointmentCoTherapists.id,
+    appointmentId: appointmentCoTherapists.appointmentId,
+    therapistUserId: appointmentCoTherapists.therapistUserId,
+    therapistName: users.name,
+  }).from(appointmentCoTherapists)
+    .leftJoin(users, eq(appointmentCoTherapists.therapistUserId, users.id))
+    .where(eq(appointmentCoTherapists.appointmentId, appointmentId));
+  return rows;
+}
+
+export async function syncCoTherapists(appointmentId: number, therapistUserIds: number[]) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  // Delete all existing co-therapists for this appointment
+  await db.delete(appointmentCoTherapists).where(eq(appointmentCoTherapists.appointmentId, appointmentId));
+  // Insert new ones
+  if (therapistUserIds.length > 0) {
+    await db.insert(appointmentCoTherapists).values(
+      therapistUserIds.map(tid => ({ appointmentId, therapistUserId: tid }))
+    );
+  }
 }
 
 // ============ DOCUMENT OPERATIONS ============

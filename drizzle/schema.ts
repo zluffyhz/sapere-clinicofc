@@ -53,6 +53,7 @@ export const appointments = mysqlTable("appointments", {
   status: mysqlEnum("status", ["scheduled", "completed", "cancelled", "rescheduled"]).default("scheduled").notNull(),
   notes: text("notes"),
   seriesId: varchar("seriesId", { length: 64 }), // Groups recurring appointments together
+  isJointSession: boolean("isJointSession").default(false).notNull(), // Atendimento em conjunto
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -193,3 +194,16 @@ export const patientTherapistAssignments = mysqlTable("patient_therapist_assignm
 
 export type PatientTherapistAssignment = typeof patientTherapistAssignments.$inferSelect;
 export type InsertPatientTherapistAssignment = typeof patientTherapistAssignments.$inferInsert;
+
+/**
+ * Appointment Co-Therapists table - stores additional therapists for joint sessions
+ */
+export const appointmentCoTherapists = mysqlTable("appointment_co_therapists", {
+  id: int("id").autoincrement().primaryKey(),
+  appointmentId: int("appointmentId").notNull(),
+  therapistUserId: int("therapistUserId").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AppointmentCoTherapist = typeof appointmentCoTherapists.$inferSelect;
+export type InsertAppointmentCoTherapist = typeof appointmentCoTherapists.$inferInsert;

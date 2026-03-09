@@ -596,6 +596,41 @@ export const appRouter = router({
         
         return { success: true, cancelledCount: seriesAppointments.length };
       }),
+
+    // ---- Co-therapists (atendimento em conjunto) ----
+    getCoTherapists: protectedProcedure
+      .input(z.object({ appointmentId: z.number() }))
+      .query(async ({ input }) => {
+        return await db.getCoTherapistsByAppointment(input.appointmentId);
+      }),
+
+    syncCoTherapists: therapistProcedure
+      .input(z.object({
+        appointmentId: z.number(),
+        therapistUserIds: z.array(z.number()),
+        isJointSession: z.boolean(),
+      }))
+      .mutation(async ({ input }) => {
+        // Update isJointSession flag on the appointment
+        await db.updateAppointment(input.appointmentId, { isJointSession: input.isJointSession } as any);
+        // Sync co-therapists list
+        await db.syncCoTherapists(input.appointmentId, input.therapistUserIds);
+        // Notify each co-therapist
+        const appointment = await db.getAppointmentById(input.appointmentId);
+        if (appointment) {
+          const patient = await db.getPatientById(appointment.patientId);
+          for (const tid of input.therapistUserIds) {
+            await db.createNotification({
+              userId: tid,
+              type: 'schedule_change',
+              title: 'Atendimento em conjunto',
+              message: `Você foi adicionado(a) como co-terapeuta na sessão de ${appointment.therapyType} com ${patient?.name || 'paciente'} em ${appointment.startTime.toLocaleDateString('pt-BR')}`,
+              relatedId: input.appointmentId,
+            });
+          }
+        }
+        return { success: true };
+      }),
   }),
 
   // ============ DOCUMENT ROUTER ============

@@ -986,3 +986,16 @@
 - [x] Exibir toast com mensagem clara orientando o terapeuta
 - [x] Fazer scroll automático até o campo com erro
 - [x] Testar salvamento com e sem resumo preenchido
+
+## Feature: Atendimento em Conjunto nos Agendamentos (09/03/2026)
+- [x] Adicionar tabela appointmentCoTherapists no schema (appointmentId, therapistUserId)
+- [x] Adicionar campo isJointSession (boolean) na tabela appointments
+- [x] Executar db:push para aplicar migração
+- [x] Criar helper getCoTherapists e syncCoTherapists no db.ts
+- [x] Criar endpoint appointments.syncCoTherapists e appointments.getCoTherapists
+- [x] Retornar isJointSession junto com os agendamentos no listByDateRange
+- [x] Adicionar toggle "Atendimento em Conjunto" no formulário de criação/edição de agendamento
+- [x] Exibir multi-select de terapeutas com busca e tags removíveis quando toggle ativado
+- [x] Exibir badge "Em Conjunto" e lista de co-terapeutas nos cards de agendamento
+- [x] Carregar co-terapeutas existentes ao abrir modal de edição
+- [x] 80 testes passando sem regressões
