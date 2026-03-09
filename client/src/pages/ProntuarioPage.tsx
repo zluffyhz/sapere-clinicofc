@@ -642,6 +642,14 @@ export default function ProntuarioPage() {
                           <CardDescription>
                             Registrado por: <span className="font-semibold">{(record as any).therapistName || "Desconhecido"}</span>
                           </CardDescription>
+                          {(record as any).coTherapists && (record as any).coTherapists.length > 0 && (
+                            <CardDescription className="text-xs flex items-center gap-1">
+                              <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded text-xs font-medium">
+                                Em Conjunto
+                              </span>
+                              Co-terapeutas: {(record as any).coTherapists.map((ct: any) => ct.therapistName || `ID ${ct.therapistUserId}`).join(", ")}
+                            </CardDescription>
+                          )}
                           <CardDescription className="text-xs">
                             Humor: {record.patientMood || "Não informado"}
                           </CardDescription>
@@ -823,6 +831,18 @@ export default function ProntuarioPage() {
                                record.collaborationLevel === 'none' ? 'Não colaborou' : 'Não informado'}
                             </p>
                           </div>
+                          {(record as any).coTherapists && (record as any).coTherapists.length > 0 && (
+                            <div className="space-y-2">
+                              <Label className="font-semibold">Atendimento em Conjunto</Label>
+                              <div className="flex flex-wrap gap-1">
+                                {(record as any).coTherapists.map((ct: any) => (
+                                  <span key={ct.therapistUserId} className="inline-flex items-center bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full font-medium">
+                                    {ct.therapistName || `Terapeuta ID ${ct.therapistUserId}`}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                           <Button
                             variant="outline"
                             onClick={() => setViewingEvolutionId(null)}

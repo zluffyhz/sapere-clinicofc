@@ -222,7 +222,8 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
   if (!db) return [];
   
   if (role === 'therapist' && userId) {
-    return await db.select({
+    // Get appointments where user is the primary therapist
+    const primaryAppointments = await db.select({
       id: appointments.id,
       patientId: appointments.patientId,
       therapistUserId: appointments.therapistUserId,
@@ -246,6 +247,42 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
         )
       )
       .orderBy(asc(patients.name));
+
+    // Also get appointments where user is a co-therapist
+    const coTherapistAppointmentRows = await db.select({
+      id: appointments.id,
+      patientId: appointments.patientId,
+      therapistUserId: appointments.therapistUserId,
+      startTime: appointments.startTime,
+      endTime: appointments.endTime,
+      therapyType: appointments.therapyType,
+      status: appointments.status,
+      notes: appointments.notes,
+      seriesId: appointments.seriesId,
+      isJointSession: appointments.isJointSession,
+      createdAt: appointments.createdAt,
+      patientName: patients.name,
+    })
+      .from(appointments)
+      .innerJoin(appointmentCoTherapists, eq(appointmentCoTherapists.appointmentId, appointments.id))
+      .leftJoin(patients, eq(appointments.patientId, patients.id))
+      .where(
+        and(
+          eq(appointmentCoTherapists.therapistUserId, userId),
+          gte(appointments.startTime, startDate),
+          lte(appointments.startTime, endDate)
+        )
+      )
+      .orderBy(asc(patients.name));
+
+    // Merge, dedup by id
+    const primaryIds = new Set(primaryAppointments.map((a) => a.id));
+    const merged = [
+      ...primaryAppointments,
+      ...coTherapistAppointmentRows.filter((a) => !primaryIds.has(a.id)),
+    ];
+    merged.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+    return merged;
   }
   
   return await db.select({
@@ -456,7 +493,22 @@ export async function getSessionRecordsByPatient(patientId: number) {
     .where(eq(evolutions.patientId, patientId))
     .orderBy(desc(evolutions.sessionDate));
   
-  return result;
+  // For each evolution that has an appointmentId, fetch co-therapists
+  const evolutionsWithCoTherapists = await Promise.all(
+    result.map(async (evo) => {
+      if (!evo.appointmentId) return { ...evo, coTherapists: [] };
+      const coTherapistRows = await db!.select({
+        therapistUserId: appointmentCoTherapists.therapistUserId,
+        therapistName: users.name,
+      })
+        .from(appointmentCoTherapists)
+        .leftJoin(users, eq(appointmentCoTherapists.therapistUserId, users.id))
+        .where(eq(appointmentCoTherapists.appointmentId, evo.appointmentId));
+      return { ...evo, coTherapists: coTherapistRows };
+    })
+  );
+  
+  return evolutionsWithCoTherapists;
 }
 
 export async function getSessionRecordsByAppointment(appointmentId: number) {

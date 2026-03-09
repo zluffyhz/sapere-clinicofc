@@ -999,3 +999,10 @@
 - [x] Exibir badge "Em Conjunto" e lista de co-terapeutas nos cards de agendamento
 - [x] Carregar co-terapeutas existentes ao abrir modal de edição
 - [x] 80 testes passando sem regressões
+
+## Feature: Co-terapeutas no Prontuário e Agenda (09/03/2026)
+- [x] Exibir co-terapeutas nos cards de evolução do histórico do prontuário
+- [x] Incluir co-terapeutas no endpoint de listagem de evoluções (join com appointmentCoTherapists)
+- [x] Exibir agendamentos em conjunto na agenda das co-terapeutas vinculadas
+- [x] Atualizar query getAppointmentsByDateRange para incluir agendamentos onde o usuário é co-terapeuta
+- [x] 80 testes passando sem regressões
