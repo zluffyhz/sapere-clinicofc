@@ -115,8 +115,12 @@ export default function AgendaPage() {
   const { data: patients } = trpc.patients.list.useQuery();
   const { data: therapists } = trpc.admin.listUsers.useQuery();
 
-  // Sync co-therapists mutation
-  const syncCoTherapistsMutation = trpc.appointments.syncCoTherapists.useMutation();
+  // Sync co-therapists mutation — invalidate AFTER sync completes so co-therapists are already in DB
+  const syncCoTherapistsMutation = trpc.appointments.syncCoTherapists.useMutation({
+    onSuccess: () => {
+      utils.appointments.listByDateRange.invalidate();
+    },
+  });
 
   // Create mutation
   const createAppointmentMutation = trpc.appointments.create.useMutation({
@@ -127,16 +131,18 @@ export default function AgendaPage() {
         toast.success("Agendamento criado e adicionado ao calendário!");
       }
       setIsCreateModalOpen(false);
-      // Sync co-therapists if joint session
+      // Sync co-therapists if joint session — invalidation happens in syncCoTherapistsMutation.onSuccess
       if (formData.isJointSession && formData.coTherapistIds && formData.coTherapistIds.length > 0) {
         syncCoTherapistsMutation.mutate({
           appointmentId: data.id,
           therapistUserIds: formData.coTherapistIds,
           isJointSession: true,
         });
+      } else {
+        // No co-therapists to sync, invalidate immediately
+        utils.appointments.listByDateRange.invalidate();
       }
       resetForm();
-      utils.appointments.listByDateRange.invalidate();
     },
     onError: (error) => {
       toast.error(`Erro ao criar agendamento: ${error.message}`);
@@ -151,7 +157,11 @@ export default function AgendaPage() {
       setEditingAppointmentId(null);
       setEditingSeriesId(null);
       resetForm();
-      utils.appointments.listByDateRange.invalidate();
+      // Invalidation is handled by syncCoTherapistsMutation.onSuccess when there are co-therapists
+      // For non-joint sessions, invalidate immediately
+      if (!formData.isJointSession) {
+        utils.appointments.listByDateRange.invalidate();
+      }
     },
     onError: (error) => {
       toast.error(`Erro ao atualizar agendamento: ${error.message}`);

@@ -1012,3 +1012,9 @@
 - [x] Fixar botões de ação (Cancelar/Salvar) no rodapé do modal com border-t
 - [x] Definir max-h-[90vh] e flex-col no DialogContent para não ultrapassar a viewport
 - [x] Aplicado nos modais de Novo Agendamento e Editar Agendamento
+
+## Bug: Agendamento em conjunto não aparece na agenda da co-terapeuta (10/03/2026)
+- [x] Investigar a query getAppointmentsByDateRange para co-terapeutas
+- [x] Corrigir race condition: invalidate agora ocorre após syncCoTherapists completar (onSuccess do sync)
+- [x] Corrigir router listByDateRange: terapeutas agora usam getAppointmentsByDateRange com userId+role para incluir co-terapias
+- [x] 80 testes passando sem regressões
