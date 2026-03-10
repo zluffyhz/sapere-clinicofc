@@ -612,18 +612,47 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         // Update isJointSession flag on the appointment
         await db.updateAppointment(input.appointmentId, { isJointSession: input.isJointSession } as any);
+        
+        // Get existing co-therapists BEFORE syncing to detect removals
+        const existingCoTherapists = await db.getCoTherapistsByAppointment(input.appointmentId);
+        const existingIds = new Set(existingCoTherapists.map((ct: any) => ct.therapistUserId));
+        const newIds = new Set(input.therapistUserIds);
+        
         // Sync co-therapists list
         await db.syncCoTherapists(input.appointmentId, input.therapistUserIds);
-        // Notify each co-therapist
+        
+        // Notify each co-therapist about the appointment
         const appointment = await db.getAppointmentById(input.appointmentId);
         if (appointment) {
           const patient = await db.getPatientById(appointment.patientId);
-          for (const tid of input.therapistUserIds) {
+          
+          // Format date/time in Brasilia timezone
+          const brtDate = new Date(appointment.startTime.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+          const dateStr = brtDate.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+          const timeStr = brtDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          const therapyLabel = appointment.therapyType.charAt(0).toUpperCase() + appointment.therapyType.slice(1);
+          const patientName = patient?.name || 'paciente';
+          
+          // Notify newly added co-therapists
+          const addedIds = input.therapistUserIds.filter(tid => !existingIds.has(tid));
+          for (const tid of addedIds) {
             await db.createNotification({
               userId: tid,
               type: 'schedule_change',
-              title: 'Atendimento em conjunto',
-              message: `Você foi adicionado(a) como co-terapeuta na sessão de ${appointment.therapyType} com ${patient?.name || 'paciente'} em ${appointment.startTime.toLocaleDateString('pt-BR')}`,
+              title: '🤝 Atendimento em Conjunto',
+              message: `Você foi adicionada como co-terapeuta na sessão de ${therapyLabel} com ${patientName} — ${dateStr} às ${timeStr}.`,
+              relatedId: input.appointmentId,
+            });
+          }
+          
+          // Notify removed co-therapists
+          const removedIds = Array.from(existingIds).filter(tid => !newIds.has(tid as number)) as number[];
+          for (const tid of removedIds) {
+            await db.createNotification({
+              userId: tid,
+              type: 'schedule_change',
+              title: '❌ Removida do Atendimento em Conjunto',
+              message: `Você foi removida do atendimento em conjunto de ${therapyLabel} com ${patientName} — ${dateStr} às ${timeStr}.`,
               relatedId: input.appointmentId,
             });
           }

@@ -1018,3 +1018,10 @@
 - [x] Corrigir race condition: invalidate agora ocorre após syncCoTherapists completar (onSuccess do sync)
 - [x] Corrigir router listByDateRange: terapeutas agora usam getAppointmentsByDateRange com userId+role para incluir co-terapias
 - [x] 80 testes passando sem regressões
+
+## Feature: Notificação para co-terapeuta ao ser vinculada (10/03/2026)
+- [x] Verificar o endpoint syncCoTherapists e melhorar a notificação com data, horário e paciente
+- [x] Notificar apenas as co-terapeutas NOVAS (não as já existentes) ao editar agendamento
+- [x] Notificação com data/hora em fuso de Brasília (America/Sao_Paulo)
+- [x] Notificar também ao remover uma co-terapeuta de um agendamento (título: Removida do Atendimento)
+- [x] 80 testes passando sem regressões
