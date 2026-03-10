@@ -285,7 +285,7 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
     return merged;
   }
   
-  return await db.select({
+  const rows = await db.select({
     id: appointments.id,
     patientId: appointments.patientId,
     therapistUserId: appointments.therapistUserId,
@@ -308,6 +308,26 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
       )
     )
     .orderBy(asc(patients.name));
+
+  // Enrich each appointment with coTherapistIds for frontend filtering
+  const appointmentIds = rows.map(r => r.id);
+  let coTherapistMap: Record<number, number[]> = {};
+  if (appointmentIds.length > 0) {
+    const coRows = await db.select({
+      appointmentId: appointmentCoTherapists.appointmentId,
+      therapistUserId: appointmentCoTherapists.therapistUserId,
+    }).from(appointmentCoTherapists)
+      .where(inArray(appointmentCoTherapists.appointmentId, appointmentIds));
+    for (const row of coRows) {
+      if (!coTherapistMap[row.appointmentId]) coTherapistMap[row.appointmentId] = [];
+      coTherapistMap[row.appointmentId].push(row.therapistUserId);
+    }
+  }
+
+  return rows.map(r => ({
+    ...r,
+    coTherapistIds: coTherapistMap[r.id] || [],
+  }));
 }
 
 export async function getAppointmentsBySeries(seriesId: string) {

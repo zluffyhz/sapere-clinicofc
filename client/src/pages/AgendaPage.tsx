@@ -326,7 +326,12 @@ export default function AgendaPage() {
     return appointments
       .filter((apt) => {
         const matchesDate = isSameDayBRT(new Date(apt.startTime), selectedDate);
-        const matchesTherapist = selectedTherapistId === null || apt.therapistUserId === selectedTherapistId;
+        // Match if therapist is the primary OR a co-therapist on this appointment
+        const coIds: number[] = (apt as any).coTherapistIds || [];
+        const matchesTherapist =
+          selectedTherapistId === null ||
+          apt.therapistUserId === selectedTherapistId ||
+          coIds.includes(selectedTherapistId);
         return matchesDate && matchesTherapist;
       });
   }, [appointments, selectedDate, selectedTherapistId]);

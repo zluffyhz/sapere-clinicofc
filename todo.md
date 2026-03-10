@@ -1025,3 +1025,10 @@
 - [x] Notificação com data/hora em fuso de Brasília (America/Sao_Paulo)
 - [x] Notificar também ao remover uma co-terapeuta de um agendamento (título: Removida do Atendimento)
 - [x] 80 testes passando sem regressões
+
+## Bug: Filtro de terapeuta na agenda não exibe sessões onde é co-terapeuta (10/03/2026)
+- [x] Investigar como o filtro de terapeuta funciona no frontend (AgendaPage)
+- [x] Identificar causa: query geral (admin) não retornava coTherapistIds; filtro frontend só comparava therapistUserId
+- [x] Corrigir getAppointmentsByDateRange para enriquecer cada agendamento com coTherapistIds via batch query
+- [x] Corrigir filtro frontend para incluir agendamento se selectedTherapistId está em coTherapistIds
+- [x] 80 testes passando sem regressões
