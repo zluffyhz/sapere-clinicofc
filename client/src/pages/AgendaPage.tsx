@@ -695,45 +695,47 @@ export default function AgendaPage() {
 
           {/* Second patient selector */}
           {isDualSession && (
-            <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg space-y-3">
+            <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg space-y-2">
               <Label className="text-sm font-medium text-gray-900">Segundo Paciente *</Label>
-              <Input
-                placeholder="Buscar paciente..."
-                value={dualPatientSearch}
-                onChange={(e) => setDualPatientSearch(e.target.value)}
-                className="h-8 text-sm"
-              />
-              <div className="max-h-40 overflow-y-auto space-y-1">
-                {(patients || [])
-                  .filter((p) => p.id !== formData.patientId)
-                  .filter((p) => !dualPatientSearch || p.name.toLowerCase().includes(dualPatientSearch.toLowerCase()))
-                  .map((p) => {
-                    const isSelected = secondPatientId === p.id;
-                    return (
-                      <label key={p.id} className={`flex items-center gap-2 p-2 rounded cursor-pointer transition-colors ${
-                        isSelected ? "bg-purple-100 border border-purple-300" : "hover:bg-white border border-transparent"
-                      }`}>
-                        <input
-                          type="radio"
-                          name="secondPatient"
-                          checked={isSelected}
-                          onChange={() => setSecondPatientId(p.id)}
-                          className="h-3.5 w-3.5 text-purple-600 border-gray-300"
-                        />
-                        <span className="text-sm">{p.name}</span>
-                        {isSelected && <span className="ml-auto text-xs text-purple-600 font-medium">Selecionado</span>}
-                      </label>
-                    );
-                  })}
-              </div>
-              {secondPatientId > 0 && (
-                <div className="flex items-center gap-2 pt-1">
-                  <span className="inline-flex items-center gap-1 bg-purple-200 text-purple-800 text-xs px-2 py-0.5 rounded-full">
+              {secondPatientId > 0 ? (
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1 bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full font-medium">
                     {patients?.find((p) => p.id === secondPatientId)?.name || `Paciente ${secondPatientId}`}
-                    <button type="button" onClick={() => { setSecondPatientId(0); setDualPatientSearch(""); }} className="hover:text-purple-900">
+                    <button type="button" onClick={() => { setSecondPatientId(0); setDualPatientSearch(""); }} className="hover:text-purple-900 ml-1">
                       <X className="h-3 w-3" />
                     </button>
                   </span>
+                </div>
+              ) : (
+                <div className="relative">
+                  <Input
+                    placeholder="Buscar paciente pelo nome..."
+                    value={dualPatientSearch}
+                    onChange={(e) => setDualPatientSearch(e.target.value)}
+                    className="h-8 text-sm"
+                    autoComplete="off"
+                  />
+                  {dualPatientSearch.length >= 1 && (
+                    <div className="absolute z-50 left-0 right-0 top-full mt-1 bg-white border border-purple-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                      {(patients || [])
+                        .filter((p) => p.id !== formData.patientId)
+                        .filter((p) => p.name.toLowerCase().includes(dualPatientSearch.toLowerCase()))
+                        .slice(0, 8)
+                        .map((p) => (
+                          <button
+                            key={p.id}
+                            type="button"
+                            className="w-full text-left px-3 py-2 text-sm hover:bg-purple-50 transition-colors border-b border-gray-100 last:border-0"
+                            onClick={() => { setSecondPatientId(p.id); setDualPatientSearch(""); }}
+                          >
+                            {p.name}
+                          </button>
+                        ))}
+                      {(patients || []).filter((p) => p.id !== formData.patientId && p.name.toLowerCase().includes(dualPatientSearch.toLowerCase())).length === 0 && (
+                        <div className="px-3 py-2 text-sm text-gray-500">Nenhum paciente encontrado</div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

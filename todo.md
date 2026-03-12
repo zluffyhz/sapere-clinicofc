@@ -1047,3 +1047,9 @@
 - [x] Portal da família: sem badge, sem menção ao segundo paciente
 - [x] Prontuário: exibir badge "Sessão em Dupla" discreto apenas para terapeuta/admin
 - [x] 80 testes passando sem regressões
+
+## Bug: Campo de busca do segundo paciente (dupla) quebrando layout do modal (12/03/2026)
+- [x] Investigar o seletor de segundo paciente na AgendaPage
+- [x] Substituir lista inline por dropdown flutuante (position: absolute, z-50) que não empurra o layout
+- [x] Dropdown só aparece ao digitar (>= 1 caractere), exibe até 8 resultados com scroll
+- [x] Após selecionar, exibe tag com nome do paciente e botão X para limpar
