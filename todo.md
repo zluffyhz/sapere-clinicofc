@@ -1032,3 +1032,18 @@
 - [x] Corrigir getAppointmentsByDateRange para enriquecer cada agendamento com coTherapistIds via batch query
 - [x] Corrigir filtro frontend para incluir agendamento se selectedTherapistId está em coTherapistIds
 - [x] 80 testes passando sem regressões
+
+## Feature: Atendimento em Dupla (10/03/2026)
+- [x] Adicionar campo isDualSession (boolean) na tabela appointments
+- [x] Criar tabela appointmentDualPatients (id, appointmentId1, appointmentId2)
+- [x] Executar migração no banco de dados
+- [x] Criar helpers no db.ts: createDualSessionLink, getDualPartner, getDualPartnersByAppointmentIds
+- [x] Criar endpoints tRPC: appointments.createDual, appointments.getDualPartner
+- [x] Atualizar endpoint create para suportar isDualSession + secondPatientId
+- [x] Adicionar toggle "Atendimento em Dupla" no formulário de agendamento
+- [x] Ao ativar toggle, exibir seletor de segundo paciente com busca e radio buttons
+- [x] Criar dois agendamentos vinculados ao confirmar dupla
+- [x] Exibir badge "Dupla" (roxo) e nome do segundo paciente nos cards da agenda (terapeuta/admin)
+- [x] Portal da família: sem badge, sem menção ao segundo paciente
+- [x] Prontuário: exibir badge "Sessão em Dupla" discreto apenas para terapeuta/admin
+- [x] 80 testes passando sem regressões

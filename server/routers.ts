@@ -596,6 +596,98 @@ export const appRouter = router({
         return { success: true, cancelledCount: seriesAppointments.length };
       }),
 
+    // ---- Dual session (atendimento em dupla - dois pacientes) ----
+    createDual: therapistProcedure
+      .input(z.object({
+        // First patient appointment data
+        patientId: z.number(),
+        therapistUserId: z.number().optional(),
+        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]),
+        startTime: z.date(),
+        endTime: z.date(),
+        notes: z.string().optional(),
+        // Second patient
+        secondPatientId: z.number(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const therapistUserId = input.therapistUserId || ctx.user.id;
+        const { secondPatientId, ...baseData } = input;
+
+        // Create first appointment (isDualSession=true)
+        const result1 = await db.createAppointment({
+          ...baseData,
+          therapistUserId,
+          status: 'scheduled',
+          isDualSession: true,
+        } as any);
+        const appointmentId1 = result1[0].insertId;
+
+        // Create second appointment with same data but different patient
+        const result2 = await db.createAppointment({
+          patientId: secondPatientId,
+          therapistUserId,
+          therapyType: baseData.therapyType,
+          startTime: baseData.startTime,
+          endTime: baseData.endTime,
+          notes: baseData.notes,
+          status: 'scheduled',
+          isDualSession: true,
+        } as any);
+        const appointmentId2 = result2[0].insertId;
+
+        // Link the two appointments as a dual session
+        await db.createDualSessionLink(appointmentId1, appointmentId2);
+
+        // Notify families of both patients
+        const [patient1, patient2] = await Promise.all([
+          db.getPatientById(input.patientId),
+          db.getPatientById(secondPatientId),
+        ]);
+
+        const brtDate = new Date(input.startTime.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+        const dateStr = brtDate.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+        const timeStr = brtDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        const therapyLabel = input.therapyType.charAt(0).toUpperCase() + input.therapyType.slice(1);
+
+        if (patient1) {
+          await db.createNotification({
+            userId: patient1.familyUserId,
+            type: 'schedule_change',
+            title: 'Nova sessão agendada',
+            message: `Uma nova sessão de ${therapyLabel} foi agendada para ${patient1.name} — ${dateStr} às ${timeStr}.`,
+            relatedId: appointmentId1,
+          });
+        }
+        if (patient2) {
+          await db.createNotification({
+            userId: patient2.familyUserId,
+            type: 'schedule_change',
+            title: 'Nova sessão agendada',
+            message: `Uma nova sessão de ${therapyLabel} foi agendada para ${patient2.name} — ${dateStr} às ${timeStr}.`,
+            relatedId: appointmentId2,
+          });
+        }
+
+        // Notify therapist if someone else created
+        if (therapistUserId !== ctx.user.id) {
+          await db.createNotification({
+            userId: therapistUserId,
+            type: 'schedule_change',
+            title: 'Nova sessão em dupla agendada',
+            message: `Sessão em dupla de ${therapyLabel} com ${patient1?.name || 'paciente'} e ${patient2?.name || 'paciente'} — ${dateStr} às ${timeStr}.`,
+            relatedId: appointmentId1,
+          });
+        }
+
+        return { success: true, appointmentId1, appointmentId2 };
+      }),
+
+    getDualPartner: protectedProcedure
+      .input(z.object({ appointmentId: z.number() }))
+      .query(async ({ input }) => {
+        return await db.getDualPartner(input.appointmentId);
+      }),
+
     // ---- Co-therapists (atendimento em conjunto) ----
     getCoTherapists: protectedProcedure
       .input(z.object({ appointmentId: z.number() }))

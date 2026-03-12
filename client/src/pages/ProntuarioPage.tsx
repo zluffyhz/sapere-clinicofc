@@ -501,6 +501,18 @@ export default function ProntuarioPage() {
                       label: formatBRT(apt.startTime, "dd/MM/yyyy HH:mm")
                     }))}
                   />
+                  {/* Dual session badge - only for therapists/admins */}
+                  {evolutionData.appointmentId > 0 && (() => {
+                    const selApt = (appointments || []).find(a => a.id === evolutionData.appointmentId);
+                    if (!(selApt as any)?.isDualSession) return null;
+                    return (
+                      <div className="flex items-center gap-1.5 text-xs text-purple-700 bg-purple-50 border border-purple-200 px-2.5 py-1.5 rounded-md mt-1">
+                        <span>👥</span>
+                        <span className="font-medium">Sessão em Dupla</span>
+                        <span className="text-purple-500">— dois pacientes neste horário</span>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 <div className="space-y-2">

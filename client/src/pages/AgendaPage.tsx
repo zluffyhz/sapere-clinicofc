@@ -74,6 +74,11 @@ export default function AgendaPage() {
 
   // Co-therapists state
   const [coTherapistSearch, setCoTherapistSearch] = useState("");
+
+  // Dual session state
+  const [isDualSession, setIsDualSession] = useState(false);
+  const [secondPatientId, setSecondPatientId] = useState<number>(0);
+  const [dualPatientSearch, setDualPatientSearch] = useState("");
   
   const [formData, setFormData] = useState<AppointmentFormData>({
     patientId: 0,
@@ -225,7 +230,23 @@ export default function AgendaPage() {
       coTherapistIds: [],
     });
     setCoTherapistSearch("");
+    setIsDualSession(false);
+    setSecondPatientId(0);
+    setDualPatientSearch("");
   };
+
+  // Create dual session mutation
+  const createDualMutation = trpc.appointments.createDual.useMutation({
+    onSuccess: () => {
+      toast.success("Atendimento em dupla criado com sucesso!");
+      setIsCreateModalOpen(false);
+      utils.appointments.listByDateRange.invalidate();
+      resetForm();
+    },
+    onError: (error) => {
+      toast.error(`Erro ao criar atendimento em dupla: ${error.message}`);
+    },
+  });
 
   const handleCreateAppointment = () => {
     if (!formData.patientId || !formData.therapistId) {
@@ -236,6 +257,28 @@ export default function AgendaPage() {
     // Interpreta os horários digitados como horário de Brasília (America/Sao_Paulo)
     const startDateTime = parseBRTDateTime(formData.date, formData.startTime);
     const endDateTime = parseBRTDateTime(formData.date, formData.endTime);
+
+    // If dual session, use createDual mutation
+    if (isDualSession) {
+      if (!secondPatientId) {
+        toast.error("Selecione o segundo paciente para o atendimento em dupla.");
+        return;
+      }
+      if (secondPatientId === formData.patientId) {
+        toast.error("O segundo paciente deve ser diferente do primeiro.");
+        return;
+      }
+      createDualMutation.mutate({
+        patientId: formData.patientId,
+        therapistUserId: formData.therapistId || undefined,
+        therapyType: formData.therapyType,
+        startTime: startDateTime,
+        endTime: endDateTime,
+        notes: formData.notes || undefined,
+        secondPatientId,
+      });
+      return;
+    }
 
     createAppointmentMutation.mutate({
       patientId: formData.patientId,
@@ -377,6 +420,20 @@ export default function AgendaPage() {
   };
 
   const isAdmin = user?.role === "admin";
+
+  // Dual session partner badge - only for therapists/admins
+  const DualPartnerBadge = ({ appointmentId }: { appointmentId: number }) => {
+    const { data: partner } = trpc.appointments.getDualPartner.useQuery(
+      { appointmentId },
+      { enabled: !!appointmentId }
+    );
+    if (!partner) return null;
+    return (
+      <p className="text-sm text-purple-700 font-medium">
+        👥 Em dupla com: {partner.patientName}
+      </p>
+    );
+  };
 
   // Co-therapists display component
   const CoTherapistsList = ({ appointmentId, therapists: allTherapists }: { appointmentId: number; therapists: any[] }) => {
@@ -606,6 +663,77 @@ export default function AgendaPage() {
                       </span>
                     );
                   })}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Dual Session - Admin Only, only in create mode */}
+      {!isEdit && isAdmin && (
+        <div className="space-y-3">
+          <div className="flex items-center space-x-2 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+            <input
+              type="checkbox"
+              id="isDualSession"
+              checked={isDualSession}
+              onChange={(e) => {
+                setIsDualSession(e.target.checked);
+                if (!e.target.checked) { setSecondPatientId(0); setDualPatientSearch(""); }
+              }}
+              className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+            />
+            <div>
+              <Label htmlFor="isDualSession" className="text-sm font-medium text-gray-900 cursor-pointer flex items-center gap-2">
+                <Users className="h-4 w-4 text-purple-600" />
+                Atendimento em Dupla
+              </Label>
+              <p className="text-xs text-muted-foreground mt-0.5">Dois pacientes atendidos juntos na mesma sessão</p>
+            </div>
+          </div>
+
+          {/* Second patient selector */}
+          {isDualSession && (
+            <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg space-y-3">
+              <Label className="text-sm font-medium text-gray-900">Segundo Paciente *</Label>
+              <Input
+                placeholder="Buscar paciente..."
+                value={dualPatientSearch}
+                onChange={(e) => setDualPatientSearch(e.target.value)}
+                className="h-8 text-sm"
+              />
+              <div className="max-h-40 overflow-y-auto space-y-1">
+                {(patients || [])
+                  .filter((p) => p.id !== formData.patientId)
+                  .filter((p) => !dualPatientSearch || p.name.toLowerCase().includes(dualPatientSearch.toLowerCase()))
+                  .map((p) => {
+                    const isSelected = secondPatientId === p.id;
+                    return (
+                      <label key={p.id} className={`flex items-center gap-2 p-2 rounded cursor-pointer transition-colors ${
+                        isSelected ? "bg-purple-100 border border-purple-300" : "hover:bg-white border border-transparent"
+                      }`}>
+                        <input
+                          type="radio"
+                          name="secondPatient"
+                          checked={isSelected}
+                          onChange={() => setSecondPatientId(p.id)}
+                          className="h-3.5 w-3.5 text-purple-600 border-gray-300"
+                        />
+                        <span className="text-sm">{p.name}</span>
+                        {isSelected && <span className="ml-auto text-xs text-purple-600 font-medium">Selecionado</span>}
+                      </label>
+                    );
+                  })}
+              </div>
+              {secondPatientId > 0 && (
+                <div className="flex items-center gap-2 pt-1">
+                  <span className="inline-flex items-center gap-1 bg-purple-200 text-purple-800 text-xs px-2 py-0.5 rounded-full">
+                    {patients?.find((p) => p.id === secondPatientId)?.name || `Paciente ${secondPatientId}`}
+                    <button type="button" onClick={() => { setSecondPatientId(0); setDualPatientSearch(""); }} className="hover:text-purple-900">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
                 </div>
               )}
             </div>
@@ -880,6 +1008,15 @@ export default function AgendaPage() {
                                 Em Conjunto
                               </div>
                             )}
+                            {(apt as any).isDualSession && (user?.role === 'admin' || user?.role === 'therapist') && (
+                              <div
+                                className="flex items-center gap-1 text-xs text-purple-700 bg-purple-100 px-2 py-1 rounded"
+                                title="Atendimento em dupla com dois pacientes"
+                              >
+                                <Users className="h-3 w-3" />
+                                Dupla
+                              </div>
+                            )}
                           </div>
                           <p className="text-sm text-muted-foreground">
                             Paciente: {patient?.name || "Não identificado"}
@@ -891,6 +1028,9 @@ export default function AgendaPage() {
                           )}
                           {apt.isJointSession && (
                             <CoTherapistsList appointmentId={apt.id} therapists={therapists || []} />
+                          )}
+                          {(apt as any).isDualSession && (user?.role === 'admin' || user?.role === 'therapist') && (
+                            <DualPartnerBadge appointmentId={apt.id} />
                           )}
                           <div className="flex items-center gap-4 text-sm">
                             <span className="text-muted-foreground">

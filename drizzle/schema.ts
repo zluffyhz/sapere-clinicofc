@@ -54,6 +54,7 @@ export const appointments = mysqlTable("appointments", {
   notes: text("notes"),
   seriesId: varchar("seriesId", { length: 64 }), // Groups recurring appointments together
   isJointSession: boolean("isJointSession").default(false).notNull(), // Atendimento em conjunto
+  isDualSession: boolean("isDualSession").default(false).notNull(), // Atendimento em dupla (dois pacientes)
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -207,3 +208,18 @@ export const appointmentCoTherapists = mysqlTable("appointment_co_therapists", {
 
 export type AppointmentCoTherapist = typeof appointmentCoTherapists.$inferSelect;
 export type InsertAppointmentCoTherapist = typeof appointmentCoTherapists.$inferInsert;
+
+/**
+ * Appointment Dual Patients table - links two appointments that happen simultaneously (dual session)
+ * Each patient keeps their own independent appointment; this table just marks them as a pair.
+ * Families only see their own patient's appointment - no cross-family data exposure.
+ */
+export const appointmentDualPatients = mysqlTable("appointment_dual_patients", {
+  id: int("id").autoincrement().primaryKey(),
+  appointmentId1: int("appointmentId1").notNull(), // First patient's appointment
+  appointmentId2: int("appointmentId2").notNull(), // Second patient's appointment
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AppointmentDualPatient = typeof appointmentDualPatients.$inferSelect;
+export type InsertAppointmentDualPatient = typeof appointmentDualPatients.$inferInsert;

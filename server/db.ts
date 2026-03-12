@@ -10,7 +10,8 @@ import {
   notifications, InsertNotification,
   attendance, InsertAttendance,
   patientTherapistAssignments, InsertPatientTherapistAssignment,
-  appointmentCoTherapists, InsertAppointmentCoTherapist
+  appointmentCoTherapists, InsertAppointmentCoTherapist,
+  appointmentDualPatients, InsertAppointmentDualPatient
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -324,9 +325,29 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
     }
   }
 
+  // Also enrich with isDualSession flag from appointmentDualPatients
+  const dualIds = new Set<number>();
+  if (appointmentIds.length > 0) {
+    const dualRows = await db.select({
+      appointmentId1: appointmentDualPatients.appointmentId1,
+      appointmentId2: appointmentDualPatients.appointmentId2,
+    }).from(appointmentDualPatients)
+      .where(
+        or(
+          inArray(appointmentDualPatients.appointmentId1, appointmentIds),
+          inArray(appointmentDualPatients.appointmentId2, appointmentIds)
+        )
+      );
+    for (const row of dualRows) {
+      dualIds.add(row.appointmentId1);
+      dualIds.add(row.appointmentId2);
+    }
+  }
+
   return rows.map(r => ({
     ...r,
     coTherapistIds: coTherapistMap[r.id] || [],
+    isDualSession: dualIds.has(r.id),
   }));
 }
 
@@ -403,6 +424,130 @@ export async function syncCoTherapists(appointmentId: number, therapistUserIds: 
     await db.insert(appointmentCoTherapists).values(
       therapistUserIds.map(tid => ({ appointmentId, therapistUserId: tid }))
     );
+  }
+}
+
+// ============ DUAL SESSION OPERATIONS ============
+
+/**
+ * Create a dual session link between two appointments.
+ * Both appointments must already exist with isDualSession=true.
+ */
+export async function createDualSessionLink(appointmentId1: number, appointmentId2: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return await db.insert(appointmentDualPatients).values({ appointmentId1, appointmentId2 });
+}
+
+/**
+ * Get the dual partner appointment for a given appointment ID.
+ * Returns the partner appointment enriched with patient name, or null if not a dual session.
+ */
+export async function getDualPartner(appointmentId: number) {
+  const db = await getDb();
+  if (!db) return null;
+  // Check if this appointment is appointmentId1
+  const asFirst = await db.select().from(appointmentDualPatients)
+    .where(eq(appointmentDualPatients.appointmentId1, appointmentId))
+    .limit(1);
+  if (asFirst.length > 0) {
+    const partnerId = asFirst[0].appointmentId2;
+    const partner = await db.select({
+      id: appointments.id,
+      patientId: appointments.patientId,
+      patientName: patients.name,
+      therapyType: appointments.therapyType,
+    }).from(appointments)
+      .leftJoin(patients, eq(appointments.patientId, patients.id))
+      .where(eq(appointments.id, partnerId))
+      .limit(1);
+    return partner[0] || null;
+  }
+  // Check if this appointment is appointmentId2
+  const asSecond = await db.select().from(appointmentDualPatients)
+    .where(eq(appointmentDualPatients.appointmentId2, appointmentId))
+    .limit(1);
+  if (asSecond.length > 0) {
+    const partnerId = asSecond[0].appointmentId1;
+    const partner = await db.select({
+      id: appointments.id,
+      patientId: appointments.patientId,
+      patientName: patients.name,
+      therapyType: appointments.therapyType,
+    }).from(appointments)
+      .leftJoin(patients, eq(appointments.patientId, patients.id))
+      .where(eq(appointments.id, partnerId))
+      .limit(1);
+    return partner[0] || null;
+  }
+  return null;
+}
+
+/**
+ * Get dual partners for a batch of appointment IDs.
+ * Returns a map of appointmentId -> partner info for efficient bulk enrichment.
+ */
+export async function getDualPartnersByAppointmentIds(appointmentIds: number[]): Promise<Record<number, { id: number; patientId: number; patientName: string | null }>> {
+  if (appointmentIds.length === 0) return {};
+  const db = await getDb();
+  if (!db) return {};
+
+  const [asFirst, asSecond] = await Promise.all([
+    db.select({
+      appointmentId1: appointmentDualPatients.appointmentId1,
+      appointmentId2: appointmentDualPatients.appointmentId2,
+    }).from(appointmentDualPatients)
+      .where(inArray(appointmentDualPatients.appointmentId1, appointmentIds)),
+    db.select({
+      appointmentId1: appointmentDualPatients.appointmentId1,
+      appointmentId2: appointmentDualPatients.appointmentId2,
+    }).from(appointmentDualPatients)
+      .where(inArray(appointmentDualPatients.appointmentId2, appointmentIds)),
+  ]);
+
+  // Collect all partner IDs we need to look up
+  const partnerMap: Record<number, number> = {}; // myId -> partnerId
+  for (const row of asFirst) partnerMap[row.appointmentId1] = row.appointmentId2;
+  for (const row of asSecond) partnerMap[row.appointmentId2] = row.appointmentId1;
+
+  const partnerIds = Object.values(partnerMap);
+  if (partnerIds.length === 0) return {};
+
+  const partnerRows = await db.select({
+    id: appointments.id,
+    patientId: appointments.patientId,
+    patientName: patients.name,
+  }).from(appointments)
+    .leftJoin(patients, eq(appointments.patientId, patients.id))
+    .where(inArray(appointments.id, partnerIds));
+
+  const partnerById: Record<number, { id: number; patientId: number; patientName: string | null }> = {};
+  for (const p of partnerRows) partnerById[p.id] = p;
+
+  const result: Record<number, { id: number; patientId: number; patientName: string | null }> = {};
+  for (const [myId, partnerId] of Object.entries(partnerMap)) {
+    const partner = partnerById[partnerId];
+    if (partner) result[Number(myId)] = partner;
+  }
+  return result;
+}
+
+/**
+ * Delete dual session link for a given appointment (removes from both sides).
+ */
+export async function deleteDualSessionLink(appointmentId: number) {
+  const db = await getDb();
+  if (!db) return;
+  // Remove where this appointment is either side of the pair
+  const asFirst = await db.select().from(appointmentDualPatients)
+    .where(eq(appointmentDualPatients.appointmentId1, appointmentId)).limit(1);
+  const asSecond = await db.select().from(appointmentDualPatients)
+    .where(eq(appointmentDualPatients.appointmentId2, appointmentId)).limit(1);
+  if (asFirst.length > 0) {
+    await db.delete(appointmentDualPatients).where(eq(appointmentDualPatients.appointmentId1, appointmentId));
+  }
+  if (asSecond.length > 0) {
+    await db.delete(appointmentDualPatients).where(eq(appointmentDualPatients.appointmentId2, appointmentId));
   }
 }
 
