@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -421,6 +421,90 @@ export default function AgendaPage() {
 
   const isAdmin = user?.role === "admin";
 
+  // Dual patient search input - uses position:fixed to avoid scroll in modal
+  const DualPatientSearchInput = ({
+    value,
+    onChange,
+    patients: patientList,
+    onSelect,
+  }: {
+    value: string;
+    onChange: (v: string) => void;
+    patients: { id: number; name: string }[];
+    onSelect: (id: number) => void;
+  }) => {
+    const inputRef = useRef<HTMLInputElement>(null);
+    const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
+    const [showDropdown, setShowDropdown] = useState(false);
+
+    const filtered = patientList
+      .filter((p) => p.name.toLowerCase().includes(value.toLowerCase()))
+      .slice(0, 8);
+
+    const updatePosition = useCallback(() => {
+      if (!inputRef.current) return;
+      const rect = inputRef.current.getBoundingClientRect();
+      setDropdownStyle({
+        position: "fixed",
+        top: rect.bottom + 4,
+        left: rect.left,
+        width: rect.width,
+        zIndex: 9999,
+      });
+    }, []);
+
+    useEffect(() => {
+      if (showDropdown) updatePosition();
+    }, [showDropdown, value, updatePosition]);
+
+    return (
+      <div className="relative">
+        <input
+          ref={inputRef}
+          type="text"
+          placeholder="Buscar paciente pelo nome..."
+          value={value}
+          onChange={(e) => {
+            onChange(e.target.value);
+            setShowDropdown(e.target.value.length >= 1);
+            updatePosition();
+          }}
+          onFocus={() => {
+            if (value.length >= 1) {
+              setShowDropdown(true);
+              updatePosition();
+            }
+          }}
+          onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+          autoComplete="off"
+          className="w-full h-8 px-3 text-sm border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+        />
+        {showDropdown && value.length >= 1 && (
+          <div
+            style={dropdownStyle}
+            className="bg-white border border-purple-200 rounded-lg shadow-xl max-h-48 overflow-y-auto"
+          >
+            {filtered.length === 0 ? (
+              <div className="px-3 py-2 text-sm text-gray-500">Nenhum paciente encontrado</div>
+            ) : (
+              filtered.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-purple-50 transition-colors border-b border-gray-100 last:border-0"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => { onSelect(p.id); setShowDropdown(false); }}
+                >
+                  {p.name}
+                </button>
+              ))
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // Dual session partner badge - only for therapists/admins
   const DualPartnerBadge = ({ appointmentId }: { appointmentId: number }) => {
     const { data: partner } = trpc.appointments.getDualPartner.useQuery(
@@ -707,36 +791,12 @@ export default function AgendaPage() {
                   </span>
                 </div>
               ) : (
-                <div className="relative">
-                  <Input
-                    placeholder="Buscar paciente pelo nome..."
-                    value={dualPatientSearch}
-                    onChange={(e) => setDualPatientSearch(e.target.value)}
-                    className="h-8 text-sm"
-                    autoComplete="off"
-                  />
-                  {dualPatientSearch.length >= 1 && (
-                    <div className="absolute z-50 left-0 right-0 top-full mt-1 bg-white border border-purple-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-                      {(patients || [])
-                        .filter((p) => p.id !== formData.patientId)
-                        .filter((p) => p.name.toLowerCase().includes(dualPatientSearch.toLowerCase()))
-                        .slice(0, 8)
-                        .map((p) => (
-                          <button
-                            key={p.id}
-                            type="button"
-                            className="w-full text-left px-3 py-2 text-sm hover:bg-purple-50 transition-colors border-b border-gray-100 last:border-0"
-                            onClick={() => { setSecondPatientId(p.id); setDualPatientSearch(""); }}
-                          >
-                            {p.name}
-                          </button>
-                        ))}
-                      {(patients || []).filter((p) => p.id !== formData.patientId && p.name.toLowerCase().includes(dualPatientSearch.toLowerCase())).length === 0 && (
-                        <div className="px-3 py-2 text-sm text-gray-500">Nenhum paciente encontrado</div>
-                      )}
-                    </div>
-                  )}
-                </div>
+                <DualPatientSearchInput
+                  value={dualPatientSearch}
+                  onChange={setDualPatientSearch}
+                  patients={(patients || []).filter((p) => p.id !== formData.patientId)}
+                  onSelect={(id) => { setSecondPatientId(id); setDualPatientSearch(""); }}
+                />
               )}
             </div>
           )}

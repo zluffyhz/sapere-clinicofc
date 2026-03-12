@@ -1053,3 +1053,10 @@
 - [x] Substituir lista inline por dropdown flutuante (position: absolute, z-50) que não empurra o layout
 - [x] Dropdown só aparece ao digitar (>= 1 caractere), exibe até 8 resultados com scroll
 - [x] Após selecionar, exibe tag com nome do paciente e botão X para limpar
+
+## Bug: Modal sobe ao digitar no campo de busca do 2o paciente em dupla (12/03/2026)
+- [x] Investigar causa: dropdown absolute dentro do scroll do modal causava reflow e scroll automático
+- [x] Criar componente DualPatientSearchInput com dropdown position:fixed + getBoundingClientRect
+- [x] Dropdown calculado com coordenadas fixas da viewport (não afeta fluxo do modal)
+- [x] onMouseDown preventDefault nos itens da lista para evitar blur prematuro
+- [x] TypeScript sem erros
