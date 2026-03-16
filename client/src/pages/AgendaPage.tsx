@@ -44,6 +44,7 @@ type AppointmentFormData = {
   notes: string;
   status?: "scheduled" | "completed" | "cancelled" | "rescheduled";
   replicateWeekly?: boolean;
+  allowConflicts?: boolean;
   isJointSession?: boolean;
   coTherapistIds?: number[];
 };
@@ -90,6 +91,7 @@ export default function AgendaPage() {
     notes: "",
     status: "scheduled",
     replicateWeekly: false,
+    allowConflicts: false,
     isJointSession: false,
     coTherapistIds: [],
   });
@@ -288,6 +290,7 @@ export default function AgendaPage() {
       endTime: endDateTime,
       notes: formData.notes || undefined,
       replicateWeekly: formData.replicateWeekly || false,
+      allowConflicts: formData.allowConflicts || false,
     });
   };
 
@@ -321,6 +324,7 @@ export default function AgendaPage() {
         endTime: endDateTime,
         status: formData.status,
         notes: formData.notes || undefined,
+        allowConflicts: formData.allowConflicts || false,
       });
     }
   };
@@ -818,6 +822,31 @@ export default function AgendaPage() {
           <Label htmlFor="replicateWeekly" className="text-sm font-medium text-gray-900 cursor-pointer">
             Replicar este agendamento semanalmente pelos próximos 30 dias (4 semanas)
           </Label>
+        </div>
+      )}
+
+      {/* Allow Conflicts - Admin Only */}
+      {isAdmin && (
+        <div className={`flex items-start space-x-3 p-4 rounded-lg border ${formData.allowConflicts ? 'bg-yellow-50 border-yellow-400' : 'bg-gray-50 border-gray-200'}`}>
+          <input
+            type="checkbox"
+            id="allowConflicts"
+            checked={formData.allowConflicts || false}
+            onChange={(e) =>
+              setFormData({ ...formData, allowConflicts: e.target.checked })
+            }
+            className="h-4 w-4 mt-0.5 text-yellow-600 focus:ring-yellow-500 border-gray-300 rounded"
+          />
+          <div>
+            <Label htmlFor="allowConflicts" className="text-sm font-medium text-gray-900 cursor-pointer">
+              Permitir conflito de horário
+            </Label>
+            {formData.allowConflicts && (
+              <p className="text-xs text-yellow-700 mt-1">
+                ⚠️ Atenção: este agendamento será criado mesmo que haja sobreposição de horário com outra sessão do terapeuta ou paciente.
+              </p>
+            )}
+          </div>
         </div>
       )}
     </div>

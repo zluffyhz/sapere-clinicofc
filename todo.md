@@ -1060,3 +1060,15 @@
 - [x] Dropdown calculado com coordenadas fixas da viewport (não afeta fluxo do modal)
 - [x] onMouseDown preventDefault nos itens da lista para evitar blur prematuro
 - [x] TypeScript sem erros
+
+## Toggle: Permitir conflitos de horário (16/03/2026)
+- [ ] Adicionar campo `allowConflicts` (boolean) no input dos endpoints create e update de agendamentos
+- [ ] Tornar a verificação de conflito condicional: só bloqueia se `allowConflicts` não for true
+- [ ] Adicionar checkbox "Permitir conflito de horário" no formulário de criação/edição (apenas admin)
+- [ ] Exibir aviso visual (amarelo) quando o agendamento for criado com conflito permitido
+
+## Toggle: Permitir conflitos de horario (16/03/2026)
+- [x] Adicionar campo allowConflicts (boolean) no input dos endpoints create e update
+- [x] Tornar a verificacao de conflito condicional: so bloqueia se allowConflicts nao for true
+- [x] Adicionar checkbox "Permitir conflito de horario" no formulario (apenas admin)
+- [x] Exibir aviso visual (amarelo) quando agendamento for criado com conflito permitido

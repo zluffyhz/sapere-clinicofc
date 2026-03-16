@@ -273,6 +273,7 @@ export const appRouter = router({
         endTime: z.date(),
         notes: z.string().optional(),
         replicateWeekly: z.boolean().optional(), // Admin only: replicate weekly for 30 days
+        allowConflicts: z.boolean().optional(), // Admin only: bypass conflict validation
       }))
       .mutation(async ({ input, ctx }) => {
         // Determine therapist: admin can specify, therapist uses self, family not allowed
@@ -280,26 +281,29 @@ export const appRouter = router({
           throw new TRPCError({ code: 'FORBIDDEN', message: 'Famílias não podem criar agendamentos diretamente' });
         }
         const therapistUserId = input.therapistUserId || ctx.user.id;
-        // Check for scheduling conflicts
-        const conflicts = await db.checkScheduleConflicts(
-          input.startTime,
-          input.endTime,
-          ctx.user.id,
-          input.patientId
-        );
+        // Check for scheduling conflicts (skip if admin explicitly allows conflicts)
+        const skipConflictCheck = input.allowConflicts === true && ctx.user.role === 'admin';
+        if (!skipConflictCheck) {
+          const conflicts = await db.checkScheduleConflicts(
+            input.startTime,
+            input.endTime,
+            therapistUserId,
+            input.patientId
+          );
 
-        if (conflicts.therapistConflict) {
-          throw new TRPCError({
-            code: 'BAD_REQUEST',
-            message: 'Conflito de horário: O terapeuta já possui outro agendamento neste horário.',
-          });
-        }
+          if (conflicts.therapistConflict) {
+            throw new TRPCError({
+              code: 'BAD_REQUEST',
+              message: 'Conflito de horário: O terapeuta já possui outro agendamento neste horário.',
+            });
+          }
 
-        if (conflicts.patientConflict) {
-          throw new TRPCError({
-            code: 'BAD_REQUEST',
-            message: 'Conflito de horário: O paciente já possui outro agendamento neste horário.',
-          });
+          if (conflicts.patientConflict) {
+            throw new TRPCError({
+              code: 'BAD_REQUEST',
+              message: 'Conflito de horário: O paciente já possui outro agendamento neste horário.',
+            });
+          }
         }
 
         // Generate seriesId if replicating weekly
@@ -464,12 +468,14 @@ export const appRouter = router({
         endTime: z.date().optional(),
         status: z.enum(["scheduled", "completed", "cancelled", "rescheduled"]).optional(),
         notes: z.string().optional(),
+        allowConflicts: z.boolean().optional(), // Admin only: bypass conflict validation
       }))
       .mutation(async ({ input, ctx }) => {
         const { id, ...data } = input;
         
-        // Check for scheduling conflicts if time is being updated
-        if (data.startTime && data.endTime) {
+        // Check for scheduling conflicts if time is being updated (skip if admin allows conflicts)
+        const skipConflictCheck = data.allowConflicts === true && ctx.user.role === 'admin';
+        if (data.startTime && data.endTime && !skipConflictCheck) {
           const appointment = await db.getAppointmentById(id);
           if (appointment) {
             const conflicts = await db.checkScheduleConflicts(
