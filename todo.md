@@ -1072,3 +1072,11 @@
 - [x] Tornar a verificacao de conflito condicional: so bloqueia se allowConflicts nao for true
 - [x] Adicionar checkbox "Permitir conflito de horario" no formulario (apenas admin)
 - [x] Exibir aviso visual (amarelo) quando agendamento for criado com conflito permitido
+
+## Remover restrições de conflito de horário (18/03/2026)
+- [x] Remover bloco de checkScheduleConflicts do endpoint create (routers.ts)
+- [x] Remover bloco de checkScheduleConflicts do endpoint update (routers.ts)
+- [x] Remover campo allowConflicts do input do create e update
+- [x] Remover checkbox "Permitir conflito de horário" do AgendaPage.tsx
+- [x] Remover campo allowConflicts do tipo AppointmentFormData e do estado inicial
+- [x] 80 testes passando após remoção
