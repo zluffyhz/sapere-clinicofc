@@ -156,7 +156,7 @@ export async function getAllPatients() {
   const db = await getDb();
   if (!db) return [];
   
-  return await db.select().from(patients);
+  return await db.select().from(patients).orderBy(asc(patients.name));
 }
 
 export async function updatePatient(id: number, data: Partial<InsertPatient>) {
@@ -1167,7 +1167,8 @@ export async function getTherapistPatients(therapistUserId: number) {
   const patientsResult = await db
     .select()
     .from(patients)
-    .where(inArray(patients.id, patientIds));
+    .where(inArray(patients.id, patientIds))
+    .orderBy(asc(patients.name));
   
   return patientsResult;
 }
