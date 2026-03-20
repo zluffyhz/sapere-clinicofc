@@ -247,7 +247,7 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
           lte(appointments.startTime, endDate)
         )
       )
-      .orderBy(asc(patients.name));
+      .orderBy(asc(appointments.startTime));
 
     // Also get appointments where user is a co-therapist
     const coTherapistAppointmentRows = await db.select({
@@ -274,7 +274,7 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
           lte(appointments.startTime, endDate)
         )
       )
-      .orderBy(asc(patients.name));
+      .orderBy(asc(appointments.startTime));
 
     // Merge, dedup by id
     const primaryIds = new Set(primaryAppointments.map((a) => a.id));
@@ -308,7 +308,7 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
         lte(appointments.startTime, endDate)
       )
     )
-    .orderBy(asc(patients.name));
+    .orderBy(asc(appointments.startTime));
 
   // Enrich each appointment with coTherapistIds for frontend filtering
   const appointmentIds = rows.map(r => r.id);
