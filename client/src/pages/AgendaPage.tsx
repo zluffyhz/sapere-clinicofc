@@ -311,6 +311,9 @@ export default function AgendaPage() {
         seriesId: editingSeriesId,
         therapyType: formData.therapyType,
         notes: formData.notes || undefined,
+        status: formData.status,
+        startTime: startDateTime,
+        endTime: endDateTime,
       });
     } else {
       // Edit only this appointment
@@ -328,6 +331,7 @@ export default function AgendaPage() {
   const openEditModal = async (apt: any) => {
     setEditingAppointmentId(apt.id);
     setEditingSeriesId(apt.seriesId || null);
+    setEditSeriesMode("single"); // reset to single every time modal opens
     // Load existing co-therapists
     let coTherapistIds: number[] = [];
     try {
@@ -352,6 +356,7 @@ export default function AgendaPage() {
   const openDeleteDialog = (apt: any) => {
     setDeletingAppointmentId(apt.id);
     setEditingSeriesId(apt.seriesId || null);
+    setDeleteSeriesMode("single"); // reset to single every time dialog opens
     setIsDeleteDialogOpen(true);
   };
 
@@ -1230,10 +1235,12 @@ export default function AgendaPage() {
             </Button>
             <Button 
               onClick={handleEditAppointment}
-              disabled={updateAppointmentMutation.isPending}
+              disabled={updateAppointmentMutation.isPending || updateSeriesMutation.isPending}
               className="bg-orange-500 hover:bg-orange-600"
             >
-              {updateAppointmentMutation.isPending ? "Salvando..." : "Salvar Alterações"}
+              {(updateAppointmentMutation.isPending || updateSeriesMutation.isPending)
+                ? (editSeriesMode === "all" ? "Salvando série..." : "Salvando...")
+                : (editSeriesMode === "all" && editingSeriesId ? "Salvar toda a série" : "Salvar Alterações")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1281,13 +1288,16 @@ export default function AgendaPage() {
           )}
           
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
+            <AlertDialogCancel disabled={deleteAppointmentMutation.isPending || cancelSeriesMutation.isPending}>Cancelar</AlertDialogCancel>
+            <Button
               onClick={handleDeleteAppointment}
+              disabled={deleteAppointmentMutation.isPending || cancelSeriesMutation.isPending}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {deleteAppointmentMutation.isPending ? "Excluindo..." : "Excluir"}
-            </AlertDialogAction>
+              {(deleteAppointmentMutation.isPending || cancelSeriesMutation.isPending)
+                ? (deleteSeriesMode === "all" ? "Cancelando série..." : "Excluindo...")
+                : (deleteSeriesMode === "all" && editingSeriesId ? "Cancelar toda a série" : "Excluir")}
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

@@ -493,9 +493,13 @@ export const appRouter = router({
         seriesId: z.string(),
         therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]).optional(),
         notes: z.string().optional(),
+        status: z.enum(["scheduled", "completed", "cancelled", "rescheduled"]).optional(),
+        // New time: when provided, shift ALL appointments in the series to this time-of-day
+        startTime: z.date().optional(),
+        endTime: z.date().optional(),
       }))
       .mutation(async ({ input, ctx }) => {
-        const { seriesId, ...updates } = input;
+        const { seriesId, startTime: newStart, endTime: newEnd, ...rest } = input;
         
         // Get all appointments in the series
         const seriesAppointments = await db.getAppointmentsBySeries(seriesId);
@@ -509,6 +513,22 @@ export const appRouter = router({
         
         // Update all appointments in the series
         for (const appointment of seriesAppointments) {
+          const updates: Record<string, any> = { ...rest };
+
+          // If new times provided, keep the same calendar date but apply the new time-of-day
+          if (newStart) {
+            const apptDate = new Date(appointment.startTime);
+            const shifted = new Date(apptDate);
+            shifted.setUTCHours(newStart.getUTCHours(), newStart.getUTCMinutes(), 0, 0);
+            updates.startTime = shifted;
+          }
+          if (newEnd) {
+            const apptDate = new Date(appointment.endTime);
+            const shifted = new Date(apptDate);
+            shifted.setUTCHours(newEnd.getUTCHours(), newEnd.getUTCMinutes(), 0, 0);
+            updates.endTime = shifted;
+          }
+
           await db.updateAppointment(appointment.id, updates);
         }
         

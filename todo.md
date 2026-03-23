@@ -1080,3 +1080,11 @@
 - [x] Remover checkbox "Permitir conflito de horário" do AgendaPage.tsx
 - [x] Remover campo allowConflicts do tipo AppointmentFormData e do estado inicial
 - [x] 80 testes passando após remoção
+
+## Correção: Cancelamento e Edição de Séries
+- [x] Backend: updateSeries aceitar startTime, endTime e status além de therapyType/notes
+- [x] Backend: updateSeries aplicar offset de horário relativo a cada agendamento da série
+- [x] Frontend: resetar deleteSeriesMode para "single" ao abrir novo diálogo de exclusão
+- [x] Frontend: resetar editSeriesMode para "single" ao abrir novo modal de edição
+- [x] Frontend: substituir AlertDialogAction por Button para evitar fechamento prematuro do dialog
+- [x] Frontend: botão de salvar no modal de edição mostrar loading do updateSeriesMutation também
