@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Trash2, Edit, Users, AlertCircle, AlertTriangle } from "lucide-react";
+import { Plus, Trash2, Edit, Users, AlertCircle, AlertTriangle, Search } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
@@ -52,6 +52,9 @@ export default function AdminUsersPage() {
 
   // Bulk selection state
   const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
+
+  // Search state
+  const [userSearch, setUserSearch] = useState("");
 
   const [newUser, setNewUser] = useState({
     name: "",
@@ -386,11 +389,12 @@ export default function AdminUsersPage() {
       {/* Users Table */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>Lista de Usuários</CardTitle>
-              <CardDescription>Gerencie todos os usuários da plataforma</CardDescription>
-            </div>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Lista de Usuários</CardTitle>
+                <CardDescription>Gerencie todos os usuários da plataforma</CardDescription>
+              </div>
             {someSelected && (
               <div className="flex items-center gap-3">
                 <span className="text-sm text-muted-foreground">
@@ -413,6 +417,17 @@ export default function AdminUsersPage() {
                 </Button>
               </div>
             )}
+            </div>
+            {/* Search bar */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Input
+                placeholder="Buscar por nome ou e-mail..."
+                value={userSearch}
+                onChange={(e) => setUserSearch(e.target.value)}
+                className="pl-9"
+              />
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -447,7 +462,13 @@ export default function AdminUsersPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users.map((user) => {
+                  {users
+                    .filter((u) =>
+                      !userSearch ||
+                      (u.name ?? "").toLowerCase().includes(userSearch.toLowerCase()) ||
+                      (u.email ?? "").toLowerCase().includes(userSearch.toLowerCase())
+                    )
+                    .map((user) => {
                     const isCurrentUser = user.id === currentUser?.id;
                     return (
                       <TableRow

@@ -430,9 +430,32 @@ export const appRouter = router({
       }),
 
     listByPatient: protectedProcedure
-      .input(z.object({ patientId: z.number() }))
-      .query(async ({ input }) => {
-        return await db.getAppointmentsByPatient(input.patientId);
+      .input(z.object({
+        patientId: z.number(),
+        todayOnly: z.boolean().optional(),
+      }))
+      .query(async ({ input, ctx }) => {
+        const allApts = await db.getAppointmentsByPatient(input.patientId);
+        let filtered = allApts;
+
+        // If therapist (not admin), filter to only their appointments
+        if (ctx.user.role === 'therapist') {
+          filtered = filtered.filter((apt) => apt.therapistUserId === ctx.user.id);
+        }
+
+        // If todayOnly, filter to today's appointments (scheduled or completed)
+        if (input.todayOnly) {
+          const now = new Date();
+          const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+          const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+          filtered = filtered.filter((apt) => {
+            const aptDate = new Date(apt.startTime);
+            return aptDate >= todayStart && aptDate <= todayEnd &&
+              (apt.status === 'scheduled' || apt.status === 'completed');
+          });
+        }
+
+        return filtered;
       }),
 
     update: therapistProcedure

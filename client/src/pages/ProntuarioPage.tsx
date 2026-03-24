@@ -67,8 +67,14 @@ export default function ProntuarioPage() {
   const [sessionDataProcessed, setSessionDataProcessed] = useState(false);
 
   const { data: appointments } = trpc.appointments.listByPatient.useQuery(
-    { patientId: patientId! },
+    { patientId: patientId!, todayOnly: true },
     { enabled: !!patientId }
+  );
+
+  // All appointments (for auto-select from timer, which may need historical)
+  const { data: allAppointments } = trpc.appointments.listByPatient.useQuery(
+    { patientId: patientId! },
+    { enabled: !!patientId && !!newEvolution }
   );
 
   // Debug: Log component state
@@ -82,10 +88,12 @@ export default function ProntuarioPage() {
 
   // Check for session data from timer and auto-select appointment
   useEffect(() => {
-    console.log('[useEffect] Running with deps:', { newEvolution, patientId, appointmentsLength: appointments?.length });
+    // Use allAppointments for auto-select (timer may reference historical appointments)
+    const aptList = allAppointments || appointments;
+    console.log('[useEffect] Running with deps:', { newEvolution, patientId, appointmentsLength: aptList?.length });
     // Only run when we have the newEvolution flag and appointments are loaded
-    if (!newEvolution || !appointments || appointments.length === 0) {
-      console.log('[Auto-select] Waiting for data:', { newEvolution, appointmentsCount: appointments?.length });
+    if (!newEvolution || !aptList || aptList.length === 0) {
+      console.log('[Auto-select] Waiting for data:', { newEvolution, appointmentsCount: aptList?.length });
       return;
     }
 
@@ -113,10 +121,10 @@ export default function ProntuarioPage() {
 
       const sessionStartTime = new Date(sessionData.startTime);
       console.log('[Auto-select] Session start time:', sessionStartTime.toISOString());
-      console.log('[Auto-select] Available appointments:', appointments.length);
+      console.log('[Auto-select] Available appointments:', aptList.length);
       
       // Find matching appointment based on date and status
-      const matchingAppointment = appointments.find((apt: any) => {
+      const matchingAppointment = aptList.find((apt: any) => {
         const aptDate = new Date(apt.startTime);
         const isSameDay = aptDate.toDateString() === sessionStartTime.toDateString();
         const isScheduled = apt.status === 'scheduled';
@@ -154,7 +162,7 @@ export default function ProntuarioPage() {
       console.error('[Auto-select] Error parsing session data:', error);
       sessionStorage.removeItem('sessionData');
     }
-  }, [newEvolution, patientId, appointments]);
+  }, [newEvolution, patientId, appointments, allAppointments]);
 
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [uploadData, setUploadData] = useState({
@@ -489,18 +497,25 @@ export default function ProntuarioPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="appointment">Sessão</Label>
+                  <Label htmlFor="appointment">Sessão de Hoje</Label>
+                  {(appointments || []).length === 0 ? (
+                    <div className="flex items-center gap-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 px-3 py-2 rounded-md">
+                      <span>⚠️</span>
+                      <span>Nenhuma sessão agendada para hoje com este paciente. Verifique a agenda.</span>
+                    </div>
+                  ) : (
                   <NativeSelect
                     value={evolutionData.appointmentId.toString()}
                     onChange={(e) =>
                       setEvolutionData({ ...evolutionData, appointmentId: parseInt(e.target.value) })
                     }
-                    placeholder="Selecione a sessão"
+                    placeholder="Selecione a sessão de hoje"
                     options={(appointments || []).map((apt) => ({
                       value: apt.id.toString(),
-                      label: formatBRT(apt.startTime, "dd/MM/yyyy HH:mm")
+                      label: `${formatBRT(apt.startTime, "HH:mm")} – ${formatBRT(apt.startTime, "dd/MM/yyyy")} (${apt.status === 'completed' ? 'Concluída' : 'Agendada'})`
                     }))}
                   />
+                  )}
                   {/* Dual session badge - only for therapists/admins */}
                   {evolutionData.appointmentId > 0 && (() => {
                     const selApt = (appointments || []).find(a => a.id === evolutionData.appointmentId);

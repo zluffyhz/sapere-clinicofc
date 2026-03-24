@@ -7,7 +7,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { formatBRT, parseBRTDateTime, getBRTDateString, getBRTTimeString, isSameDayBRT, CLINIC_TIMEZONE } from "@/lib/timezone";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X, Repeat, UserPlus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X, Repeat, UserPlus, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { NativeSelect } from "@/components/ui/native-select";
 import {
@@ -79,6 +79,9 @@ export default function AgendaPage() {
   const [isDualSession, setIsDualSession] = useState(false);
   const [secondPatientId, setSecondPatientId] = useState<number>(0);
   const [dualPatientSearch, setDualPatientSearch] = useState("");
+
+  // Primary patient search state for appointment form
+  const [primaryPatientSearch, setPrimaryPatientSearch] = useState("");
   
   const [formData, setFormData] = useState<AppointmentFormData>({
     patientId: 0,
@@ -233,6 +236,7 @@ export default function AgendaPage() {
     setIsDualSession(false);
     setSecondPatientId(0);
     setDualPatientSearch("");
+    setPrimaryPatientSearch("");
   };
 
   // Create dual session mutation
@@ -542,13 +546,31 @@ export default function AgendaPage() {
       {/* Patient Selection - disabled in edit mode */}
       <div className="grid gap-2">
         <Label htmlFor="patient">Paciente *</Label>
-        <NativeSelect
-          value={formData.patientId ? formData.patientId.toString() : ""}
-          onChange={(e) => setFormData({ ...formData, patientId: parseInt(e.target.value) })}
-          disabled={isEdit}
-          placeholder="Selecione o paciente"
-          options={(patients || []).map((p) => ({ value: p.id.toString(), label: p.name }))}
-        />
+        {isEdit ? (
+          <div className="h-9 px-3 flex items-center rounded-md border border-input bg-muted text-sm text-muted-foreground">
+            {(patients || []).find((p) => p.id === formData.patientId)?.name || "Paciente não encontrado"}
+          </div>
+        ) : (
+          <DualPatientSearchInput
+            value={primaryPatientSearch}
+            onChange={(v) => {
+              setPrimaryPatientSearch(v);
+              if (!v) setFormData({ ...formData, patientId: 0 });
+            }}
+            patients={(patients || [])}
+            onSelect={(id) => {
+              const p = (patients || []).find((pt) => pt.id === id);
+              setFormData({ ...formData, patientId: id });
+              setPrimaryPatientSearch(p?.name || "");
+            }}
+          />
+        )}
+        {!isEdit && formData.patientId > 0 && (
+          <p className="text-xs text-green-600 flex items-center gap-1">
+            <span>✓</span>
+            {(patients || []).find((p) => p.id === formData.patientId)?.name} selecionado
+          </p>
+        )}
       </div>
 
       {/* Therapist Selection - disabled in edit mode */}

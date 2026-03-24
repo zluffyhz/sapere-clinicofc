@@ -1088,3 +1088,9 @@
 - [x] Frontend: resetar editSeriesMode para "single" ao abrir novo modal de edição
 - [x] Frontend: substituir AlertDialogAction por Button para evitar fechamento prematuro do dialog
 - [x] Frontend: botão de salvar no modal de edição mostrar loading do updateSeriesMutation também
+
+## Busca e Filtros de UX
+- [x] Aba Usuários: adicionar campo de busca por nome/email com ícone de lupa
+- [x] Agendamento: substituir NativeSelect de paciente por campo de busca com lupa (dropdown filtrado)
+- [x] Evolução pós-sessão: filtrar horários pelo paciente + terapeuta logado + data de hoje
+- [x] Backend: nova query listByPatientAndTherapistToday para retornar apenas agendamentos do dia
