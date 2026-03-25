@@ -79,10 +79,10 @@ export default function AgendaPage() {
   // Dual session state
   const [isDualSession, setIsDualSession] = useState(false);
   const [secondPatientId, setSecondPatientId] = useState<number>(0);
-  const [dualPatientSearch, setDualPatientSearch] = useState("");
+  // dualPatientSearch removed - PatientSearchInput now uses value:number (controlled by secondPatientId)
 
   // Primary patient search state for appointment form
-  const [primaryPatientSearch, setPrimaryPatientSearch] = useState("");
+  // primaryPatientSearch removed - PatientSearchInput now uses value:number (controlled by formData.patientId)
   
   const [formData, setFormData] = useState<AppointmentFormData>({
     patientId: 0,
@@ -236,8 +236,7 @@ export default function AgendaPage() {
     setCoTherapistSearch("");
     setIsDualSession(false);
     setSecondPatientId(0);
-    setDualPatientSearch("");
-    setPrimaryPatientSearch("");
+    // search strings removed - PatientSearchInput is now ID-controlled
   };
 
   // Create dual session mutation
@@ -472,17 +471,11 @@ export default function AgendaPage() {
           </div>
         ) : (
           <PatientSearchInput
-            value={primaryPatientSearch}
-            onChange={(v: string) => {
-              setPrimaryPatientSearch(v);
-              if (!v) setFormData({ ...formData, patientId: 0 });
+            value={formData.patientId}
+            onChange={(id: number) => {
+              setFormData({ ...formData, patientId: id });
             }}
             patients={(patients || [])}
-            onSelect={(id: number) => {
-              const p = (patients || []).find((pt) => pt.id === id);
-              setFormData({ ...formData, patientId: id });
-              setPrimaryPatientSearch(p?.name || "");
-            }}
           />
         )}
         {!isEdit && formData.patientId > 0 && (
@@ -712,7 +705,7 @@ export default function AgendaPage() {
               checked={isDualSession}
               onChange={(e) => {
                 setIsDualSession(e.target.checked);
-                if (!e.target.checked) { setSecondPatientId(0); setDualPatientSearch(""); }
+                if (!e.target.checked) { setSecondPatientId(0); }
               }}
               className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
             />
@@ -733,18 +726,17 @@ export default function AgendaPage() {
                 <div className="flex items-center gap-2">
                   <span className="inline-flex items-center gap-1 bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full font-medium">
                     {patients?.find((p) => p.id === secondPatientId)?.name || `Paciente ${secondPatientId}`}
-                    <button type="button" onClick={() => { setSecondPatientId(0); setDualPatientSearch(""); }} className="hover:text-purple-900 ml-1">
+                    <button type="button" onClick={() => { setSecondPatientId(0); }} className="hover:text-purple-900 ml-1">
                       <X className="h-3 w-3" />
                     </button>
                   </span>
                 </div>
               ) : (
                 <PatientSearchInput
-                  value={dualPatientSearch}
-                  onChange={setDualPatientSearch}
+                  value={secondPatientId}
+                  onChange={(id: number) => { setSecondPatientId(id); }}
                   patients={(patients || []).filter((p) => p.id !== formData.patientId)}
-                  onSelect={(id: number) => { setSecondPatientId(id); setDualPatientSearch(""); }}
-                  placeholder="Buscar segundo paciente..."
+                  placeholder="Selecionar segundo paciente..."
                 />
               )}
             </div>

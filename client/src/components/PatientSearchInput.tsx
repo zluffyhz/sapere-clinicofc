@@ -1,98 +1,99 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState } from "react";
+import { Check, ChevronsUpDown, Search } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface PatientSearchInputProps {
-  value: string;
-  onChange: (v: string) => void;
+  value: number; // selected patient ID (0 = none)
+  onChange: (id: number, name: string) => void;
   patients: { id: number; name: string }[];
-  onSelect: (id: number) => void;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 /**
- * PatientSearchInput — campo de busca de paciente com dropdown filtrado.
+ * PatientSearchInput — Combobox de busca de paciente baseado em Popover + Command do shadcn/ui.
  *
- * IMPORTANTE: Este componente DEVE ser definido fora de qualquer componente pai.
- * Defini-lo dentro de outro componente (como uma função interna) causa remount
- * a cada renderização, fazendo o input perder o foco após cada tecla digitada.
+ * Usa o padrão oficial shadcn Combobox para evitar problemas de remount.
+ * O input é gerenciado internamente pelo cmdk, mantendo foco estável durante digitação.
+ *
+ * IMPORTANTE: Este componente deve ser definido FORA de qualquer componente pai
+ * para evitar recriação a cada render.
  */
 export function PatientSearchInput({
   value,
   onChange,
   patients,
-  onSelect,
-  placeholder = "Buscar paciente pelo nome...",
+  placeholder = "Selecionar paciente...",
+  disabled = false,
 }: PatientSearchInputProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const filtered = patients
-    .filter((p) => p.name.toLowerCase().includes(value.toLowerCase()))
-    .slice(0, 8);
-
-  const updatePosition = useCallback(() => {
-    if (!inputRef.current) return;
-    const rect = inputRef.current.getBoundingClientRect();
-    setDropdownStyle({
-      position: "fixed",
-      top: rect.bottom + 4,
-      left: rect.left,
-      width: rect.width,
-      zIndex: 9999,
-    });
-  }, []);
-
-  useEffect(() => {
-    if (showDropdown) updatePosition();
-  }, [showDropdown, value, updatePosition]);
+  const selectedPatient = patients.find((p) => p.id === value);
 
   return (
-    <div className="relative">
-      <input
-        ref={inputRef}
-        type="text"
-        placeholder={placeholder}
-        value={value}
-        onChange={(e) => {
-          onChange(e.target.value);
-          setShowDropdown(e.target.value.length >= 1);
-          updatePosition();
-        }}
-        onFocus={() => {
-          if (value.length >= 1) {
-            setShowDropdown(true);
-            updatePosition();
-          }
-        }}
-        onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-        autoComplete="off"
-        className="w-full h-9 px-3 text-sm border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent"
-      />
-      {showDropdown && value.length >= 1 && (
-        <div
-          style={dropdownStyle}
-          className="bg-white border border-purple-200 rounded-lg shadow-xl max-h-48 overflow-y-auto"
-        >
-          {filtered.length === 0 ? (
-            <div className="px-3 py-2 text-sm text-gray-500">Nenhum paciente encontrado</div>
-          ) : (
-            filtered.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                className="w-full text-left px-3 py-2 text-sm hover:bg-purple-50 transition-colors border-b border-gray-100 last:border-0"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => {
-                  onSelect(p.id);
-                  setShowDropdown(false);
-                }}
-              >
-                {p.name}
-              </button>
-            ))
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          disabled={disabled}
+          className={cn(
+            "w-full justify-between h-9 font-normal bg-background",
+            !selectedPatient && "text-muted-foreground"
           )}
-        </div>
-      )}
-    </div>
+        >
+          <span className="flex items-center gap-2 truncate">
+            <Search className="h-3.5 w-3.5 shrink-0 opacity-50" />
+            <span className="truncate">
+              {selectedPatient ? selectedPatient.name : placeholder}
+            </span>
+          </span>
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+        <Command>
+          <CommandInput placeholder="Buscar pelo nome..." className="h-9" />
+          <CommandList>
+            <CommandEmpty>Nenhum paciente encontrado.</CommandEmpty>
+            <CommandGroup>
+              {patients.map((patient) => (
+                <CommandItem
+                  key={patient.id}
+                  value={patient.name}
+                  onSelect={() => {
+                    onChange(patient.id, patient.name);
+                    setOpen(false);
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      value === patient.id ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                  {patient.name}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }
