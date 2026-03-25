@@ -1094,3 +1094,6 @@
 - [x] Agendamento: substituir NativeSelect de paciente por campo de busca com lupa (dropdown filtrado)
 - [x] Evolução pós-sessão: filtrar horários pelo paciente + terapeuta logado + data de hoje
 - [x] Backend: nova query listByPatientAndTherapistToday para retornar apenas agendamentos do dia
+
+## Bug: Busca de Paciente Travando
+- [x] Extrair DualPatientSearchInput para fora do componente AgendaPage (nível de módulo) para evitar remount a cada digitação

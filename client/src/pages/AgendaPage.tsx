@@ -1,4 +1,5 @@
-import { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { PatientSearchInput } from "@/components/PatientSearchInput";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -431,89 +432,8 @@ export default function AgendaPage() {
 
   const isAdmin = user?.role === "admin";
 
-  // Dual patient search input - uses position:fixed to avoid scroll in modal
-  const DualPatientSearchInput = ({
-    value,
-    onChange,
-    patients: patientList,
-    onSelect,
-  }: {
-    value: string;
-    onChange: (v: string) => void;
-    patients: { id: number; name: string }[];
-    onSelect: (id: number) => void;
-  }) => {
-    const inputRef = useRef<HTMLInputElement>(null);
-    const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
-    const [showDropdown, setShowDropdown] = useState(false);
-
-    const filtered = patientList
-      .filter((p) => p.name.toLowerCase().includes(value.toLowerCase()))
-      .slice(0, 8);
-
-    const updatePosition = useCallback(() => {
-      if (!inputRef.current) return;
-      const rect = inputRef.current.getBoundingClientRect();
-      setDropdownStyle({
-        position: "fixed",
-        top: rect.bottom + 4,
-        left: rect.left,
-        width: rect.width,
-        zIndex: 9999,
-      });
-    }, []);
-
-    useEffect(() => {
-      if (showDropdown) updatePosition();
-    }, [showDropdown, value, updatePosition]);
-
-    return (
-      <div className="relative">
-        <input
-          ref={inputRef}
-          type="text"
-          placeholder="Buscar paciente pelo nome..."
-          value={value}
-          onChange={(e) => {
-            onChange(e.target.value);
-            setShowDropdown(e.target.value.length >= 1);
-            updatePosition();
-          }}
-          onFocus={() => {
-            if (value.length >= 1) {
-              setShowDropdown(true);
-              updatePosition();
-            }
-          }}
-          onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-          autoComplete="off"
-          className="w-full h-8 px-3 text-sm border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent"
-        />
-        {showDropdown && value.length >= 1 && (
-          <div
-            style={dropdownStyle}
-            className="bg-white border border-purple-200 rounded-lg shadow-xl max-h-48 overflow-y-auto"
-          >
-            {filtered.length === 0 ? (
-              <div className="px-3 py-2 text-sm text-gray-500">Nenhum paciente encontrado</div>
-            ) : (
-              filtered.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-purple-50 transition-colors border-b border-gray-100 last:border-0"
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => { onSelect(p.id); setShowDropdown(false); }}
-                >
-                  {p.name}
-                </button>
-              ))
-            )}
-          </div>
-        )}
-      </div>
-    );
-  };
+  // PatientSearchInput is imported from @/components/PatientSearchInput
+  // It must be defined outside this component to prevent remount on every render
 
   // Dual session partner badge - only for therapists/admins
   const DualPartnerBadge = ({ appointmentId }: { appointmentId: number }) => {
@@ -551,14 +471,14 @@ export default function AgendaPage() {
             {(patients || []).find((p) => p.id === formData.patientId)?.name || "Paciente não encontrado"}
           </div>
         ) : (
-          <DualPatientSearchInput
+          <PatientSearchInput
             value={primaryPatientSearch}
-            onChange={(v) => {
+            onChange={(v: string) => {
               setPrimaryPatientSearch(v);
               if (!v) setFormData({ ...formData, patientId: 0 });
             }}
             patients={(patients || [])}
-            onSelect={(id) => {
+            onSelect={(id: number) => {
               const p = (patients || []).find((pt) => pt.id === id);
               setFormData({ ...formData, patientId: id });
               setPrimaryPatientSearch(p?.name || "");
@@ -819,11 +739,12 @@ export default function AgendaPage() {
                   </span>
                 </div>
               ) : (
-                <DualPatientSearchInput
+                <PatientSearchInput
                   value={dualPatientSearch}
                   onChange={setDualPatientSearch}
                   patients={(patients || []).filter((p) => p.id !== formData.patientId)}
-                  onSelect={(id) => { setSecondPatientId(id); setDualPatientSearch(""); }}
+                  onSelect={(id: number) => { setSecondPatientId(id); setDualPatientSearch(""); }}
+                  placeholder="Buscar segundo paciente..."
                 />
               )}
             </div>
