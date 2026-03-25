@@ -1097,3 +1097,9 @@
 
 ## Bug: Busca de Paciente Travando
 - [x] Extrair DualPatientSearchInput para fora do componente AgendaPage (nível de módulo) para evitar remount a cada digitação
+
+## Bug Crítico: Evolução não salva - "sessão não selecionada"
+- [x] Investigar e corrigir validação de appointmentId no formulário de evolução do ProntuarioPage
+- [x] Garantir que selectedAppointmentId seja persistido corretamente ao selecionar sessão
+- [x] Remover ou corrigir qualquer validação que rejeite um appointmentId válido
+- [x] Testar fluxo completo de seleção de sessão + salvar evolução

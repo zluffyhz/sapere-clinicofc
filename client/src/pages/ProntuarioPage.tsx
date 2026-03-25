@@ -164,6 +164,13 @@ export default function ProntuarioPage() {
     }
   }, [newEvolution, patientId, appointments, allAppointments]);
 
+  // Auto-select when there is exactly one session today and no appointment is selected yet
+  useEffect(() => {
+    if (appointments && appointments.length === 1 && evolutionData.appointmentId === 0) {
+      setEvolutionData(prev => ({ ...prev, appointmentId: appointments[0].id }));
+    }
+  }, [appointments]);
+
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [uploadData, setUploadData] = useState({
     title: "",
@@ -319,8 +326,8 @@ export default function ProntuarioPage() {
   };
 
   const handleSaveSessionRecord = () => {
-    if (!patientId || !evolutionData.appointmentId) {
-      toast.error("Selecione uma sessão antes de salvar.");
+    if (!patientId) {
+      toast.error("Paciente não identificado.");
       return;
     }
 
@@ -497,11 +504,11 @@ export default function ProntuarioPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="appointment">Sessão de Hoje</Label>
+                  <Label htmlFor="appointment">Sessão de Hoje <span className="text-xs text-muted-foreground font-normal">(opcional — o sistema vincula automaticamente)</span></Label>
                   {(appointments || []).length === 0 ? (
-                    <div className="flex items-center gap-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 px-3 py-2 rounded-md">
-                      <span>⚠️</span>
-                      <span>Nenhuma sessão agendada para hoje com este paciente. Verifique a agenda.</span>
+                    <div className="flex items-center gap-2 text-sm text-blue-700 bg-blue-50 border border-blue-200 px-3 py-2 rounded-md">
+                      <span>ℹ️</span>
+                      <span>Nenhuma sessão agendada para hoje encontrada. O sistema irá vincular automaticamente ao salvar.</span>
                     </div>
                   ) : (
                   <NativeSelect
@@ -509,11 +516,14 @@ export default function ProntuarioPage() {
                     onChange={(e) =>
                       setEvolutionData({ ...evolutionData, appointmentId: parseInt(e.target.value) })
                     }
-                    placeholder="Selecione a sessão de hoje"
-                    options={(appointments || []).map((apt) => ({
-                      value: apt.id.toString(),
-                      label: `${formatBRT(apt.startTime, "HH:mm")} – ${formatBRT(apt.startTime, "dd/MM/yyyy")} (${apt.status === 'completed' ? 'Concluída' : 'Agendada'})`
-                    }))}
+                    placeholder="Selecione a sessão de hoje (opcional)"
+                    options={[
+                      { value: "0", label: "Vincular automaticamente" },
+                      ...(appointments || []).map((apt) => ({
+                        value: apt.id.toString(),
+                        label: `${formatBRT(apt.startTime, "HH:mm")} – ${formatBRT(apt.startTime, "dd/MM/yyyy")} (${apt.status === 'completed' ? 'Concluída' : 'Agendada'})`
+                      }))
+                    ]}
                   />
                   )}
                   {/* Dual session badge - only for therapists/admins */}

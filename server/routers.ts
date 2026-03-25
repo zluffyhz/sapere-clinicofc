@@ -443,14 +443,18 @@ export const appRouter = router({
           filtered = filtered.filter((apt) => apt.therapistUserId === ctx.user.id);
         }
 
-        // If todayOnly, filter to today's appointments (scheduled or completed)
+        // If todayOnly, filter to today's appointments in BRT timezone (America/Sao_Paulo)
+        // IMPORTANT: Use BRT timezone to avoid day-boundary bugs (server runs in UTC)
         if (input.todayOnly) {
-          const now = new Date();
-          const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
-          const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+          const BRT = 'America/Sao_Paulo';
+          const nowBRT = new Date().toLocaleString('en-US', { timeZone: BRT });
+          const todayBRT = new Date(nowBRT);
+          const todayDateStr = `${todayBRT.getFullYear()}-${String(todayBRT.getMonth() + 1).padStart(2, '0')}-${String(todayBRT.getDate()).padStart(2, '0')}`;
           filtered = filtered.filter((apt) => {
-            const aptDate = new Date(apt.startTime);
-            return aptDate >= todayStart && aptDate <= todayEnd &&
+            const aptBRT = new Date(apt.startTime).toLocaleString('en-US', { timeZone: BRT });
+            const aptDateBRT = new Date(aptBRT);
+            const aptDateStr = `${aptDateBRT.getFullYear()}-${String(aptDateBRT.getMonth() + 1).padStart(2, '0')}-${String(aptDateBRT.getDate()).padStart(2, '0')}`;
+            return aptDateStr === todayDateStr &&
               (apt.status === 'scheduled' || apt.status === 'completed');
           });
         }
@@ -893,7 +897,7 @@ export const appRouter = router({
   evolutions: router({
     create: therapistProcedure
       .input(z.object({
-        appointmentId: z.number(),
+        appointmentId: z.number().optional(), // Optional: backend auto-matches if not provided
         patientId: z.number(),
         sessionDate: z.date(),
         sessionSummary: z.string().optional().default(""),
@@ -904,34 +908,58 @@ export const appRouter = router({
         collaborationLevel: z.enum(["full", "partial", "none"]),
       }))
       .mutation(async ({ input, ctx }) => {
+        const BRT = 'America/Sao_Paulo';
+        
+        // Resolve appointmentId: use provided value, or auto-match from today's appointments
+        let resolvedAppointmentId = input.appointmentId && input.appointmentId > 0 ? input.appointmentId : 0;
+        
+        if (!resolvedAppointmentId) {
+          // Auto-match: find a scheduled appointment for this patient on the session date (using BRT)
+          const allApts = await db.getAppointmentsByPatient(input.patientId);
+          const sessionDateBRT = input.sessionDate.toLocaleString('en-US', { timeZone: BRT });
+          const sessionDateObj = new Date(sessionDateBRT);
+          const sessionDateStr = `${sessionDateObj.getFullYear()}-${String(sessionDateObj.getMonth() + 1).padStart(2, '0')}-${String(sessionDateObj.getDate()).padStart(2, '0')}`;
+          
+          // Filter to therapist's own appointments
+          const therapistApts = allApts.filter((apt: any) => apt.therapistUserId === ctx.user.id);
+          
+          const matchingApt = therapistApts.find((apt: any) => {
+            const aptBRT = new Date(apt.startTime).toLocaleString('en-US', { timeZone: BRT });
+            const aptDateObj = new Date(aptBRT);
+            const aptDateStr = `${aptDateObj.getFullYear()}-${String(aptDateObj.getMonth() + 1).padStart(2, '0')}-${String(aptDateObj.getDate()).padStart(2, '0')}`;
+            return aptDateStr === sessionDateStr && apt.status === 'scheduled';
+          });
+          
+          if (matchingApt) {
+            resolvedAppointmentId = matchingApt.id;
+          } else {
+            // Last resort: use any appointment (scheduled or completed) on that day
+            const anyApt = therapistApts.find((apt: any) => {
+              const aptBRT = new Date(apt.startTime).toLocaleString('en-US', { timeZone: BRT });
+              const aptDateObj = new Date(aptBRT);
+              const aptDateStr = `${aptDateObj.getFullYear()}-${String(aptDateObj.getMonth() + 1).padStart(2, '0')}-${String(aptDateObj.getDate()).padStart(2, '0')}`;
+              return aptDateStr === sessionDateStr;
+            });
+            if (anyApt) resolvedAppointmentId = anyApt.id;
+          }
+        }
+        
+        // If still no appointment found, throw a clear error
+        if (!resolvedAppointmentId) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Nenhum agendamento encontrado para este paciente nesta data. Verifique a agenda.',
+          });
+        }
+        
         const result = await db.createSessionRecord({
           ...input,
+          appointmentId: resolvedAppointmentId,
           therapistUserId: ctx.user.id,
         });
         
         // Update appointment status to completed
-        let appointmentIdToComplete = input.appointmentId;
-        
-        // If no appointment was selected (or invalid), try to find a scheduled appointment for this patient on this date
-        if (!appointmentIdToComplete || appointmentIdToComplete === 0) {
-          const sessionDateStr = input.sessionDate.toISOString().split('T')[0];
-          const appointments = await db.getAppointmentsByPatient(input.patientId);
-          
-          // Find a scheduled appointment on the same day
-          const matchingAppointment = appointments.find((apt: any) => {
-            const aptDateStr = new Date(apt.startTime).toISOString().split('T')[0];
-            return aptDateStr === sessionDateStr && apt.status === 'scheduled';
-          });
-          
-          if (matchingAppointment) {
-            appointmentIdToComplete = matchingAppointment.id;
-          }
-        }
-        
-        // Update the appointment status if we have a valid ID
-        if (appointmentIdToComplete && appointmentIdToComplete > 0) {
-          await db.updateAppointmentStatus(appointmentIdToComplete, 'completed');
-        }
+        await db.updateAppointmentStatus(resolvedAppointmentId, 'completed');
         
         // Send collaboration notification to family
         const patient = await db.getPatientById(input.patientId);
