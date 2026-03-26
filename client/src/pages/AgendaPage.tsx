@@ -38,7 +38,7 @@ import { toast } from "sonner";
 type AppointmentFormData = {
   patientId: number;
   therapistId: number;
-  therapyType: "fonoaudiologia" | "psicologia" | "terapia_ocupacional" | "psicopedagogia" | "musicoterapia" | "fisioterapia" | "neuropsicopedagogia" | "nutricao" | "outro";
+  therapyType: "fonoaudiologia" | "psicologia" | "terapia_ocupacional" | "psicopedagogia" | "musicoterapia" | "fisioterapia" | "neuropsicopedagogia" | "nutricao" | "psicomotricidade" | "aplicadora_denver_aba" | "outro";
   date: string;
   startTime: string;
   endTime: string;
@@ -406,10 +406,12 @@ export default function AgendaPage() {
     psicologia: "Psicologia",
     terapia_ocupacional: "Terapia Ocupacional",
     psicopedagogia: "Psicopedagogia",
+    psicomotricidade: "Psicomotricidade",
     musicoterapia: "Musicoterapia",
     fisioterapia: "Fisioterapia",
     neuropsicopedagogia: "Neuropsicopedagogia",
     nutricao: "Nutrição",
+    aplicadora_denver_aba: "Aplicadora Denver/ABA",
     outro: "Outro",
   };
 
@@ -504,7 +506,7 @@ export default function AgendaPage() {
                 try {
                   const specialties: string[] = JSON.parse(selectedTherapist.specialties);
                   if (specialties.length > 0) {
-                    const validTypes = ["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "outro"];
+                    const validTypes = ["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"];
                     const firstValid = specialties.find((s) => validTypes.includes(s));
                     if (firstValid) autoTherapyType = firstValid as typeof formData.therapyType;
                   }
@@ -531,10 +533,12 @@ export default function AgendaPage() {
             { value: "psicologia", label: "Psicologia" },
             { value: "terapia_ocupacional", label: "Terapia Ocupacional" },
             { value: "psicopedagogia", label: "Psicopedagogia" },
+            { value: "psicomotricidade", label: "Psicomotricidade" },
             { value: "musicoterapia", label: "Musicoterapia" },
             { value: "fisioterapia", label: "Fisioterapia" },
             { value: "neuropsicopedagogia", label: "Neuropsicopedagogia" },
             { value: "nutricao", label: "Nutrição" },
+            { value: "aplicadora_denver_aba", label: "Aplicadora Denver/ABA" },
             { value: "outro", label: "Outro" },
           ]}
         />

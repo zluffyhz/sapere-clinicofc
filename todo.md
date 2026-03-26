@@ -1107,3 +1107,8 @@
 ## Bug: Agendamentos cancelados aparecem na agenda
 - [x] Filtrar agendamentos com status "cancelled" e "rescheduled" do backend (getAppointmentsByDateRange)
 - [x] Filtrar agendamentos cancelados no frontend (selectedDateAppointments e weekAppointments)
+
+## Bug: Psicomotricidade não aparece no dropdown de terapias
+- [x] Verificar divergência entre valor no banco ("Psicomotricidade") e enum do schema/dropdown ("psicomotricidade")
+- [x] Adicionar psicomotricidade ao enum do schema, ao dropdown de agendamento e ao filtro de especialidades do terapeuta
+- [x] Corrigir valor no banco da Monalisa para o formato correto (lowercase)
