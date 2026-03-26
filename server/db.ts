@@ -244,7 +244,9 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
         and(
           eq(appointments.therapistUserId, userId),
           gte(appointments.startTime, startDate),
-          lte(appointments.startTime, endDate)
+          lte(appointments.startTime, endDate),
+          ne(appointments.status, 'cancelled'),
+          ne(appointments.status, 'rescheduled')
         )
       )
       .orderBy(asc(appointments.startTime));
@@ -271,7 +273,9 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
         and(
           eq(appointmentCoTherapists.therapistUserId, userId),
           gte(appointments.startTime, startDate),
-          lte(appointments.startTime, endDate)
+          lte(appointments.startTime, endDate),
+          ne(appointments.status, 'cancelled'),
+          ne(appointments.status, 'rescheduled')
         )
       )
       .orderBy(asc(appointments.startTime));
@@ -305,7 +309,9 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
     .where(
       and(
         gte(appointments.startTime, startDate),
-        lte(appointments.startTime, endDate)
+        lte(appointments.startTime, endDate),
+        ne(appointments.status, 'cancelled'),
+        ne(appointments.status, 'rescheduled')
       )
     )
     .orderBy(asc(appointments.startTime));

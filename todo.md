@@ -1103,3 +1103,7 @@
 - [x] Garantir que selectedAppointmentId seja persistido corretamente ao selecionar sessão
 - [x] Remover ou corrigir qualquer validação que rejeite um appointmentId válido
 - [x] Testar fluxo completo de seleção de sessão + salvar evolução
+
+## Bug: Agendamentos cancelados aparecem na agenda
+- [x] Filtrar agendamentos com status "cancelled" e "rescheduled" do backend (getAppointmentsByDateRange)
+- [x] Filtrar agendamentos cancelados no frontend (selectedDateAppointments e weekAppointments)

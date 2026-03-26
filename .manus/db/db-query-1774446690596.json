@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, name, email, role, specialties FROM users WHERE email = 'monalisareis.bassal12@gmail.com';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, email, role, specialties FROM users WHERE email = 'monalisareis.bassal12@gmail.com';",
+  "rows": [
+    {
+      "id": "11490205",
+      "name": "Monalisa Reis",
+      "email": "monalisareis.bassal12@gmail.com",
+      "role": "therapist",
+      "specialties": "[\"Psicomotricidade\"]"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\tspecialties\n11490205\tMonalisa Reis\tmonalisareis.bassal12@gmail.com\ttherapist\t[\"Psicomotricidade\"]\n",
+  "stderr": "",
+  "execution_time_ms": 87
+}

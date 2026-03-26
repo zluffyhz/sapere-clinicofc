@@ -377,6 +377,8 @@ export default function AgendaPage() {
     if (!appointments) return [];
     return appointments
       .filter((apt) => {
+        // Never show cancelled or rescheduled appointments in the agenda
+        if (apt.status === 'cancelled' || apt.status === 'rescheduled') return false;
         const matchesDate = isSameDayBRT(new Date(apt.startTime), selectedDate);
         // Match if therapist is the primary OR a co-therapist on this appointment
         const coIds: number[] = (apt as any).coTherapistIds || [];
@@ -393,7 +395,9 @@ export default function AgendaPage() {
   const datesWithAppointments = useMemo(() => {
     if (!appointments) return new Set<string>();
     return new Set(
-      appointments.map((apt) => getBRTDateString(apt.startTime))
+      appointments
+        .filter((apt) => apt.status !== 'cancelled' && apt.status !== 'rescheduled')
+        .map((apt) => getBRTDateString(apt.startTime))
     );
   }, [appointments]);
 
