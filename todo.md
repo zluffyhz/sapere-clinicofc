@@ -1112,3 +1112,10 @@
 - [x] Verificar divergência entre valor no banco ("Psicomotricidade") e enum do schema/dropdown ("psicomotricidade")
 - [x] Adicionar psicomotricidade ao enum do schema, ao dropdown de agendamento e ao filtro de especialidades do terapeuta
 - [x] Corrigir valor no banco da Monalisa para o formato correto (lowercase)
+
+## Feature: Cadastro de filho durante cadastro de pai/responsável
+- [x] Backend: criar mutation admin.createUserWithPatient que cria usuário família + paciente vinculado atomicamente
+- [x] Frontend: adicionar seção opcional "Cadastrar filho agora" no formulário de criação de usuário família
+- [x] Frontend: seção de filho aparece apenas quando role = "family" e é opcional (toggle)
+- [x] Frontend: campos do filho: nome, data de nascimento, diagnóstico (opcional)
+- [x] Frontend: ao criar com filho, mostrar confirmação de ambos criados com sucesso

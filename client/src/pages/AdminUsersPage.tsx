@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Trash2, Edit, Users, AlertCircle, AlertTriangle, Search } from "lucide-react";
+import { Plus, Trash2, Edit, Users, AlertCircle, AlertTriangle, Search, ChevronDown, ChevronUp, UserPlus } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
@@ -63,15 +63,40 @@ export default function AdminUsersPage() {
     specialties: [] as string[],
   });
 
+  // Estado para cadastro opcional de filho junto com o pai
+  const [showAddChild, setShowAddChild] = useState(false);
+  const [newChild, setNewChild] = useState({
+    name: "",
+    dateOfBirth: "",
+    diagnosis: "",
+    imageAuthorization: false,
+  });
+
   const utils = trpc.useUtils();
   const { data: users, isLoading } = trpc.admin.listUsers.useQuery();
 
   const createUserMutation = trpc.admin.createUser.useMutation({
     onSuccess: (data) => {
       utils.admin.listUsers.invalidate();
+      utils.patients.list.invalidate();
       setTempPassword(data.temporaryPassword);
       setNewUser({ name: "", email: "", role: "family", specialties: [] });
       toast.success("Usuário criado com sucesso");
+    },
+    onError: (error) => {
+      toast.error(`Erro ao criar usuário: ${error.message}`);
+    },
+  });
+
+  const createUserWithPatientMutation = trpc.admin.createUserWithPatient.useMutation({
+    onSuccess: (data) => {
+      utils.admin.listUsers.invalidate();
+      utils.patients.list.invalidate();
+      setTempPassword(data.temporaryPassword);
+      setNewUser({ name: "", email: "", role: "family", specialties: [] });
+      setNewChild({ name: "", dateOfBirth: "", diagnosis: "", imageAuthorization: false });
+      setShowAddChild(false);
+      toast.success(data.patientId ? "Responsável e filho cadastrados com sucesso" : "Responsável criado com sucesso");
     },
     onError: (error) => {
       toast.error(`Erro ao criar usuário: ${error.message}`);
@@ -127,7 +152,25 @@ export default function AdminUsersPage() {
       return;
     }
 
-    createUserMutation.mutate(newUser);
+    // Se for família, usa a mutation que suporta cadastro opcional de filho
+    if (newUser.role === "family") {
+      const patientData = showAddChild && newChild.name.trim()
+        ? {
+            name: newChild.name.trim(),
+            dateOfBirth: newChild.dateOfBirth ? new Date(newChild.dateOfBirth) : undefined,
+            diagnosis: newChild.diagnosis.trim() || undefined,
+            imageAuthorization: newChild.imageAuthorization,
+          }
+        : undefined;
+
+      createUserWithPatientMutation.mutate({
+        name: newUser.name,
+        email: newUser.email,
+        patient: patientData,
+      });
+    } else {
+      createUserMutation.mutate(newUser);
+    }
   };
 
   const handleUpdateRole = () => {
@@ -198,7 +241,15 @@ export default function AdminUsersPage() {
           </p>
         </div>
 
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <Dialog open={isCreateDialogOpen} onOpenChange={(open) => {
+            setIsCreateDialogOpen(open);
+            if (!open) {
+              setShowAddChild(false);
+              setNewChild({ name: "", dateOfBirth: "", diagnosis: "", imageAuthorization: false });
+              setTempPassword(null);
+              setNewUser({ name: "", email: "", role: "family", specialties: [] });
+            }
+          }}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="h-4 w-4 mr-2" />
@@ -245,6 +296,11 @@ export default function AdminUsersPage() {
                       role: value,
                       specialties: value === "therapist" ? newUser.specialties : [],
                     });
+                    // Resetar seção de filho ao trocar de perfil
+                    if (value !== "family") {
+                      setShowAddChild(false);
+                      setNewChild({ name: "", dateOfBirth: "", diagnosis: "", imageAuthorization: false });
+                    }
                   }}
                   options={[
                     { value: "family", label: "Família" },
@@ -292,6 +348,75 @@ export default function AdminUsersPage() {
                 </div>
               )}
 
+              {/* Seção opcional: cadastrar filho junto com o responsável */}
+              {newUser.role === "family" && !tempPassword && (
+                <div className="border rounded-lg overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddChild(!showAddChild)}
+                    className="w-full flex items-center justify-between px-4 py-3 bg-amber-50 hover:bg-amber-100 transition-colors text-left"
+                  >
+                    <div className="flex items-center gap-2">
+                      <UserPlus className="h-4 w-4 text-amber-600" />
+                      <span className="text-sm font-medium text-amber-800">
+                        Cadastrar filho agora (opcional)
+                      </span>
+                    </div>
+                    {showAddChild
+                      ? <ChevronUp className="h-4 w-4 text-amber-600" />
+                      : <ChevronDown className="h-4 w-4 text-amber-600" />}
+                  </button>
+
+                  {showAddChild && (
+                    <div className="p-4 space-y-3 bg-amber-50/40">
+                      <p className="text-xs text-muted-foreground">
+                        O paciente será vinculado automaticamente a este responsável.
+                      </p>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="child-name">Nome do filho *</Label>
+                        <Input
+                          id="child-name"
+                          value={newChild.name}
+                          onChange={(e) => setNewChild({ ...newChild, name: e.target.value })}
+                          placeholder="Nome completo do paciente"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="child-dob">Data de nascimento</Label>
+                        <Input
+                          id="child-dob"
+                          type="date"
+                          value={newChild.dateOfBirth}
+                          onChange={(e) => setNewChild({ ...newChild, dateOfBirth: e.target.value })}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="child-diagnosis">Diagnóstico / CID (opcional)</Label>
+                        <Input
+                          id="child-diagnosis"
+                          value={newChild.diagnosis}
+                          onChange={(e) => setNewChild({ ...newChild, diagnosis: e.target.value })}
+                          placeholder="Ex: TEA, TDAH, CID F84.0"
+                        />
+                      </div>
+
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={newChild.imageAuthorization}
+                          onChange={(e) => setNewChild({ ...newChild, imageAuthorization: e.target.checked })}
+                          className="rounded border-gray-300"
+                        />
+                        <span className="text-sm">Autoriza uso de imagem</span>
+                      </label>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {tempPassword && (
                 <Alert className="bg-green-50 border-green-200">
                   <AlertCircle className="h-4 w-4 text-green-600" />
@@ -326,8 +451,15 @@ export default function AdminUsersPage() {
                     >
                       Cancelar
                     </Button>
-                    <Button type="submit" disabled={createUserMutation.isPending}>
-                      {createUserMutation.isPending ? "Criando..." : "Criar Usuário"}
+                    <Button
+                      type="submit"
+                      disabled={createUserMutation.isPending || createUserWithPatientMutation.isPending}
+                    >
+                      {(createUserMutation.isPending || createUserWithPatientMutation.isPending)
+                        ? "Criando..."
+                        : showAddChild && newChild.name.trim()
+                          ? "Criar Responsável e Filho"
+                          : "Criar Usuário"}
                     </Button>
                   </>
                 )}

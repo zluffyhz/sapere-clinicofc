@@ -1466,6 +1466,57 @@ export const appRouter = router({
           temporaryPassword: tempPassword,
         };
       }),
+
+    // Cria usuário família + paciente vinculado de forma atômica
+    createUserWithPatient: adminProcedure
+      .input(z.object({
+        // Dados do responsável
+        name: z.string().min(1),
+        email: z.string().email(),
+        // Dados do filho (opcional)
+        patient: z.object({
+          name: z.string().min(1),
+          dateOfBirth: z.date().optional(),
+          diagnosis: z.string().optional(),
+          notes: z.string().optional(),
+          imageAuthorization: z.boolean().default(false),
+        }).optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { generateTemporaryPassword } = await import('./auth-helpers');
+        const tempPassword = generateTemporaryPassword();
+
+        // Criar usuário família
+        const userResult = await db.createUser({
+          name: input.name,
+          email: input.email,
+          role: 'family',
+          password: tempPassword,
+        });
+        const userId = userResult[0].insertId;
+
+        let patientId: number | undefined;
+
+        // Criar paciente vinculado se fornecido
+        if (input.patient) {
+          const patientResult = await db.createPatient({
+            name: input.patient.name,
+            dateOfBirth: input.patient.dateOfBirth,
+            diagnosis: input.patient.diagnosis,
+            notes: input.patient.notes,
+            imageAuthorization: input.patient.imageAuthorization ?? false,
+            familyUserId: userId,
+          });
+          patientId = patientResult[0].insertId;
+        }
+
+        return {
+          success: true,
+          id: userId,
+          temporaryPassword: tempPassword,
+          patientId,
+        };
+      }),
     
     updateUserRole: adminProcedure
       .input(z.object({
