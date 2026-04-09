@@ -301,12 +301,13 @@ export default function AdminUsersPage() {
               Novo Usuário
             </Button>
           </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
+          <DialogContent className="max-h-[90vh] flex flex-col overflow-hidden">
+            <DialogHeader className="flex-shrink-0">
               <DialogTitle>Criar Novo Usuário</DialogTitle>
               <DialogDescription>Preencha os dados do novo usuário</DialogDescription>
             </DialogHeader>
-            <form onSubmit={handleCreateUser} className="space-y-4">
+            <form onSubmit={handleCreateUser} className="flex flex-col flex-1 min-h-0">
+              <div className="flex-1 overflow-y-auto space-y-4 pr-1">
               <div className="space-y-2">
                 <Label htmlFor="name">Nome Completo *</Label>
                 <Input
@@ -460,8 +461,9 @@ export default function AdminUsersPage() {
                   </AlertDescription>
                 </Alert>
               )}
+              </div>{/* fim da área rolável */}
 
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-2 flex-shrink-0 pt-4 border-t border-border mt-2">
                 {tempPassword ? (
                   <Button
                     onClick={() => {

@@ -1137,3 +1137,7 @@
 - [x] Backend: adicionar validação de email duplicado no createUserWithPatient antes de criar
 - [x] Design: melhorar visual dos cards de filhos com transições e micro-interações
 - [x] Design: melhorar responsividade do formulário de cadastro no mobile (grid sm:grid-cols-2)
+
+## Bug: Scroll no Dialog de Filhos
+- [x] Corrigir scroll interno do Dialog de cadastro de filhos (DialogContent sem overflow-y-auto)
+- [x] Garantir que DialogContent tenha altura máxima e scroll habilitado
