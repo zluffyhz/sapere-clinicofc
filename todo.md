@@ -1119,3 +1119,9 @@
 - [x] Frontend: seção de filho aparece apenas quando role = "family" e é opcional (toggle)
 - [x] Frontend: campos do filho: nome, data de nascimento, diagnóstico (opcional)
 - [x] Frontend: ao criar com filho, mostrar confirmação de ambos criados com sucesso
+
+## Feature: Múltiplos filhos no cadastro do responsável
+- [x] Backend: atualizar createUserWithPatient para aceitar array de pacientes (patients[])
+- [x] Frontend: substituir formulário de filho único por lista dinâmica com botão "Adicionar outro filho"
+- [x] Frontend: cada filho tem campos próprios (nome, nascimento, diagnóstico, imagem) e botão de remover
+- [x] Frontend: botão de submit mostra contagem correta ("Criar Responsável e 2 Filhos")

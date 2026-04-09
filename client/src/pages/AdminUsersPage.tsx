@@ -63,14 +63,10 @@ export default function AdminUsersPage() {
     specialties: [] as string[],
   });
 
-  // Estado para cadastro opcional de filho junto com o pai
+  // Estado para cadastro opcional de múltiplos filhos junto com o pai
   const [showAddChild, setShowAddChild] = useState(false);
-  const [newChild, setNewChild] = useState({
-    name: "",
-    dateOfBirth: "",
-    diagnosis: "",
-    imageAuthorization: false,
-  });
+  const emptyChild = () => ({ name: "", dateOfBirth: "", diagnosis: "", imageAuthorization: false });
+  const [children, setChildren] = useState<Array<{ name: string; dateOfBirth: string; diagnosis: string; imageAuthorization: boolean }>>([emptyChild()]);
 
   const utils = trpc.useUtils();
   const { data: users, isLoading } = trpc.admin.listUsers.useQuery();
@@ -94,9 +90,14 @@ export default function AdminUsersPage() {
       utils.patients.list.invalidate();
       setTempPassword(data.temporaryPassword);
       setNewUser({ name: "", email: "", role: "family", specialties: [] });
-      setNewChild({ name: "", dateOfBirth: "", diagnosis: "", imageAuthorization: false });
+      setChildren([emptyChild()]);
       setShowAddChild(false);
-      toast.success(data.patientId ? "Responsável e filho cadastrados com sucesso" : "Responsável criado com sucesso");
+      const count = data.patientCount ?? 0;
+      toast.success(
+        count === 0 ? "Responsável criado com sucesso" :
+        count === 1 ? "Responsável e 1 filho cadastrados com sucesso" :
+        `Responsável e ${count} filhos cadastrados com sucesso`
+      );
     },
     onError: (error) => {
       toast.error(`Erro ao criar usuário: ${error.message}`);
@@ -152,21 +153,23 @@ export default function AdminUsersPage() {
       return;
     }
 
-    // Se for família, usa a mutation que suporta cadastro opcional de filho
+    // Se for família, usa a mutation que suporta cadastro opcional de múltiplos filhos
     if (newUser.role === "family") {
-      const patientData = showAddChild && newChild.name.trim()
-        ? {
-            name: newChild.name.trim(),
-            dateOfBirth: newChild.dateOfBirth ? new Date(newChild.dateOfBirth) : undefined,
-            diagnosis: newChild.diagnosis.trim() || undefined,
-            imageAuthorization: newChild.imageAuthorization,
-          }
-        : undefined;
+      const validChildren = showAddChild
+        ? children
+            .filter(c => c.name.trim())
+            .map(c => ({
+              name: c.name.trim(),
+              dateOfBirth: c.dateOfBirth ? new Date(c.dateOfBirth) : undefined,
+              diagnosis: c.diagnosis.trim() || undefined,
+              imageAuthorization: c.imageAuthorization,
+            }))
+        : [];
 
       createUserWithPatientMutation.mutate({
         name: newUser.name,
         email: newUser.email,
-        patient: patientData,
+        patients: validChildren.length > 0 ? validChildren : undefined,
       });
     } else {
       createUserMutation.mutate(newUser);
@@ -245,7 +248,7 @@ export default function AdminUsersPage() {
             setIsCreateDialogOpen(open);
             if (!open) {
               setShowAddChild(false);
-              setNewChild({ name: "", dateOfBirth: "", diagnosis: "", imageAuthorization: false });
+              setChildren([emptyChild()]);
               setTempPassword(null);
               setNewUser({ name: "", email: "", role: "family", specialties: [] });
             }
@@ -296,10 +299,10 @@ export default function AdminUsersPage() {
                       role: value,
                       specialties: value === "therapist" ? newUser.specialties : [],
                     });
-                    // Resetar seção de filho ao trocar de perfil
+                    // Resetar seção de filhos ao trocar de perfil
                     if (value !== "family") {
                       setShowAddChild(false);
-                      setNewChild({ name: "", dateOfBirth: "", diagnosis: "", imageAuthorization: false });
+                      setChildren([emptyChild()]);
                     }
                   }}
                   options={[
@@ -348,7 +351,7 @@ export default function AdminUsersPage() {
                 </div>
               )}
 
-              {/* Seção opcional: cadastrar filho junto com o responsável */}
+              {/* Seção opcional: cadastrar múltiplos filhos junto com o responsável */}
               {newUser.role === "family" && !tempPassword && (
                 <div className="border rounded-lg overflow-hidden">
                   <button
@@ -359,7 +362,9 @@ export default function AdminUsersPage() {
                     <div className="flex items-center gap-2">
                       <UserPlus className="h-4 w-4 text-amber-600" />
                       <span className="text-sm font-medium text-amber-800">
-                        Cadastrar filho agora (opcional)
+                        {showAddChild && children.some(c => c.name.trim())
+                          ? `${children.filter(c => c.name.trim()).length} filho(s) a cadastrar`
+                          : "Cadastrar filho(s) agora (opcional)"}
                       </span>
                     </div>
                     {showAddChild
@@ -368,50 +373,90 @@ export default function AdminUsersPage() {
                   </button>
 
                   {showAddChild && (
-                    <div className="p-4 space-y-3 bg-amber-50/40">
+                    <div className="p-4 space-y-4 bg-amber-50/40">
                       <p className="text-xs text-muted-foreground">
-                        O paciente será vinculado automaticamente a este responsável.
+                        Os pacientes serão vinculados automaticamente a este responsável.
                       </p>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="child-name">Nome do filho *</Label>
-                        <Input
-                          id="child-name"
-                          value={newChild.name}
-                          onChange={(e) => setNewChild({ ...newChild, name: e.target.value })}
-                          placeholder="Nome completo do paciente"
-                        />
-                      </div>
+                      {children.map((child, idx) => (
+                        <div key={idx} className="border border-amber-200 rounded-md p-3 space-y-3 bg-white">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-semibold text-amber-700">Filho {idx + 1}</span>
+                            {children.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => setChildren(children.filter((_, i) => i !== idx))}
+                                className="text-red-400 hover:text-red-600 text-xs flex items-center gap-1"
+                              >
+                                <Trash2 className="h-3 w-3" /> Remover
+                              </button>
+                            )}
+                          </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="child-dob">Data de nascimento</Label>
-                        <Input
-                          id="child-dob"
-                          type="date"
-                          value={newChild.dateOfBirth}
-                          onChange={(e) => setNewChild({ ...newChild, dateOfBirth: e.target.value })}
-                        />
-                      </div>
+                          <div className="space-y-1">
+                            <Label>Nome *</Label>
+                            <Input
+                              value={child.name}
+                              onChange={(e) => {
+                                const updated = [...children];
+                                updated[idx] = { ...updated[idx], name: e.target.value };
+                                setChildren(updated);
+                              }}
+                              placeholder="Nome completo do paciente"
+                            />
+                          </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="child-diagnosis">Diagnóstico / CID (opcional)</Label>
-                        <Input
-                          id="child-diagnosis"
-                          value={newChild.diagnosis}
-                          onChange={(e) => setNewChild({ ...newChild, diagnosis: e.target.value })}
-                          placeholder="Ex: TEA, TDAH, CID F84.0"
-                        />
-                      </div>
+                          <div className="space-y-1">
+                            <Label>Data de nascimento</Label>
+                            <Input
+                              type="date"
+                              value={child.dateOfBirth}
+                              onChange={(e) => {
+                                const updated = [...children];
+                                updated[idx] = { ...updated[idx], dateOfBirth: e.target.value };
+                                setChildren(updated);
+                              }}
+                            />
+                          </div>
 
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={newChild.imageAuthorization}
-                          onChange={(e) => setNewChild({ ...newChild, imageAuthorization: e.target.checked })}
-                          className="rounded border-gray-300"
-                        />
-                        <span className="text-sm">Autoriza uso de imagem</span>
-                      </label>
+                          <div className="space-y-1">
+                            <Label>Diagnóstico / CID (opcional)</Label>
+                            <Input
+                              value={child.diagnosis}
+                              onChange={(e) => {
+                                const updated = [...children];
+                                updated[idx] = { ...updated[idx], diagnosis: e.target.value };
+                                setChildren(updated);
+                              }}
+                              placeholder="Ex: TEA, TDAH, CID F84.0"
+                            />
+                          </div>
+
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={child.imageAuthorization}
+                              onChange={(e) => {
+                                const updated = [...children];
+                                updated[idx] = { ...updated[idx], imageAuthorization: e.target.checked };
+                                setChildren(updated);
+                              }}
+                              className="rounded border-gray-300"
+                            />
+                            <span className="text-sm">Autoriza uso de imagem</span>
+                          </label>
+                        </div>
+                      ))}
+
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setChildren([...children, emptyChild()])}
+                        className="w-full border-dashed border-amber-300 text-amber-700 hover:bg-amber-50"
+                      >
+                        <Plus className="h-3 w-3 mr-1" /> Adicionar outro filho
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -457,9 +502,12 @@ export default function AdminUsersPage() {
                     >
                       {(createUserMutation.isPending || createUserWithPatientMutation.isPending)
                         ? "Criando..."
-                        : showAddChild && newChild.name.trim()
-                          ? "Criar Responsável e Filho"
-                          : "Criar Usuário"}
+                        : (() => {
+                            const count = showAddChild ? children.filter(c => c.name.trim()).length : 0;
+                            if (count === 0) return "Criar Usuário";
+                            if (count === 1) return "Criar Responsável e Filho";
+                            return `Criar Responsável e ${count} Filhos`;
+                          })()}
                     </Button>
                   </>
                 )}

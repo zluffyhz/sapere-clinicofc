@@ -1467,20 +1467,20 @@ export const appRouter = router({
         };
       }),
 
-    // Cria usuário família + paciente vinculado de forma atômica
+    // Cria usuário família + múltiplos pacientes vinculados de forma atômica
     createUserWithPatient: adminProcedure
       .input(z.object({
         // Dados do responsável
         name: z.string().min(1),
         email: z.string().email(),
-        // Dados do filho (opcional)
-        patient: z.object({
+        // Lista de filhos (opcional, múltiplos)
+        patients: z.array(z.object({
           name: z.string().min(1),
           dateOfBirth: z.date().optional(),
           diagnosis: z.string().optional(),
           notes: z.string().optional(),
           imageAuthorization: z.boolean().default(false),
-        }).optional(),
+        })).optional(),
       }))
       .mutation(async ({ input }) => {
         const { generateTemporaryPassword } = await import('./auth-helpers');
@@ -1495,26 +1495,29 @@ export const appRouter = router({
         });
         const userId = userResult[0].insertId;
 
-        let patientId: number | undefined;
+        const patientIds: number[] = [];
 
-        // Criar paciente vinculado se fornecido
-        if (input.patient) {
-          const patientResult = await db.createPatient({
-            name: input.patient.name,
-            dateOfBirth: input.patient.dateOfBirth,
-            diagnosis: input.patient.diagnosis,
-            notes: input.patient.notes,
-            imageAuthorization: input.patient.imageAuthorization ?? false,
-            familyUserId: userId,
-          });
-          patientId = patientResult[0].insertId;
+        // Criar todos os pacientes vinculados
+        if (input.patients && input.patients.length > 0) {
+          for (const patient of input.patients) {
+            const patientResult = await db.createPatient({
+              name: patient.name,
+              dateOfBirth: patient.dateOfBirth,
+              diagnosis: patient.diagnosis,
+              notes: patient.notes,
+              imageAuthorization: patient.imageAuthorization ?? false,
+              familyUserId: userId,
+            });
+            patientIds.push(patientResult[0].insertId);
+          }
         }
 
         return {
           success: true,
           id: userId,
           temporaryPassword: tempPassword,
-          patientId,
+          patientIds,
+          patientCount: patientIds.length,
         };
       }),
     
