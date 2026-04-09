@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -39,6 +39,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ChildFormCard, type ChildData } from "@/components/ChildFormCard";
 
 export default function AdminUsersPage() {
   const { user: currentUser } = useAuth();
@@ -65,8 +66,8 @@ export default function AdminUsersPage() {
 
   // Estado para cadastro opcional de múltiplos filhos junto com o pai
   const [showAddChild, setShowAddChild] = useState(false);
-  const emptyChild = () => ({ name: "", dateOfBirth: "", diagnosis: "", imageAuthorization: false });
-  const [children, setChildren] = useState<Array<{ name: string; dateOfBirth: string; diagnosis: string; imageAuthorization: boolean }>>([emptyChild()]);
+  const emptyChild = (): ChildData => ({ name: "", dateOfBirth: "", diagnosis: "", imageAuthorization: false });
+  const [children, setChildren] = useState<ChildData[]>([emptyChild()]);
 
   const utils = trpc.useUtils();
   const { data: users, isLoading } = trpc.admin.listUsers.useQuery();
@@ -222,6 +223,47 @@ export default function AdminUsersPage() {
 
   const selectedUsersData = users?.filter((u) => selectedUserIds.includes(u.id)) ?? [];
 
+  // Memoizar lista filtrada de usuários para evitar recálculo a cada render
+  const filteredUsers = useMemo(() => {
+    if (!users) return [];
+    if (!userSearch) return users;
+    const q = userSearch.toLowerCase();
+    return users.filter(
+      (u) =>
+        (u.name ?? "").toLowerCase().includes(q) ||
+        (u.email ?? "").toLowerCase().includes(q)
+    );
+  }, [users, userSearch]);
+
+  // Handlers memoizados para ChildFormCard
+  const handleUpdateChild = useCallback(
+    (index: number, field: keyof ChildData, value: string | boolean) => {
+      setChildren((prev) => {
+        const updated = [...prev];
+        updated[index] = { ...updated[index], [field]: value };
+        return updated;
+      });
+    },
+    []
+  );
+
+  const handleRemoveChild = useCallback(
+    (index: number) => {
+      setChildren((prev) => prev.filter((_, i) => i !== index));
+    },
+    []
+  );
+
+  const handleAddChild = useCallback(() => {
+    setChildren((prev) => [...prev, emptyChild()]);
+  }, []);
+
+  // Contagem memoizada de filhos válidos
+  const validChildCount = useMemo(
+    () => (showAddChild ? children.filter((c) => c.name.trim()).length : 0),
+    [showAddChild, children]
+  );
+
   const roleLabels: Record<string, string> = {
     family: "Família",
     therapist: "Terapeuta",
@@ -353,107 +395,49 @@ export default function AdminUsersPage() {
 
               {/* Seção opcional: cadastrar múltiplos filhos junto com o responsável */}
               {newUser.role === "family" && !tempPassword && (
-                <div className="border rounded-lg overflow-hidden">
+                <div className="border border-orange-200/50 rounded-lg overflow-hidden transition-all duration-200">
                   <button
                     type="button"
                     onClick={() => setShowAddChild(!showAddChild)}
-                    className="w-full flex items-center justify-between px-4 py-3 bg-amber-50 hover:bg-amber-100 transition-colors text-left"
+                    className="w-full flex items-center justify-between px-4 py-3 bg-orange-50/60 hover:bg-orange-50 transition-colors text-left"
                   >
                     <div className="flex items-center gap-2">
-                      <UserPlus className="h-4 w-4 text-amber-600" />
-                      <span className="text-sm font-medium text-amber-800">
-                        {showAddChild && children.some(c => c.name.trim())
-                          ? `${children.filter(c => c.name.trim()).length} filho(s) a cadastrar`
-                          : "Cadastrar filho(s) agora (opcional)"}
+                      <UserPlus className="h-4 w-4 text-orange-500" />
+                      <span className="text-sm font-medium text-foreground">
+                        {validChildCount > 0
+                          ? `${validChildCount} filho(s) a cadastrar`
+                          : "Cadastrar filho(s) agora"}
                       </span>
+                      <span className="text-xs text-muted-foreground">(opcional)</span>
                     </div>
                     {showAddChild
-                      ? <ChevronUp className="h-4 w-4 text-amber-600" />
-                      : <ChevronDown className="h-4 w-4 text-amber-600" />}
+                      ? <ChevronUp className="h-4 w-4 text-orange-500" />
+                      : <ChevronDown className="h-4 w-4 text-orange-500" />}
                   </button>
 
                   {showAddChild && (
-                    <div className="p-4 space-y-4 bg-amber-50/40">
+                    <div className="p-4 space-y-3 bg-orange-50/20">
                       <p className="text-xs text-muted-foreground">
                         Os pacientes serão vinculados automaticamente a este responsável.
                       </p>
 
                       {children.map((child, idx) => (
-                        <div key={idx} className="border border-amber-200 rounded-md p-3 space-y-3 bg-white">
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-semibold text-amber-700">Filho {idx + 1}</span>
-                            {children.length > 1 && (
-                              <button
-                                type="button"
-                                onClick={() => setChildren(children.filter((_, i) => i !== idx))}
-                                className="text-red-400 hover:text-red-600 text-xs flex items-center gap-1"
-                              >
-                                <Trash2 className="h-3 w-3" /> Remover
-                              </button>
-                            )}
-                          </div>
-
-                          <div className="space-y-1">
-                            <Label>Nome *</Label>
-                            <Input
-                              value={child.name}
-                              onChange={(e) => {
-                                const updated = [...children];
-                                updated[idx] = { ...updated[idx], name: e.target.value };
-                                setChildren(updated);
-                              }}
-                              placeholder="Nome completo do paciente"
-                            />
-                          </div>
-
-                          <div className="space-y-1">
-                            <Label>Data de nascimento</Label>
-                            <Input
-                              type="date"
-                              value={child.dateOfBirth}
-                              onChange={(e) => {
-                                const updated = [...children];
-                                updated[idx] = { ...updated[idx], dateOfBirth: e.target.value };
-                                setChildren(updated);
-                              }}
-                            />
-                          </div>
-
-                          <div className="space-y-1">
-                            <Label>Diagnóstico / CID (opcional)</Label>
-                            <Input
-                              value={child.diagnosis}
-                              onChange={(e) => {
-                                const updated = [...children];
-                                updated[idx] = { ...updated[idx], diagnosis: e.target.value };
-                                setChildren(updated);
-                              }}
-                              placeholder="Ex: TEA, TDAH, CID F84.0"
-                            />
-                          </div>
-
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={child.imageAuthorization}
-                              onChange={(e) => {
-                                const updated = [...children];
-                                updated[idx] = { ...updated[idx], imageAuthorization: e.target.checked };
-                                setChildren(updated);
-                              }}
-                              className="rounded border-gray-300"
-                            />
-                            <span className="text-sm">Autoriza uso de imagem</span>
-                          </label>
-                        </div>
+                        <ChildFormCard
+                          key={idx}
+                          index={idx}
+                          child={child}
+                          canRemove={children.length > 1}
+                          onUpdate={handleUpdateChild}
+                          onRemove={handleRemoveChild}
+                        />
                       ))}
 
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
-                        onClick={() => setChildren([...children, emptyChild()])}
-                        className="w-full border-dashed border-amber-300 text-amber-700 hover:bg-amber-50"
+                        onClick={handleAddChild}
+                        className="w-full border-dashed border-orange-300/60 text-orange-600 hover:bg-orange-50 hover:border-orange-400 transition-all"
                       >
                         <Plus className="h-3 w-3 mr-1" /> Adicionar outro filho
                       </Button>
@@ -502,12 +486,11 @@ export default function AdminUsersPage() {
                     >
                       {(createUserMutation.isPending || createUserWithPatientMutation.isPending)
                         ? "Criando..."
-                        : (() => {
-                            const count = showAddChild ? children.filter(c => c.name.trim()).length : 0;
-                            if (count === 0) return "Criar Usuário";
-                            if (count === 1) return "Criar Responsável e Filho";
-                            return `Criar Responsável e ${count} Filhos`;
-                          })()}
+                        : validChildCount === 0
+                          ? "Criar Usuário"
+                          : validChildCount === 1
+                            ? "Criar Responsável e Filho"
+                            : `Criar Responsável e ${validChildCount} Filhos`}
                     </Button>
                   </>
                 )}
@@ -605,8 +588,22 @@ export default function AdminUsersPage() {
                 placeholder="Buscar por nome ou e-mail..."
                 value={userSearch}
                 onChange={(e) => setUserSearch(e.target.value)}
-                className="pl-9"
+                className="pl-9 pr-20"
               />
+              {userSearch && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">
+                    {filteredUsers.length} resultado(s)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setUserSearch("")}
+                    className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Limpar
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </CardHeader>
@@ -642,13 +639,7 @@ export default function AdminUsersPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users
-                    .filter((u) =>
-                      !userSearch ||
-                      (u.name ?? "").toLowerCase().includes(userSearch.toLowerCase()) ||
-                      (u.email ?? "").toLowerCase().includes(userSearch.toLowerCase())
-                    )
-                    .map((user) => {
+                  {filteredUsers.map((user) => {
                     const isCurrentUser = user.id === currentUser?.id;
                     return (
                       <TableRow

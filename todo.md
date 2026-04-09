@@ -1125,3 +1125,15 @@
 - [x] Frontend: substituir formulário de filho único por lista dinâmica com botão "Adicionar outro filho"
 - [x] Frontend: cada filho tem campos próprios (nome, nascimento, diagnóstico, imagem) e botão de remover
 - [x] Frontend: botão de submit mostra contagem correta ("Criar Responsável e 2 Filhos")
+
+## Otimização: Funcionalidades de Cadastro
+- [x] PatientSearchInput: melhorar com useMemo, acessibilidade, visual refinado e toggle de deseleção
+- [x] PatientSearchInput: melhorar acessibilidade com aria-labels e keyboard navigation
+- [x] AdminUsersPage: extrair ChildFormCard como componente separado memoizado para evitar re-renders
+- [x] AdminUsersPage: usar useCallback para handlers de children para evitar recriação a cada render
+- [x] AdminUsersPage: memoizar filteredUsers com useMemo para evitar recálculo a cada render
+- [x] AdminUsersPage: melhorar UX do formulário de filhos com animações suaves de entrada/saída
+- [x] AdminUsersPage: adicionar validação visual inline nos campos obrigatórios
+- [x] Backend: adicionar validação de email duplicado no createUserWithPatient antes de criar
+- [x] Design: melhorar visual dos cards de filhos com transições e micro-interações
+- [x] Design: melhorar responsividade do formulário de cadastro no mobile (grid sm:grid-cols-2)

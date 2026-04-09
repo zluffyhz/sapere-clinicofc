@@ -1483,6 +1483,15 @@ export const appRouter = router({
         })).optional(),
       }))
       .mutation(async ({ input }) => {
+        // Validar email duplicado antes de criar
+        const existingUser = await db.getUserByEmail(input.email);
+        if (existingUser) {
+          throw new TRPCError({
+            code: 'CONFLICT',
+            message: 'Já existe um usuário cadastrado com este email.',
+          });
+        }
+
         const { generateTemporaryPassword } = await import('./auth-helpers');
         const tempPassword = generateTemporaryPassword();
 
