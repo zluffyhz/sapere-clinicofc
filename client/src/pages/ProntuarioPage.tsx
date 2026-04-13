@@ -77,35 +77,22 @@ export default function ProntuarioPage() {
     { enabled: !!patientId && !!newEvolution }
   );
 
-  // Debug: Log component state
-  console.log('[Debug] ProntuarioPage render:', {
-    newEvolution,
-    patientId,
-    appointmentsCount: appointments?.length,
-    sessionDataProcessed,
-    hasSessionData: !!sessionStorage.getItem('sessionData')
-  });
-
   // Check for session data from timer and auto-select appointment
   useEffect(() => {
     // Use allAppointments for auto-select (timer may reference historical appointments)
     const aptList = allAppointments || appointments;
-    console.log('[useEffect] Running with deps:', { newEvolution, patientId, appointmentsLength: aptList?.length });
     // Only run when we have the newEvolution flag and appointments are loaded
     if (!newEvolution || !aptList || aptList.length === 0) {
-      console.log('[Auto-select] Waiting for data:', { newEvolution, appointmentsCount: aptList?.length });
       return;
     }
 
     // Prevent running multiple times
     if (sessionDataProcessed) {
-      console.log('[Auto-select] Already processed, skipping');
       return;
     }
 
     const sessionDataStr = sessionStorage.getItem('sessionData');
     if (!sessionDataStr) {
-      console.log('[Auto-select] No session data found');
       return;
     }
 
@@ -114,25 +101,20 @@ export default function ProntuarioPage() {
       
       // Verify this is the correct patient
       if (sessionData.patientId !== patientId) {
-        console.log('[Auto-select] Patient ID mismatch, clearing session data');
         sessionStorage.removeItem('sessionData');
         return;
       }
 
       const sessionStartTime = new Date(sessionData.startTime);
-      console.log('[Auto-select] Session start time:', sessionStartTime.toISOString());
-      console.log('[Auto-select] Available appointments:', aptList.length);
+
       
       // Find matching appointment based on date and status
       const matchingAppointment = aptList.find((apt: any) => {
         const aptDate = new Date(apt.startTime);
         const isSameDay = aptDate.toDateString() === sessionStartTime.toDateString();
         const isScheduled = apt.status === 'scheduled';
-        console.log(`[Auto-select] Checking apt ${apt.id}: date=${aptDate.toISOString()}, status=${apt.status}, sameDay=${isSameDay}, scheduled=${isScheduled}`);
         return isSameDay && isScheduled;
       });
-      
-      console.log('[Auto-select] Matched appointment:', matchingAppointment);
       
       // Pre-fill evolution with session data and auto-select appointment
       const newEvolutionData = {
@@ -145,8 +127,6 @@ export default function ProntuarioPage() {
         nextSessionPlan: "",
         collaborationLevel: "" as any,
       };
-      
-      console.log('[Auto-select] Setting evolution data:', newEvolutionData);
       setEvolutionData(newEvolutionData);
       
       if (matchingAppointment) {
@@ -386,20 +366,39 @@ export default function ProntuarioPage() {
   }
 
   return (
-    <div className="container py-8">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Prontuário</h1>
-        <p className="text-gray-600">
-          Paciente: <span className="font-semibold">{patient.name}</span>
+    <div className="container py-4 md:py-8">
+      {/* Header compacto mobile-first */}
+      <div className="mb-4 md:mb-6">
+        <div className="flex items-center gap-2 mb-1">
+          <button
+            onClick={() => window.history.back()}
+            className="text-muted-foreground hover:text-foreground transition-colors p-1 -ml-1 rounded-md hover:bg-muted"
+            aria-label="Voltar"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <h1 className="text-xl md:text-3xl font-bold text-gray-800">Prontuário</h1>
+        </div>
+        <p className="text-sm md:text-base text-gray-500 ml-7">
+          <span className="font-semibold text-gray-700">{patient.name}</span>
         </p>
       </div>
 
-      <Tabs defaultValue="dados" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="dados">Dados do Paciente</TabsTrigger>
-          <TabsTrigger value="terapias">Terapias</TabsTrigger>
-          <TabsTrigger value="sessoes">Evoluções</TabsTrigger>
-          <TabsTrigger value="documentos">Documentos</TabsTrigger>
+      <Tabs defaultValue="sessoes" className="w-full">
+        {/* Tabs com scroll horizontal no mobile */}
+        <TabsList className="flex w-full overflow-x-auto scrollbar-hide h-auto p-1 gap-1 mb-1">
+          <TabsTrigger value="sessoes" className="flex-shrink-0 text-sm px-3 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-medium">
+            Evoluções
+          </TabsTrigger>
+          <TabsTrigger value="dados" className="flex-shrink-0 text-sm px-3 py-2">
+            Dados
+          </TabsTrigger>
+          <TabsTrigger value="terapias" className="flex-shrink-0 text-sm px-3 py-2">
+            Terapias
+          </TabsTrigger>
+          <TabsTrigger value="documentos" className="flex-shrink-0 text-sm px-3 py-2">
+            Documentos
+          </TabsTrigger>
         </TabsList>
 
         {/* Dados do Paciente */}
@@ -497,10 +496,18 @@ export default function ProntuarioPage() {
         {/* Evoluções */}
         <TabsContent value="sessoes">
           <div className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Novo Registro de Sessão</CardTitle>
-                <CardDescription>Registre o resumo de uma sessão realizada</CardDescription>
+            {/* Card de Novo Registro com destaque especial */}
+            <Card className="border-2 border-primary/30 shadow-md bg-gradient-to-br from-orange-50/60 to-white">
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  </div>
+                  <div>
+                    <CardTitle className="text-base md:text-lg leading-tight">Registrar Evolução</CardTitle>
+                    <CardDescription className="text-xs mt-0.5">Preencha após cada sessão</CardDescription>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">

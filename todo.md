@@ -1141,3 +1141,10 @@
 ## Bug: Scroll no Dialog de Filhos
 - [x] Corrigir scroll interno do Dialog de cadastro de filhos (DialogContent sem overflow-y-auto)
 - [x] Garantir que DialogContent tenha altura máxima e scroll habilitado
+
+## Melhoria Mobile: ProntuarioPage
+- [x] Corrigir sobreposição das tabs no mobile (grid-cols-4 muito apertado)
+- [x] Mover aba "Evoluções" para primeira posição e tornar defaultValue="sessoes"
+- [x] Dar destaque visual ao card de Novo Registro de Sessão no mobile
+- [x] Melhorar espaçamento e tipografia do header no mobile
+- [x] Remover console.log de debug do ProntuarioPage

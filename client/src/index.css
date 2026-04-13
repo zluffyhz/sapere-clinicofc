@@ -183,6 +183,15 @@
   }
 }
 
+/* Utility: hide scrollbar but keep scroll functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Mobile Optimizations */
 @layer components {
   /* Ensure touch targets are at least 44x44px */
