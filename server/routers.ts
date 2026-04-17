@@ -342,27 +342,17 @@ export const appRouter = router({
             const newEndTime = new Date(input.endTime);
             newEndTime.setDate(input.endTime.getDate() + (week * 7));
             
-            // Check for conflicts before adding
-            const weekConflicts = await db.checkScheduleConflicts(
-              newStartTime,
-              newEndTime,
+            // Create appointment for this week (no conflict check - conflicts allowed)
+            appointmentsToCreate.push({
+              patientId: input.patientId,
               therapistUserId,
-              input.patientId
-            );
-            
-            // Only create if no conflicts
-            if (!weekConflicts.therapistConflict && !weekConflicts.patientConflict) {
-              appointmentsToCreate.push({
-                patientId: input.patientId,
-                therapistUserId,
-                therapyType: input.therapyType,
-                startTime: newStartTime,
-                endTime: newEndTime,
-                notes: input.notes,
-                status: 'scheduled' as const,
-                seriesId, // Link to the same series
-              });
-            }
+              therapyType: input.therapyType,
+              startTime: newStartTime,
+              endTime: newEndTime,
+              notes: input.notes,
+              status: 'scheduled' as const,
+              seriesId, // Link to the same series
+            });
           }
           
           // Create all appointments

@@ -1148,3 +1148,10 @@
 - [x] Dar destaque visual ao card de Novo Registro de Sessão no mobile
 - [x] Melhorar espaçamento e tipografia do header no mobile
 - [x] Remover console.log de debug do ProntuarioPage
+
+## Bug: Dados embaralhados em agendamentos contínuos
+- [x] Auditar lógica de replicação semanal (replicateWeekly) para garantir integridade dos dados
+- [x] Auditar ordenação de agendamentos no backend (getAppointmentsByDateRange)
+- [x] Auditar exibição de agendamentos no frontend (selectedDateAppointments, visão semanal)
+- [x] Verificar se seriesId e dados do paciente/terapeuta são mantidos corretamente na replicação
+- [x] Corrigir: remover verificação de conflitos da replicação, enriquecer query de terapeuta com coTherapistIds/isDualSession, filtrar cancelados no getAppointmentsBySeries

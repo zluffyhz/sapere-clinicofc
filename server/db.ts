@@ -287,7 +287,43 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
       ...coTherapistAppointmentRows.filter((a) => !primaryIds.has(a.id)),
     ];
     merged.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
-    return merged;
+
+    // Enrich therapist results with coTherapistIds and isDualSession (same as admin)
+    const mergedIds = merged.map(r => r.id);
+    let coTherapistMapT: Record<number, number[]> = {};
+    if (mergedIds.length > 0) {
+      const coRowsT = await db.select({
+        appointmentId: appointmentCoTherapists.appointmentId,
+        therapistUserId: appointmentCoTherapists.therapistUserId,
+      }).from(appointmentCoTherapists)
+        .where(inArray(appointmentCoTherapists.appointmentId, mergedIds));
+      for (const row of coRowsT) {
+        if (!coTherapistMapT[row.appointmentId]) coTherapistMapT[row.appointmentId] = [];
+        coTherapistMapT[row.appointmentId].push(row.therapistUserId);
+      }
+    }
+    const dualIdsT = new Set<number>();
+    if (mergedIds.length > 0) {
+      const dualRowsT = await db.select({
+        appointmentId1: appointmentDualPatients.appointmentId1,
+        appointmentId2: appointmentDualPatients.appointmentId2,
+      }).from(appointmentDualPatients)
+        .where(
+          or(
+            inArray(appointmentDualPatients.appointmentId1, mergedIds),
+            inArray(appointmentDualPatients.appointmentId2, mergedIds)
+          )
+        );
+      for (const row of dualRowsT) {
+        dualIdsT.add(row.appointmentId1);
+        dualIdsT.add(row.appointmentId2);
+      }
+    }
+    return merged.map(r => ({
+      ...r,
+      coTherapistIds: coTherapistMapT[r.id] || [],
+      isDualSession: dualIdsT.has(r.id),
+    }));
   }
   
   const rows = await db.select({
@@ -362,8 +398,13 @@ export async function getAppointmentsBySeries(seriesId: string) {
   if (!db) return [];
   
   return await db.select().from(appointments)
-    .where(eq(appointments.seriesId, seriesId))
-    .orderBy(appointments.startTime);
+    .where(
+      and(
+        eq(appointments.seriesId, seriesId),
+        ne(appointments.status, 'cancelled')
+      )
+    )
+    .orderBy(asc(appointments.startTime));
 }
 
 export async function updateAppointment(id: number, data: Partial<InsertAppointment>) {
