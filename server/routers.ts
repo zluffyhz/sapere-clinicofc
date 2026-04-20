@@ -275,121 +275,150 @@ export const appRouter = router({
         replicateWeekly: z.boolean().optional(), // Admin only: replicate weekly for 30 days
       }))
       .mutation(async ({ input, ctx }) => {
-        // Determine therapist: admin can specify, therapist uses self, family not allowed
-        if (ctx.user.role === 'family') {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'Famílias não podem criar agendamentos diretamente' });
-        }
-        const therapistUserId = input.therapistUserId || ctx.user.id;
+        try {
+          // Determine therapist: admin can specify, therapist uses self, family not allowed
+          if (ctx.user.role === 'family') {
+            throw new TRPCError({ code: 'FORBIDDEN', message: 'Famílias não podem criar agendamentos diretamente' });
+          }
+          const therapistUserId = input.therapistUserId || ctx.user.id;
 
-        // Generate seriesId if replicating weekly
-        const seriesId = (input.replicateWeekly && ctx.user.role === 'admin') 
-          ? `series-${Date.now()}-${Math.random().toString(36).substring(7)}`
-          : undefined;
-        
-        const result = await db.createAppointment({
-          ...input,
-          therapistUserId,
-          status: 'scheduled',
-          seriesId,
-        });
-        
-        // Create notification for family
-        const patient = await db.getPatientById(input.patientId);
-        if (patient) {
-          await db.createNotification({
-            userId: patient.familyUserId,
-            type: 'schedule_change',
-            title: 'Nova sessão agendada',
-            message: `Uma nova sessão de ${input.therapyType} foi agendada para ${input.startTime.toLocaleDateString('pt-BR')}`,
-            relatedId: result[0].insertId,
+          // Generate seriesId if replicating weekly
+          const seriesId = (input.replicateWeekly && ctx.user.role === 'admin') 
+            ? `series-${Date.now()}-${Math.random().toString(36).substring(7)}`
+            : undefined;
+          
+          // Create the first appointment
+          const result = await db.createAppointment({
+            ...input,
+            therapistUserId,
+            status: 'scheduled',
+            seriesId,
           });
+          const firstId = result[0].insertId;
           
-          // Send email notification
-          const familyUser = await db.getUserById(patient.familyUserId);
-          if (familyUser?.email) {
-            sendScheduleChangeEmail(
-              familyUser.email,
-              patient.name,
-              input.therapyType,
-              input.startTime
-            ).catch(err => console.error('[Email] Failed to send schedule change email:', err));
-          }
-        }
-        
-        // Create notification for therapist only if someone else created the appointment
-        if (therapistUserId !== ctx.user.id) {
-          await db.createNotification({
-            userId: therapistUserId,
-            type: 'schedule_change',
-            title: 'Nova sessão agendada',
-            message: `Uma nova sessão de ${input.therapyType} foi agendada com ${patient?.name || 'paciente'} em ${input.startTime.toLocaleDateString('pt-BR')} às ${input.startTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`,
-            relatedId: result[0].insertId,
-          });
-        }
-        
-        // If replicateWeekly is true and user is admin, create weekly appointments for 30 days
-        const createdIds = [result[0].insertId];
-        
-        if (input.replicateWeekly && ctx.user.role === 'admin') {
-          const appointmentsToCreate = [];
-          const currentDate = new Date(input.startTime);
-          
-          // Create appointments for the next 4 weeks (approximately 30 days)
-          for (let week = 1; week <= 4; week++) {
-            const newStartTime = new Date(currentDate);
-            newStartTime.setDate(currentDate.getDate() + (week * 7));
-            
-            const newEndTime = new Date(input.endTime);
-            newEndTime.setDate(input.endTime.getDate() + (week * 7));
-            
-            // Create appointment for this week (no conflict check - conflicts allowed)
-            appointmentsToCreate.push({
-              patientId: input.patientId,
-              therapistUserId,
-              therapyType: input.therapyType,
-              startTime: newStartTime,
-              endTime: newEndTime,
-              notes: input.notes,
-              status: 'scheduled' as const,
-              seriesId, // Link to the same series
-            });
-          }
-          
-          // Create all appointments
-          for (const appointment of appointmentsToCreate) {
-            const weekResult = await db.createAppointment(appointment);
-            createdIds.push(weekResult[0].insertId);
-            
-            // Create notification for family for each replicated appointment
-            if (patient) {
-              await db.createNotification({
+          // Fetch patient data (needed for notifications)
+          const patient = await db.getPatientById(input.patientId);
+
+          // --- Build notification tasks for the first appointment ---
+          const firstNotifTasks: Promise<unknown>[] = [];
+          if (patient?.familyUserId) {
+            firstNotifTasks.push(
+              db.createNotification({
                 userId: patient.familyUserId,
                 type: 'schedule_change',
                 title: 'Nova sessão agendada',
-                message: `Uma nova sessão de ${appointment.therapyType} foi agendada para ${appointment.startTime.toLocaleDateString('pt-BR')}`,
-                relatedId: weekResult[0].insertId,
-              });
-            }
-            
-            // Notify therapist if different from creator
-            if (therapistUserId !== ctx.user.id) {
-              await db.createNotification({
+                message: `Uma nova sessão de ${input.therapyType} foi agendada para ${input.startTime.toLocaleDateString('pt-BR')}`,
+                relatedId: firstId,
+              }).catch(err => console.error('[Notif] family notif failed:', err))
+            );
+          }
+          if (therapistUserId !== ctx.user.id) {
+            firstNotifTasks.push(
+              db.createNotification({
                 userId: therapistUserId,
                 type: 'schedule_change',
                 title: 'Nova sessão agendada',
-                message: `Uma nova sessão de ${appointment.therapyType} foi agendada com ${patient?.name || 'paciente'} em ${appointment.startTime.toLocaleDateString('pt-BR')} às ${appointment.startTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`,
-                relatedId: weekResult[0].insertId,
-              });
-            }
+                message: `Uma nova sessão de ${input.therapyType} foi agendada com ${patient?.name || 'paciente'} em ${input.startTime.toLocaleDateString('pt-BR')} às ${input.startTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`,
+                relatedId: firstId,
+              }).catch(err => console.error('[Notif] therapist notif failed:', err))
+            );
           }
+          // Fire-and-forget email (never blocks the HTTP response)
+          if (patient?.familyUserId) {
+            setImmediate(() => {
+              db.getUserById(patient.familyUserId)
+                .then(familyUser => {
+                  if (familyUser?.email) {
+                    sendScheduleChangeEmail(
+                      familyUser.email,
+                      patient.name,
+                      input.therapyType,
+                      input.startTime
+                    ).catch(err => console.error('[Email] schedule change email failed:', err));
+                  }
+                })
+                .catch(err => console.error('[Email] getUserById failed:', err));
+            });
+          }
+
+          // --- Replicate weekly if requested (admin only) ---
+          const createdIds = [firstId];
+          
+          if (input.replicateWeekly && ctx.user.role === 'admin') {
+            const currentDate = new Date(input.startTime);
+            const durationMs = input.endTime.getTime() - input.startTime.getTime();
+
+            // Build all 4 weekly appointments data
+            const weeksData = Array.from({ length: 4 }, (_, i) => {
+              const week = i + 1;
+              const newStartTime = new Date(currentDate);
+              newStartTime.setDate(currentDate.getDate() + week * 7);
+              const newEndTime = new Date(newStartTime.getTime() + durationMs);
+              return {
+                patientId: input.patientId,
+                therapistUserId,
+                therapyType: input.therapyType,
+                startTime: newStartTime,
+                endTime: newEndTime,
+                notes: input.notes,
+                status: 'scheduled' as const,
+                seriesId,
+              };
+            });
+
+            // Create all 4 appointments in parallel
+            const weekResults = await Promise.all(
+              weeksData.map(apt => db.createAppointment(apt))
+            );
+            const weekIds = weekResults.map(r => r[0].insertId);
+            createdIds.push(...weekIds);
+
+            // Fire-and-forget all notifications for replicated appointments
+            setImmediate(() => {
+              const notifTasks: Promise<unknown>[] = [];
+              weekIds.forEach((weekId, idx) => {
+                const apt = weeksData[idx];
+                if (patient?.familyUserId) {
+                  notifTasks.push(
+                    db.createNotification({
+                      userId: patient.familyUserId,
+                      type: 'schedule_change',
+                      title: 'Nova sessão agendada',
+                      message: `Uma nova sessão de ${apt.therapyType} foi agendada para ${apt.startTime.toLocaleDateString('pt-BR')}`,
+                      relatedId: weekId,
+                    }).catch(err => console.error('[Notif] replicated family notif failed:', err))
+                  );
+                }
+                if (therapistUserId !== ctx.user.id) {
+                  notifTasks.push(
+                    db.createNotification({
+                      userId: therapistUserId,
+                      type: 'schedule_change',
+                      title: 'Nova sessão agendada',
+                      message: `Uma nova sessão de ${apt.therapyType} foi agendada com ${patient?.name || 'paciente'} em ${apt.startTime.toLocaleDateString('pt-BR')} às ${apt.startTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`,
+                      relatedId: weekId,
+                    }).catch(err => console.error('[Notif] replicated therapist notif failed:', err))
+                  );
+                }
+              });
+              Promise.allSettled(notifTasks).catch(err => console.error('[Notif] batch failed:', err));
+            });
+          }
+
+          // Wait for first-appointment notifications before responding
+          await Promise.allSettled(firstNotifTasks);
+          
+          return { 
+            success: true, 
+            id: firstId,
+            replicatedCount: createdIds.length - 1,
+            totalCreated: createdIds.length,
+          };
+        } catch (err) {
+          if (err instanceof TRPCError) throw err;
+          console.error('[appointments.create] Unexpected error:', err);
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Erro ao criar agendamento. Tente novamente.' });
         }
-        
-        return { 
-          success: true, 
-          id: result[0].insertId,
-          replicatedCount: createdIds.length - 1, // Exclude the original
-          totalCreated: createdIds.length,
-        };
       }),
 
     listByDateRange: protectedProcedure

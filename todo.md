@@ -1155,3 +1155,8 @@
 - [x] Auditar exibição de agendamentos no frontend (selectedDateAppointments, visão semanal)
 - [x] Verificar se seriesId e dados do paciente/terapeuta são mantidos corretamente na replicação
 - [x] Corrigir: remover verificação de conflitos da replicação, enriquecer query de terapeuta com coTherapistIds/isDualSession, filtrar cancelados no getAppointmentsBySeries
+
+## Bug: Erro "Failed to fetch" ao criar agendamento com replicação semanal
+- [x] Investigar causa do erro no backend (createAppointment + replicateWeekly)
+- [x] Corrigir o bug sem introduzir novos erros — Promise.all paralelo + setImmediate para notificações/email + try/catch global
+- [x] Validar com testes (95 testes passando)
