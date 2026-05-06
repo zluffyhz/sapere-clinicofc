@@ -1184,3 +1184,7 @@
 - [x] Criar endpoint REST /api/atendimentos/relatorio-pdf no backend (Express + pdfkit)
 - [x] PDF com cabeçalho da clínica, mês/ano, tabela agrupada por terapeuta com subtotais e total geral
 - [x] Botão "Exportar PDF" na página AtendimentosPage que dispara o download
+
+## Bug: Horário dos atendimentos não está sendo puxado corretamente na aba Atendimentos
+- [x] Investigar a fonte do sessionDate na query de analytics (era apenas data, sem hora)
+- [x] Corrigir para usar o horário real do agendamento (appointmentStartTime do appointment, fallback para sessionDate)

@@ -74,6 +74,7 @@ async function startServer() {
           therapistName: usr.name,
           patientName: pat.name,
           sessionDate: evo.sessionDate,
+          appointmentStartTime: appt.startTime,
           therapyType: appt.therapyType,
         })
         .from(evo)
@@ -89,7 +90,8 @@ async function startServer() {
           id: r.id,
           therapistName: r.therapistName!,
           patientName: r.patientName!,
-          sessionDate: r.sessionDate,
+          // Usar startTime do agendamento como horário real; fallback para sessionDate
+          sessionDate: r.appointmentStartTime ?? r.sessionDate,
           therapyType: r.therapyType ?? "outro",
         }));
 

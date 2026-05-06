@@ -1655,6 +1655,7 @@ export const appRouter = router({
             patientId: evolutionsTable.patientId,
             therapistUserId: evolutionsTable.therapistUserId,
             sessionDate: evolutionsTable.sessionDate,
+            appointmentStartTime: appointmentsTable.startTime,
             therapyType: appointmentsTable.therapyType,
             therapistName: usersTable.name,
             patientName: patientsTable.name,
@@ -1679,7 +1680,8 @@ export const appRouter = router({
             appointmentId: r.appointmentId,
             patientId: r.patientId,
             therapistUserId: r.therapistUserId,
-            sessionDate: r.sessionDate,
+            // Usar startTime do agendamento como horário real; fallback para sessionDate
+            sessionDate: r.appointmentStartTime ?? r.sessionDate,
             therapyType: r.therapyType ?? "outro",
             therapistName: r.therapistName!,
             patientName: r.patientName!,
