@@ -1671,17 +1671,19 @@ export const appRouter = router({
           )
           .orderBy(asc(evolutionsTable.sessionDate));
 
-        // Formatar resultado com nomes não-nulos
-        const formattedRecords = records.map(r => ({
-          id: r.id,
-          appointmentId: r.appointmentId,
-          patientId: r.patientId,
-          therapistUserId: r.therapistUserId,
-          sessionDate: r.sessionDate,
-          therapyType: r.therapyType ?? "outro",
-          therapistName: r.therapistName ?? "Terapeuta desconhecido",
-          patientName: r.patientName ?? "Paciente desconhecido",
-        }));
+        // Filtrar apenas registros com dados reais (terapeuta e paciente existentes)
+        const formattedRecords = records
+          .filter(r => r.therapistName && r.patientName)
+          .map(r => ({
+            id: r.id,
+            appointmentId: r.appointmentId,
+            patientId: r.patientId,
+            therapistUserId: r.therapistUserId,
+            sessionDate: r.sessionDate,
+            therapyType: r.therapyType ?? "outro",
+            therapistName: r.therapistName!,
+            patientName: r.patientName!,
+          }));
 
         return {
           records: formattedRecords,
