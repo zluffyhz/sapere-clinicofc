@@ -1175,3 +1175,7 @@
 - [x] Atualizar navegação: trocar "Presença" por "Atendimentos" no SapereLayout
 - [x] Atualizar rota no App.tsx
 - [x] Validar com testes (101 testes passando)
+
+## Ajuste: Aba Atendimentos visível apenas para admin
+- [x] Ocultar item "Atendimentos" na navegação para usuários não-admin (já filtrado por roles: ["admin"] no SapereLayout)
+- [x] Proteger rota /atendimentos com AdminRoute que redireciona não-admin para /

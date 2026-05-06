@@ -52,6 +52,18 @@ function ProtectedRoute({ component: Component, ...props }: { component: React.C
   );
 }
 
+function AdminRoute({ component: Component, ...props }: { component: React.ComponentType<any>, [key: string]: any }) {
+  const { user } = useAuth();
+  if (user && user.role !== "admin") {
+    return <Redirect to="/" />;
+  }
+  return (
+    <SapereLayout>
+      <Component {...props} />
+    </SapereLayout>
+  );
+}
+
 function Router() {
   return (
     <Switch>
@@ -94,7 +106,7 @@ function Router() {
         {(params) => <ProtectedRoute component={SessionPage} />}
       </Route>
       <Route path="/atendimentos">
-        {() => <ProtectedRoute component={AtendimentosPage} />}
+        {() => <AdminRoute component={AtendimentosPage} />}
       </Route>
       <Route path="/frequencia">
         {() => <ProtectedRoute component={FamilyFrequencyPage} />}
