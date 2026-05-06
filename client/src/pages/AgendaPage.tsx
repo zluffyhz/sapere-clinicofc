@@ -8,7 +8,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { formatBRT, parseBRTDateTime, getBRTDateString, getBRTTimeString, isSameDayBRT, CLINIC_TIMEZONE } from "@/lib/timezone";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X, Repeat, UserPlus, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X, Repeat, UserPlus, Search, Ban, CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { NativeSelect } from "@/components/ui/native-select";
 import {
@@ -67,6 +67,10 @@ export default function AgendaPage() {
   // Delete confirmation dialog
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deletingAppointmentId, setDeletingAppointmentId] = useState<number | null>(null);
+  
+  // Cancel confirmation dialog
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+  const [cancellingAppointment, setCancellingAppointment] = useState<any | null>(null);
   
   // Series edit/delete state
   const [editingSeriesId, setEditingSeriesId] = useState<string | null>(null);
@@ -364,6 +368,28 @@ export default function AgendaPage() {
     setIsDeleteDialogOpen(true);
   };
 
+  const openCancelDialog = (apt: any) => {
+    setCancellingAppointment(apt);
+    setIsCancelDialogOpen(true);
+  };
+
+  const handleCancelAppointment = () => {
+    if (!cancellingAppointment) return;
+    updateAppointmentMutation.mutate(
+      { id: cancellingAppointment.id, status: "cancelled" },
+      {
+        onSuccess: () => {
+          setIsCancelDialogOpen(false);
+          setCancellingAppointment(null);
+          toast.success("Atendimento marcado como cancelado.");
+        },
+        onError: (err) => {
+          toast.error(`Erro ao cancelar: ${err.message}`);
+        },
+      }
+    );
+  };
+
   const handleDeleteAppointment = () => {
     if (deleteSeriesMode === "all" && editingSeriesId) {
       cancelSeriesMutation.mutate({ seriesId: editingSeriesId });
@@ -377,8 +403,8 @@ export default function AgendaPage() {
     if (!appointments) return [];
     return appointments
       .filter((apt) => {
-        // Never show cancelled or rescheduled appointments in the agenda
-        if (apt.status === 'cancelled' || apt.status === 'rescheduled') return false;
+        // Show all except rescheduled; cancelled are shown with visual indicator
+        if (apt.status === 'rescheduled') return false;
         const matchesDate = isSameDayBRT(new Date(apt.startTime), selectedDate);
         // Match if therapist is the primary OR a co-therapist on this appointment
         const coIds: number[] = (apt as any).coTherapistIds || [];
@@ -978,7 +1004,9 @@ export default function AgendaPage() {
                     <div
                       key={apt.id}
                       className={`p-4 rounded-lg border-l-4 transition-colors ${
-                        apt.status === 'completed' 
+                        apt.status === 'cancelled'
+                          ? 'bg-gray-50 border-gray-300 opacity-60'
+                          : apt.status === 'completed' 
                           ? 'bg-green-50 border-green-500' 
                           : `${therapyTypeColors[apt.therapyType]?.bg || "bg-gray-50"} ${
                               therapyTypeColors[apt.therapyType]?.border || "border-gray-300"
@@ -992,14 +1020,23 @@ export default function AgendaPage() {
                               {therapyTypeLabels[apt.therapyType] || apt.therapyType}
                             </h3>
                             <Badge
+                              className={
+                                apt.status === "completed"
+                                  ? "bg-green-600 text-white hover:bg-green-700"
+                                  : apt.status === "cancelled"
+                                  ? "bg-red-100 text-red-700 border border-red-300"
+                                  : ""
+                              }
                               variant={
                                 apt.status === "scheduled"
                                   ? "default"
                                   : apt.status === "completed"
-                                  ? "secondary"
+                                  ? "default"
                                   : "outline"
                               }
                             >
+                              {apt.status === "completed" && <CheckCircle2 className="h-3 w-3 mr-1" />}
+                              {apt.status === "cancelled" && <Ban className="h-3 w-3 mr-1" />}
                               {statusLabels[apt.status]}
                             </Badge>
                             {apt.seriesId && (
@@ -1060,23 +1097,49 @@ export default function AgendaPage() {
                         {/* Action Buttons - Admin Only */}
                         {isAdmin && (
                           <div className="flex gap-2">
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              onClick={() => openEditModal(apt)}
-                              title="Editar agendamento"
-                            >
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              onClick={() => openDeleteDialog(apt)}
-                              className="text-destructive hover:text-destructive"
-                              title="Excluir agendamento"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                            {apt.status !== 'cancelled' && (
+                              <>
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  onClick={() => openEditModal(apt)}
+                                  title="Editar agendamento"
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                                {apt.status !== 'completed' && (
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => openCancelDialog(apt)}
+                                    className="text-orange-600 hover:text-orange-700 hover:border-orange-400"
+                                    title="Marcar como cancelado"
+                                  >
+                                    <Ban className="h-4 w-4" />
+                                  </Button>
+                                )}
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  onClick={() => openDeleteDialog(apt)}
+                                  className="text-destructive hover:text-destructive"
+                                  title="Excluir agendamento"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </>
+                            )}
+                            {apt.status === 'cancelled' && (
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => openDeleteDialog(apt)}
+                                className="text-destructive hover:text-destructive"
+                                title="Excluir agendamento"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
                           </div>
                         )}
                       </div>
@@ -1190,6 +1253,29 @@ export default function AgendaPage() {
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
+      {/* Cancel Confirmation Dialog */}
+      <AlertDialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar cancelamento</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja marcar este atendimento como <strong>cancelado</strong>?<br />
+              O agendamento continuará visível na agenda com o status "Cancelado".
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={updateAppointmentMutation.isPending}>Voltar</AlertDialogCancel>
+            <Button
+              onClick={handleCancelAppointment}
+              disabled={updateAppointmentMutation.isPending}
+              className="bg-orange-600 text-white hover:bg-orange-700"
+            >
+              {updateAppointmentMutation.isPending ? "Cancelando..." : "Confirmar cancelamento"}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

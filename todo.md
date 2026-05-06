@@ -1188,3 +1188,12 @@
 ## Bug: Horário dos atendimentos não está sendo puxado corretamente na aba Atendimentos
 - [x] Investigar a fonte do sessionDate na query de analytics (era apenas data, sem hora)
 - [x] Corrigir para usar o horário real do agendamento (appointmentStartTime do appointment, fallback para sessionDate)
+
+## Funcionalidade: Status de atendimento na agenda
+- [x] Exibir badge "Realizado" (verde) nos agendamentos com status completed (evolução salva)
+- [x] Exibir badge "Cancelado" (vermelho) nos agendamentos com status cancelled
+- [x] Mostrar agendamentos cancelados na agenda com visual acinzentado (em vez de ocultar)
+- [x] Botão de cancelar (Ban) disponível para admin na agenda (laranja, ao lado de editar/excluir)
+- [x] Reutilizar updateAppointmentMutation com status: "cancelled"
+- [x] AlertDialog de confirmação antes de cancelar
+- [x] Validar com testes (101 testes passando)
