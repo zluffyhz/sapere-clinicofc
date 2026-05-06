@@ -3,18 +3,41 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Trash2 } from "lucide-react";
 
+export interface TherapistOption {
+  id: number;
+  name: string;
+}
+
 export interface ChildData {
   name: string;
   dateOfBirth: string;
   diagnosis: string;
   imageAuthorization: boolean;
+  therapyType?: string;
+  therapistUserId?: number;
 }
+
+const THERAPY_OPTIONS = [
+  { value: "", label: "Selecionar terapia (opcional)" },
+  { value: "fonoaudiologia", label: "Fonoaudiologia" },
+  { value: "psicologia", label: "Psicologia" },
+  { value: "terapia_ocupacional", label: "Terapia Ocupacional" },
+  { value: "psicopedagogia", label: "Psicopedagogia" },
+  { value: "psicomotricidade", label: "Psicomotricidade" },
+  { value: "musicoterapia", label: "Musicoterapia" },
+  { value: "fisioterapia", label: "Fisioterapia" },
+  { value: "neuropsicopedagogia", label: "Neuropsicopedagogia" },
+  { value: "nutricao", label: "Nutrição" },
+  { value: "aplicadora_denver_aba", label: "Aplicadora Denver/ABA" },
+  { value: "outro", label: "Outro" },
+];
 
 interface ChildFormCardProps {
   index: number;
   child: ChildData;
   canRemove: boolean;
-  onUpdate: (index: number, field: keyof ChildData, value: string | boolean) => void;
+  therapists: TherapistOption[];
+  onUpdate: (index: number, field: keyof ChildData, value: string | boolean | number | undefined) => void;
   onRemove: (index: number) => void;
 }
 
@@ -28,6 +51,7 @@ export const ChildFormCard = memo(function ChildFormCard({
   index,
   child,
   canRemove,
+  therapists,
   onUpdate,
   onRemove,
 }: ChildFormCardProps) {
@@ -90,6 +114,58 @@ export const ChildFormCard = memo(function ChildFormCard({
             className="h-9 text-sm"
           />
         </div>
+      </div>
+
+      {/* Vínculo terapêutico */}
+      <div className="border-t border-orange-100 pt-3 space-y-3">
+        <p className="text-xs font-semibold text-orange-600 uppercase tracking-wide">
+          Vínculo Terapêutico
+        </p>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label className="text-xs font-medium text-muted-foreground">
+              Tipo de terapia
+            </Label>
+            <select
+              value={child.therapyType ?? ""}
+              onChange={(e) => onUpdate(index, "therapyType", e.target.value || undefined)}
+              className="w-full h-9 text-sm rounded-md border border-input bg-background px-3 py-1 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-400"
+            >
+              {THERAPY_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs font-medium text-muted-foreground">
+              Terapeuta responsável
+            </Label>
+            <select
+              value={child.therapistUserId ?? ""}
+              onChange={(e) =>
+                onUpdate(index, "therapistUserId", e.target.value ? Number(e.target.value) : undefined)
+              }
+              className="w-full h-9 text-sm rounded-md border border-input bg-background px-3 py-1 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-400"
+              disabled={therapists.length === 0}
+            >
+              <option value="">
+                {therapists.length === 0 ? "Nenhum terapeuta cadastrado" : "Selecionar terapeuta (opcional)"}
+              </option>
+              {therapists.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        {(child.therapyType || child.therapistUserId) && (
+          <p className="text-xs text-muted-foreground bg-orange-50 rounded-md px-3 py-2">
+            O vínculo será registrado no prontuário do paciente. Agendamentos podem ser criados depois na aba Agenda.
+          </p>
+        )}
       </div>
 
       <label className="flex items-center gap-2 cursor-pointer group">

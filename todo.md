@@ -1160,3 +1160,11 @@
 - [x] Investigar causa do erro no backend (createAppointment + replicateWeekly)
 - [x] Corrigir o bug sem introduzir novos erros — Promise.all paralelo + setImmediate para notificações/email + try/catch global
 - [x] Validar com testes (95 testes passando)
+
+## Funcionalidade: Vincular Terapia/Terapeuta ao Cadastrar Filho
+- [x] Adicionar campos therapyType e therapistUserId ao tipo ChildData no ChildFormCard
+- [x] Atualizar ChildFormCard para exibir select de tipo de terapia e select de terapeuta
+- [x] Carregar lista de terapeutas no AdminUsersPage para passar ao ChildFormCard
+- [x] Atualizar o input do procedure createUserWithPatient para aceitar therapyType e therapistUserId por filho
+- [x] Criar vínculo na tabela patient_therapist_assignments ao criar filho com terapia selecionada
+- [x] Validar com testes (95 testes passando)

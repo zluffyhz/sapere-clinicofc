@@ -1499,6 +1499,9 @@ export const appRouter = router({
           diagnosis: z.string().optional(),
           notes: z.string().optional(),
           imageAuthorization: z.boolean().default(false),
+          // Vínculo terapêutico opcional
+          therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]).optional(),
+          therapistUserId: z.number().int().positive().optional(),
         })).optional(),
       }))
       .mutation(async ({ input }) => {
@@ -1524,6 +1527,7 @@ export const appRouter = router({
         const userId = userResult[0].insertId;
 
         const patientIds: number[] = [];
+        const assignmentCount = { created: 0 };
 
         // Criar todos os pacientes vinculados
         if (input.patients && input.patients.length > 0) {
@@ -1535,8 +1539,27 @@ export const appRouter = router({
               notes: patient.notes,
               imageAuthorization: patient.imageAuthorization ?? false,
               familyUserId: userId,
+              // Salvar terapeuta principal no campo do paciente se informado
+              therapistUserId: patient.therapistUserId ?? null,
             });
-            patientIds.push(patientResult[0].insertId);
+            const patientId = patientResult[0].insertId;
+            patientIds.push(patientId);
+
+            // Criar vínculo na tabela patient_therapist_assignments se terapia E terapeuta informados
+            if (patient.therapyType && patient.therapistUserId) {
+              try {
+                await db.createPatientTherapistAssignment({
+                  patientId,
+                  therapistUserId: patient.therapistUserId,
+                  therapyType: patient.therapyType,
+                  isActive: true,
+                });
+                assignmentCount.created++;
+              } catch (err) {
+                // Não bloquear o cadastro se o vínculo falhar
+                console.error('[createUserWithPatient] Erro ao criar vínculo terapêutico:', err);
+              }
+            }
           }
         }
 
@@ -1546,6 +1569,7 @@ export const appRouter = router({
           temporaryPassword: tempPassword,
           patientIds,
           patientCount: patientIds.length,
+          assignmentCount: assignmentCount.created,
         };
       }),
     

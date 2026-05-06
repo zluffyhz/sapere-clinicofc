@@ -164,6 +164,8 @@ export default function AdminUsersPage() {
               dateOfBirth: c.dateOfBirth ? new Date(c.dateOfBirth) : undefined,
               diagnosis: c.diagnosis.trim() || undefined,
               imageAuthorization: c.imageAuthorization,
+              therapyType: c.therapyType as any || undefined,
+              therapistUserId: c.therapistUserId || undefined,
             }))
         : [];
 
@@ -223,6 +225,14 @@ export default function AdminUsersPage() {
 
   const selectedUsersData = users?.filter((u) => selectedUserIds.includes(u.id)) ?? [];
 
+  // Memoizar lista de terapeutas para o ChildFormCard
+  const therapistOptions = useMemo(() => {
+    if (!users) return [];
+    return users
+      .filter((u) => u.role === "therapist" || u.role === "admin")
+      .map((u) => ({ id: u.id, name: (u.name ?? u.email) as string }));
+  }, [users]);
+
   // Memoizar lista filtrada de usuários para evitar recálculo a cada render
   const filteredUsers = useMemo(() => {
     if (!users) return [];
@@ -237,7 +247,7 @@ export default function AdminUsersPage() {
 
   // Handlers memoizados para ChildFormCard
   const handleUpdateChild = useCallback(
-    (index: number, field: keyof ChildData, value: string | boolean) => {
+    (index: number, field: keyof ChildData, value: string | boolean | number | undefined) => {
       setChildren((prev) => {
         const updated = [...prev];
         updated[index] = { ...updated[index], [field]: value };
@@ -428,6 +438,7 @@ export default function AdminUsersPage() {
                           index={idx}
                           child={child}
                           canRemove={children.length > 1}
+                          therapists={therapistOptions}
                           onUpdate={handleUpdateChild}
                           onRemove={handleRemoveChild}
                         />
