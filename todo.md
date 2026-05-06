@@ -1179,3 +1179,8 @@
 ## Ajuste: Aba Atendimentos visível apenas para admin
 - [x] Ocultar item "Atendimentos" na navegação para usuários não-admin (já filtrado por roles: ["admin"] no SapereLayout)
 - [x] Proteger rota /atendimentos com AdminRoute que redireciona não-admin para /
+
+## Funcionalidade: Exportar Relatório Mensal de Atendimentos em PDF
+- [x] Criar endpoint REST /api/atendimentos/relatorio-pdf no backend (Express + pdfkit)
+- [x] PDF com cabeçalho da clínica, mês/ano, tabela agrupada por terapeuta com subtotais e total geral
+- [x] Botão "Exportar PDF" na página AtendimentosPage que dispara o download

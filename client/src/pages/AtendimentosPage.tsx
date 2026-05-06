@@ -3,6 +3,7 @@ import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { NativeSelect } from "@/components/ui/native-select";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   ClipboardCheck,
   Users,
@@ -10,6 +11,7 @@ import {
   Clock,
   TrendingUp,
   User,
+  FileDown,
 } from "lucide-react";
 
 const therapyTypeLabels: Record<string, string> = {
@@ -45,6 +47,35 @@ export default function AtendimentosPage() {
   const currentDate = new Date();
   const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportPDF = async () => {
+    setIsExporting(true);
+    try {
+      const response = await fetch(
+        `/api/atendimentos/relatorio-pdf?month=${selectedMonth}&year=${selectedYear}`,
+        { credentials: "include" }
+      );
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        alert(err.error || "Erro ao gerar PDF. Tente novamente.");
+        return;
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `relatorio-atendimentos-${selectedYear}-${String(selectedMonth).padStart(2, "0")}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch {
+      alert("Erro ao gerar PDF. Verifique sua conexão e tente novamente.");
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const { data: atendimentos, isLoading } = trpc.analytics.atendimentosMensal.useQuery({
     month: selectedMonth,
@@ -133,6 +164,16 @@ export default function AtendimentosPage() {
             className="w-[180px]"
             options={monthOptions}
           />
+          <Button
+            onClick={handleExportPDF}
+            disabled={isExporting || totalAtendimentos === 0}
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-1.5 bg-white border-orange-300 text-orange-700 hover:bg-orange-50"
+          >
+            <FileDown className="h-4 w-4" />
+            {isExporting ? "Gerando..." : "Exportar PDF"}
+          </Button>
         </div>
       </div>
 
