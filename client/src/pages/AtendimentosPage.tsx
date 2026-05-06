@@ -80,6 +80,10 @@ export default function AtendimentosPage() {
   const { data: atendimentos, isLoading } = trpc.analytics.atendimentosMensal.useQuery({
     month: selectedMonth,
     year: selectedYear,
+  }, {
+    refetchOnWindowFocus: true,
+    refetchInterval: 30_000, // Atualiza a cada 30 segundos automaticamente
+    staleTime: 10_000, // Dados considerados frescos por 10 segundos
   });
 
   // Agrupar por terapeuta
