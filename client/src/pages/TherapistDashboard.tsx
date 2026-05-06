@@ -243,11 +243,12 @@ export default function TherapistDashboard() {
           accent="purple"
         />
         <StatCard
-          title="Realizadas Hoje"
-          value={completedToday}
-          subtitle={cancelledToday > 0 ? `${cancelledToday} cancelada${cancelledToday === 1 ? "" : "s"}` : "Com evolução registrada"}
-          icon={CheckCircle2}
+          title="Prontuários"
+          value={patients?.length || 0}
+          subtitle="Disponíveis"
+          icon={ClipboardList}
           accent="green"
+          loading={patientsLoading}
         />
       </div>
 
