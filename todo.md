@@ -1209,3 +1209,11 @@
 - [x] Skeleton loading nos cards de pacientes
 - [x] Preservada identidade laranja Sapere em todos os elementos
 - [x] 101 testes passando, TypeScript sem erros
+
+## Verificação e Auto-refresh da Página Atendimentos
+- [x] Verificar que todos os 32 atendimentos de maio estão sendo puxados corretamente
+- [x] Adicionar refetchInterval (30s) para atualização automática
+- [x] Adicionar refetchOnWindowFocus para atualizar ao voltar à aba
+- [x] Configurar staleTime (10s) para evitar requests desnecessários
+- [x] Verificar que não há perda de dados na zona de borda UTC/BRT
+- [x] 101 testes passando, TypeScript sem erros
