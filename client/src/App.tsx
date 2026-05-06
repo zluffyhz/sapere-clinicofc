@@ -20,7 +20,7 @@ import AdminDataManagementPage from "./pages/AdminDataManagementPage";
 import LoginPage from "./pages/LoginPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import SessionPage from "./pages/SessionPage";
-import AttendancePage from "./pages/AttendancePage";
+import AtendimentosPage from "./pages/AtendimentosPage";
 import FamilyFrequencyPage from "./pages/FamilyFrequencyPage";
 
 function DashboardRouter() {
@@ -93,8 +93,8 @@ function Router() {
       <Route path="/session/:patientId">
         {(params) => <ProtectedRoute component={SessionPage} />}
       </Route>
-      <Route path="/presenca">
-        {() => <ProtectedRoute component={AttendancePage} />}
+      <Route path="/atendimentos">
+        {() => <ProtectedRoute component={AtendimentosPage} />}
       </Route>
       <Route path="/frequencia">
         {() => <ProtectedRoute component={FamilyFrequencyPage} />}

@@ -32,7 +32,7 @@ const navItems: NavItem[] = [
   { label: "Documentos", href: "/documentos", icon: <FileText className="h-5 w-5" />, roles: ["family", "therapist", "admin"] },
   { label: "Pacientes", href: "/pacientes", icon: <Users className="h-5 w-5" />, roles: ["therapist", "admin"] },
   { label: "Prontuários", href: "/prontuarios", icon: <ClipboardList className="h-5 w-5" />, roles: ["therapist", "admin"] },
-  { label: "Presença", href: "/presenca", icon: <ClipboardCheck className="h-5 w-5" />, roles: ["admin"] },
+  { label: "Atendimentos", href: "/atendimentos", icon: <ClipboardCheck className="h-5 w-5" />, roles: ["admin"] },
   { label: "Usuários", href: "/admin/usuarios", icon: <Users className="h-5 w-5" />, roles: ["admin"] },
   { label: "Gerenciar Dados", href: "/admin/dados", icon: <Database className="h-5 w-5" />, roles: ["admin"] },
 ];

@@ -1168,3 +1168,10 @@
 - [x] Atualizar o input do procedure createUserWithPatient para aceitar therapyType e therapistUserId por filho
 - [x] Criar vínculo na tabela patient_therapist_assignments ao criar filho com terapia selecionada
 - [x] Validar com testes (95 testes passando)
+
+## Funcionalidade: Aba Análise de Atendimentos (substituir Presença)
+- [x] Criar procedure backend analytics.atendimentosMensal (evoluções agrupadas por terapeuta, filtro mês/ano, a partir de maio/2026)
+- [x] Criar nova página AtendimentosPage com cards resumo + tabela agrupada por terapeuta
+- [x] Atualizar navegação: trocar "Presença" por "Atendimentos" no SapereLayout
+- [x] Atualizar rota no App.tsx
+- [x] Validar com testes (101 testes passando)

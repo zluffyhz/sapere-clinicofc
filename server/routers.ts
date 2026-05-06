@@ -1627,6 +1627,68 @@ export const appRouter = router({
         return { success: true, deleted: input.userIds.length };
       }),
   }),
+
+  // Analytics - Análise de Atendimentos
+  analytics: router({
+    atendimentosMensal: adminProcedure
+      .input(z.object({
+        month: z.number().int().min(1).max(12),
+        year: z.number().int().min(2026),
+      }))
+      .query(async ({ input }) => {
+        const { month, year } = input;
+        const { eq, and, gte, lte, asc } = await import("drizzle-orm");
+        const { evolutions: evolutionsTable, users: usersTable, patients: patientsTable, appointments: appointmentsTable } = await import("../drizzle/schema");
+        
+        // Calcular início e fim do mês em UTC
+        const startDate = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0));
+        const endDate = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999));
+
+        // Buscar todas as evoluções do mês com join em pacientes e terapeutas
+        const dbConn = await db.getDb();
+        if (!dbConn) return { records: [], totalCount: 0 };
+
+        const records = await dbConn
+          .select({
+            id: evolutionsTable.id,
+            appointmentId: evolutionsTable.appointmentId,
+            patientId: evolutionsTable.patientId,
+            therapistUserId: evolutionsTable.therapistUserId,
+            sessionDate: evolutionsTable.sessionDate,
+            therapyType: appointmentsTable.therapyType,
+            therapistName: usersTable.name,
+            patientName: patientsTable.name,
+          })
+          .from(evolutionsTable)
+          .leftJoin(usersTable, eq(evolutionsTable.therapistUserId, usersTable.id))
+          .leftJoin(patientsTable, eq(evolutionsTable.patientId, patientsTable.id))
+          .leftJoin(appointmentsTable, eq(evolutionsTable.appointmentId, appointmentsTable.id))
+          .where(
+            and(
+              gte(evolutionsTable.sessionDate, startDate),
+              lte(evolutionsTable.sessionDate, endDate)
+            )
+          )
+          .orderBy(asc(evolutionsTable.sessionDate));
+
+        // Formatar resultado com nomes não-nulos
+        const formattedRecords = records.map(r => ({
+          id: r.id,
+          appointmentId: r.appointmentId,
+          patientId: r.patientId,
+          therapistUserId: r.therapistUserId,
+          sessionDate: r.sessionDate,
+          therapyType: r.therapyType ?? "outro",
+          therapistName: r.therapistName ?? "Terapeuta desconhecido",
+          patientName: r.patientName ?? "Paciente desconhecido",
+        }));
+
+        return {
+          records: formattedRecords,
+          totalCount: formattedRecords.length,
+        };
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;
