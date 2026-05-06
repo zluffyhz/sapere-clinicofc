@@ -55,6 +55,8 @@ async function startServer() {
         return;
       }
 
+      const therapistIdParam = req.query.therapistId ? parseInt(String(req.query.therapistId)) : null;
+
       const dbModule = await import("../db");
       const dbConn = await dbModule.getDb();
       if (!dbConn) {
@@ -67,6 +69,11 @@ async function startServer() {
 
       const startDate = new Date(Date.UTC(yearParam, monthParam - 1, 1, 0, 0, 0));
       const endDate = new Date(Date.UTC(yearParam, monthParam, 0, 23, 59, 59, 999));
+
+      const whereConditions = [gteOp(evo.sessionDate, startDate), lteOp(evo.sessionDate, endDate)];
+      if (therapistIdParam) {
+        whereConditions.push(eqOp(evo.therapistUserId, therapistIdParam));
+      }
 
       const records = await dbConn
         .select({
@@ -81,7 +88,7 @@ async function startServer() {
         .leftJoin(usr, eqOp(evo.therapistUserId, usr.id))
         .leftJoin(pat, eqOp(evo.patientId, pat.id))
         .leftJoin(appt, eqOp(evo.appointmentId, appt.id))
-        .where(andOp(gteOp(evo.sessionDate, startDate), lteOp(evo.sessionDate, endDate)))
+        .where(andOp(...whereConditions))
         .orderBy(ascOp(evo.sessionDate));
 
       const filtered = records

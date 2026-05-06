@@ -1197,3 +1197,8 @@
 - [x] Reutilizar updateAppointmentMutation com status: "cancelled"
 - [x] AlertDialog de confirmação antes de cancelar
 - [x] Validar com testes (101 testes passando)
+
+## Filtro por Terapeuta na Aba Atendimentos
+- [x] Adicionar dropdown de seleção de terapeuta (Todos / individual)
+- [x] Filtrar tabela e cards resumo pelo terapeuta selecionado
+- [x] PDF export respeitar o filtro de terapeuta selecionado
