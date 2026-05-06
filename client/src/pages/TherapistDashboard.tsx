@@ -1,9 +1,10 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, FileText, Users, ClipboardList, Timer, ChevronRight } from "lucide-react";
+import { Calendar, FileText, Users, ClipboardList, Timer, ChevronRight, CheckCircle2, Clock, XCircle, TrendingUp } from "lucide-react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { formatBRT } from "@/lib/timezone";
@@ -15,103 +16,199 @@ function QuickActionButton({
   href,
   icon: Icon,
   label,
-  variant = "outline",
-  className = "",
+  description,
+  color = "orange",
 }: {
   href: string;
   icon: any;
   label: string;
-  variant?: "default" | "outline";
-  className?: string;
+  description: string;
+  color?: "orange" | "blue" | "green" | "purple";
 }) {
   const [, setLocation] = useLocation();
 
+  const colorMap = {
+    orange: "bg-orange-50 hover:bg-orange-100 border-orange-100 text-orange-600",
+    blue: "bg-blue-50 hover:bg-blue-100 border-blue-100 text-blue-600",
+    green: "bg-green-50 hover:bg-green-100 border-green-100 text-green-600",
+    purple: "bg-purple-50 hover:bg-purple-100 border-purple-100 text-purple-600",
+  };
+
   return (
-    <Button
-      variant={variant}
-      className={`w-full h-20 flex flex-col gap-2 ${className}`}
+    <button
+      className={`w-full text-left p-4 rounded-xl border transition-all duration-150 group ${colorMap[color]}`}
       onClick={() => setLocation(href)}
     >
-      <Icon className="h-5 w-5" />
-      <span className="text-sm">{label}</span>
-    </Button>
+      <div className="flex items-center gap-3">
+        <div className="shrink-0">
+          <Icon className="h-5 w-5" />
+        </div>
+        <div className="min-w-0">
+          <p className="text-sm font-semibold leading-tight">{label}</p>
+          <p className="text-xs opacity-70 mt-0.5 leading-tight">{description}</p>
+        </div>
+        <ChevronRight className="h-4 w-4 ml-auto shrink-0 opacity-40 group-hover:opacity-70 transition-opacity" />
+      </div>
+    </button>
+  );
+}
+
+// Stat Card Component
+function StatCard({
+  title,
+  value,
+  subtitle,
+  icon: Icon,
+  accent = "orange",
+  loading = false,
+}: {
+  title: string;
+  value: number | string;
+  subtitle: string;
+  icon: any;
+  accent?: "orange" | "blue" | "green" | "purple";
+  loading?: boolean;
+}) {
+  const accentMap = {
+    orange: { border: "border-l-orange-400", icon: "text-orange-500 bg-orange-50" },
+    blue: { border: "border-l-blue-400", icon: "text-blue-500 bg-blue-50" },
+    green: { border: "border-l-green-400", icon: "text-green-500 bg-green-50" },
+    purple: { border: "border-l-purple-400", icon: "text-purple-500 bg-purple-50" },
+  };
+
+  const { border, icon: iconStyle } = accentMap[accent];
+
+  return (
+    <Card className={`border-l-4 ${border} shadow-sm hover:shadow-md transition-shadow`}>
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide truncate">{title}</p>
+            {loading ? (
+              <div className="h-8 w-12 bg-muted animate-pulse rounded mt-1" />
+            ) : (
+              <p className="text-2xl font-bold mt-1 leading-none">{value}</p>
+            )}
+            <p className="text-xs text-muted-foreground mt-1 leading-tight">{subtitle}</p>
+          </div>
+          <div className={`shrink-0 p-2 rounded-lg ${iconStyle}`}>
+            <Icon className="h-4 w-4" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
 export default function TherapistDashboard() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
+
   // Admin sees all patients, therapist sees only assigned patients
   const { data: allPatients, isLoading: allPatientsLoading } = trpc.patients.list.useQuery(
     undefined,
-    { enabled: user?.role === 'admin' }
+    { enabled: user?.role === "admin" }
   );
   const { data: myPatients, isLoading: myPatientsLoading } = trpc.patients.getMyPatients.useQuery(
     undefined,
-    { enabled: user?.role === 'therapist' }
+    { enabled: user?.role === "therapist" }
   );
-  
-  const patients = user?.role === 'admin' ? allPatients : myPatients;
-  const patientsLoading = user?.role === 'admin' ? allPatientsLoading : myPatientsLoading;
-  
+
+  const patients = user?.role === "admin" ? allPatients : myPatients;
+  const patientsLoading = user?.role === "admin" ? allPatientsLoading : myPatientsLoading;
+
   // Collaboration chart filters
   const [selectedPatientId, setSelectedPatientId] = useState<number | undefined>(undefined);
   const [selectedDays, setSelectedDays] = useState(30);
-  
+
   // Get collaboration history (only for therapists/admins)
   const { data: collaborationData } = trpc.evolutions.getCollaborationHistory.useQuery(
-    {
-      days: selectedDays,
-      patientId: selectedPatientId,
-    },
-    {
-      enabled: !!user && (user.role === 'therapist' || user.role === 'admin'),
-    }
+    { days: selectedDays, patientId: selectedPatientId },
+    { enabled: !!user && (user.role === "therapist" || user.role === "admin") }
   );
 
   // Get today's appointments
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
+  const [today] = useState(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
+  const [tomorrow] = useState(() => {
+    const d = new Date(today);
+    d.setDate(d.getDate() + 1);
+    return d;
+  });
+  const [weekEnd] = useState(() => {
+    const d = new Date(today);
+    d.setDate(d.getDate() + 7);
+    return d;
+  });
 
   const { data: todayAppointments } = trpc.appointments.listByDateRange.useQuery({
     startDate: today,
     endDate: tomorrow,
   });
 
-  // Get this week's appointments (next 7 days from today)
-  const weekStart = new Date();
-  weekStart.setHours(0, 0, 0, 0);
-  const weekEnd = new Date(weekStart);
-  weekEnd.setDate(weekEnd.getDate() + 7);
-
   const { data: weekAppointments } = trpc.appointments.listByDateRange.useQuery({
-    startDate: weekStart,
+    startDate: today,
     endDate: weekEnd,
   });
 
   const scheduledToday = todayAppointments?.filter((a) => a.status === "scheduled").length || 0;
+  const completedToday = todayAppointments?.filter((a) => a.status === "completed").length || 0;
+  const cancelledToday = todayAppointments?.filter((a) => a.status === "cancelled").length || 0;
+
+  const greeting = (() => {
+    const h = new Date().getHours();
+    if (h < 12) return "Bom dia";
+    if (h < 18) return "Boa tarde";
+    return "Boa noite";
+  })();
+
+  const statusConfig = {
+    scheduled: { label: "Agendada", icon: Clock, className: "bg-blue-50 text-blue-700 border-blue-200" },
+    completed: { label: "Realizada", icon: CheckCircle2, className: "bg-green-50 text-green-700 border-green-200" },
+    cancelled: { label: "Cancelada", icon: XCircle, className: "bg-red-50 text-red-700 border-red-200" },
+    rescheduled: { label: "Remarcada", icon: Clock, className: "bg-yellow-50 text-yellow-700 border-yellow-200" },
+  };
 
   return (
     <div className="space-y-6">
-      {/* Hero Section: Boas-vindas + Iniciar Sessão */}
-      <div className="rounded-2xl bg-gradient-to-r from-orange-500 to-orange-400 p-6 text-white shadow-md">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      {/* Hero Section */}
+      <div
+        className="rounded-2xl p-6 text-white shadow-lg relative overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg, oklch(0.60 0.20 50) 0%, oklch(0.68 0.18 55) 60%, oklch(0.72 0.16 65) 100%)",
+        }}
+      >
+        {/* Subtle pattern overlay */}
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        />
+        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
+            <p className="text-orange-100 text-sm font-medium mb-1">
+              {greeting},{" "}
+              {user?.role === "therapist" ? "Dr(a)." : ""}
+            </p>
             <h1 className="text-2xl font-bold leading-tight">
-              Bem-vindo{user?.role === 'therapist' ? ', Dr(a).' : ','}{" "}
-              {user?.name?.split(" ")[0] || "Terapeuta"}
+              {user?.name?.split(" ")[0] || "Usuário"} 👋
             </h1>
-            <p className="mt-1 text-orange-100 text-sm">
+            <p className="mt-2 text-orange-100 text-sm">
               {scheduledToday > 0
-                ? `Você tem ${scheduledToday} sess${scheduledToday === 1 ? "ão" : "ões"} agendada${scheduledToday === 1 ? "" : "s"} para hoje`
+                ? `${scheduledToday} sess${scheduledToday === 1 ? "ão" : "ões"} agendada${scheduledToday === 1 ? "" : "s"} para hoje`
                 : "Nenhuma sessão agendada para hoje"}
+              {completedToday > 0 && ` · ${completedToday} realizada${completedToday === 1 ? "" : "s"}`}
             </p>
           </div>
           <Button
             size="lg"
-            className="bg-white text-orange-600 hover:bg-orange-50 font-semibold shadow-sm flex items-center gap-2 shrink-0"
+            className="bg-white text-orange-600 hover:bg-orange-50 font-semibold shadow-md flex items-center gap-2 shrink-0 border-0"
             onClick={() => setLocation("/session")}
           >
             <Timer className="h-5 w-5" />
@@ -122,165 +219,220 @@ export default function TherapistDashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pacientes Ativos</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{patients?.length || 0}</div>
-            <p className="text-xs text-muted-foreground">Total sob seus cuidados</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Sessões Hoje</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{scheduledToday}</div>
-            <p className="text-xs text-muted-foreground">Agendadas para hoje</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Esta Semana</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{weekAppointments?.length || 0}</div>
-            <p className="text-xs text-muted-foreground">Próximos 7 dias</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Prontuários</CardTitle>
-            <ClipboardList className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{patients?.length || 0}</div>
-            <p className="text-xs text-muted-foreground">Disponíveis</p>
-          </CardContent>
-        </Card>
+      <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+        <StatCard
+          title="Pacientes Ativos"
+          value={patients?.length || 0}
+          subtitle="Sob seus cuidados"
+          icon={Users}
+          accent="orange"
+          loading={patientsLoading}
+        />
+        <StatCard
+          title="Sessões Hoje"
+          value={scheduledToday}
+          subtitle="Agendadas para hoje"
+          icon={Calendar}
+          accent="blue"
+        />
+        <StatCard
+          title="Esta Semana"
+          value={weekAppointments?.length || 0}
+          subtitle="Próximos 7 dias"
+          icon={TrendingUp}
+          accent="purple"
+        />
+        <StatCard
+          title="Realizadas Hoje"
+          value={completedToday}
+          subtitle={cancelledToday > 0 ? `${cancelledToday} cancelada${cancelledToday === 1 ? "" : "s"}` : "Com evolução registrada"}
+          icon={CheckCircle2}
+          accent="green"
+        />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Today's Schedule */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Agenda de Hoje</CardTitle>
-            <CardDescription>
-              {format(today, "EEEE, dd 'de' MMMM", { locale: ptBR })}
-            </CardDescription>
+        <Card className="shadow-sm">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-base">Agenda de Hoje</CardTitle>
+                <CardDescription className="text-xs mt-0.5">
+                  {format(today, "EEEE, dd 'de' MMMM", { locale: ptBR })}
+                </CardDescription>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs text-muted-foreground h-8"
+                onClick={() => setLocation("/agenda")}
+              >
+                Ver tudo
+                <ChevronRight className="h-3 w-3 ml-1" />
+              </Button>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             {!todayAppointments || todayAppointments.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                Nenhuma sessão agendada para hoje
+              <div className="text-center py-10 text-muted-foreground">
+                <Calendar className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                <p className="text-sm">Nenhuma sessão agendada para hoje</p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {todayAppointments
-                  .map((apt) => {
-                    const patient = patients?.find((p) => p.id === apt.patientId);
-                    return (
-                      <div key={apt.id} className="flex items-start gap-4 p-3 rounded-lg border">
-                        <div className="flex-1 space-y-1">
-                          <p className="text-sm font-medium">
-                            {formatBRT(apt.startTime, "HH:mm")} -{" "}
-                            {formatBRT(apt.endTime, "HH:mm")}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {patient?.name || "Paciente"}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {apt.therapyType.replace(/_/g, " ")}
-                          </p>
-                        </div>
-                        <div
-                          className={`text-xs px-2 py-1 rounded-full ${
-                            apt.status === "scheduled"
-                              ? "bg-primary/10 text-primary"
-                              : apt.status === "completed"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-muted text-muted-foreground"
-                          }`}
-                        >
-                          {apt.status === "scheduled"
-                            ? "Agendada"
-                            : apt.status === "completed"
-                            ? "Concluída"
-                            : apt.status === "cancelled"
-                            ? "Cancelada"
-                            : "Remarcada"}
-                        </div>
+              <div className="space-y-2">
+                {todayAppointments.map((apt) => {
+                  const patient = patients?.find((p) => p.id === apt.patientId);
+                  const status = statusConfig[apt.status as keyof typeof statusConfig] || statusConfig.scheduled;
+                  const StatusIcon = status.icon;
+                  const isCancelled = apt.status === "cancelled";
+
+                  return (
+                    <div
+                      key={apt.id}
+                      className={`flex items-center gap-3 p-3 rounded-xl border transition-colors ${
+                        isCancelled ? "opacity-50 bg-muted/30" : "hover:bg-accent/30"
+                      }`}
+                    >
+                      {/* Time block */}
+                      <div className="shrink-0 text-center min-w-[44px]">
+                        <p className="text-sm font-bold leading-none">
+                          {formatBRT(apt.startTime, "HH:mm")}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {formatBRT(apt.endTime, "HH:mm")}
+                        </p>
                       </div>
-                    );
-                  })}
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => setLocation("/agenda")}
-                >
-                  Ver Agenda Completa
-                </Button>
+
+                      {/* Divider */}
+                      <div className={`w-0.5 h-8 rounded-full shrink-0 ${
+                        apt.status === "completed" ? "bg-green-400" :
+                        apt.status === "cancelled" ? "bg-red-300" :
+                        "bg-orange-400"
+                      }`} />
+
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-sm font-medium truncate ${isCancelled ? "line-through" : ""}`}>
+                          {patient?.name || "Paciente"}
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {apt.therapyType.replace(/_/g, " ")}
+                        </p>
+                      </div>
+
+                      {/* Status badge */}
+                      <Badge
+                        variant="outline"
+                        className={`shrink-0 text-xs gap-1 border ${status.className}`}
+                      >
+                        <StatusIcon className="h-3 w-3" />
+                        <span className="hidden sm:inline">{status.label}</span>
+                      </Badge>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Recent Patients */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Pacientes Recentes</CardTitle>
-            <CardDescription>Acesso rápido aos prontuários</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {patientsLoading ? (
-              <div className="text-center py-8 text-muted-foreground">Carregando...</div>
-            ) : !patients || patients.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                Nenhum paciente cadastrado
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {patients.slice(0, 5).map((patient) => (
-                  <div
-                    key={patient.id}
-                    className="flex items-center justify-between p-3 rounded-lg border"
-                  >
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">{patient.name}</p>
-                      {patient.dateOfBirth && (
-                        <p className="text-xs text-muted-foreground">
-                          {format(new Date(patient.dateOfBirth), "PP", { locale: ptBR })}
-                        </p>
-                      )}
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setLocation(`/prontuarios/${patient.id}`)}
-                    >
-                      Ver Prontuário
-                    </Button>
-                  </div>
-                ))}
+        {/* Recent Patients + Quick Actions */}
+        <div className="space-y-4">
+          {/* Recent Patients */}
+          <Card className="shadow-sm">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-base">Pacientes Recentes</CardTitle>
+                  <CardDescription className="text-xs mt-0.5">Acesso rápido aos prontuários</CardDescription>
+                </div>
                 <Button
-                  variant="outline"
-                  className="w-full"
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs text-muted-foreground h-8"
                   onClick={() => setLocation("/pacientes")}
                 >
-                  Ver Todos os Pacientes
+                  Ver todos
+                  <ChevronRight className="h-3 w-3 ml-1" />
                 </Button>
               </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              {patientsLoading ? (
+                <div className="space-y-2">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="h-12 bg-muted animate-pulse rounded-lg" />
+                  ))}
+                </div>
+              ) : !patients || patients.length === 0 ? (
+                <div className="text-center py-6 text-muted-foreground">
+                  <Users className="h-7 w-7 mx-auto mb-2 opacity-30" />
+                  <p className="text-sm">Nenhum paciente cadastrado</p>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  {patients.slice(0, 4).map((patient) => (
+                    <button
+                      key={patient.id}
+                      className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-accent/40 transition-colors text-left group"
+                      onClick={() => setLocation(`/prontuarios/${patient.id}`)}
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="h-8 w-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs font-bold shrink-0">
+                          {patient.name?.charAt(0).toUpperCase() || "P"}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium truncate">{patient.name}</p>
+                          {patient.dateOfBirth && (
+                            <p className="text-xs text-muted-foreground">
+                              {format(new Date(patient.dateOfBirth), "PP", { locale: ptBR })}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Quick Actions */}
+          <div className="grid grid-cols-2 gap-2">
+            {user?.role === "admin" && (
+              <QuickActionButton
+                href="/pacientes"
+                icon={Users}
+                label="Novo Paciente"
+                description="Cadastrar paciente"
+                color="orange"
+              />
             )}
-          </CardContent>
-        </Card>
+            <QuickActionButton
+              href="/agenda"
+              icon={Calendar}
+              label="Agenda"
+              description="Gerenciar horários"
+              color="blue"
+            />
+            <QuickActionButton
+              href="/prontuarios"
+              icon={ClipboardList}
+              label="Prontuários"
+              description="Registros clínicos"
+              color="purple"
+            />
+            <QuickActionButton
+              href="/documentos"
+              icon={FileText}
+              label="Documentos"
+              description="Laudos e relatórios"
+              color="green"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Collaboration Chart */}
@@ -294,40 +446,6 @@ export default function TherapistDashboard() {
           onDaysChange={setSelectedDays}
         />
       )}
-
-      {/* Quick Actions (secondary actions only, Iniciar Sessão moved to hero) */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Ações Rápidas</CardTitle>
-          <CardDescription>Acesse as funcionalidades principais</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
-            {user?.role === 'admin' && (
-              <QuickActionButton
-                href="/pacientes"
-                icon={Users}
-                label="Novo Paciente"
-              />
-            )}
-            <QuickActionButton
-              href="/agenda"
-              icon={Calendar}
-              label="Gerenciar Agenda"
-            />
-            <QuickActionButton
-              href="/prontuarios"
-              icon={ClipboardList}
-              label="Prontuários"
-            />
-            <QuickActionButton
-              href="/documentos"
-              icon={FileText}
-              label="Documentos"
-            />
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

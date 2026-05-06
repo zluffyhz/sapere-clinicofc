@@ -83,7 +83,7 @@ export default function SapereLayout({ children }: { children: React.ReactNode }
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2">
@@ -91,14 +91,14 @@ export default function SapereLayout({ children }: { children: React.ReactNode }
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-1">
+            <nav className="hidden md:flex items-center gap-0.5">
               {filteredNavItems.map((item) => (
                 <Link key={item.href} href={item.href}>
                   <a
-                    className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
                       location === item.href
-                        ? "bg-accent text-accent-foreground"
-                        : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
+                        ? "bg-orange-50 text-orange-600 shadow-sm"
+                        : "text-muted-foreground hover:bg-accent/60 hover:text-foreground"
                     }`}
                   >
                     {item.icon}

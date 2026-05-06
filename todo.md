@@ -1197,3 +1197,15 @@
 - [x] Reutilizar updateAppointmentMutation com status: "cancelled"
 - [x] AlertDialog de confirmação antes de cancelar
 - [x] Validar com testes (101 testes passando)
+
+## Melhoria: Design e Usabilidade do Dashboard Principal
+- [x] Hero banner com gradiente profundo, padrão pontilhado sutil e sombra rica
+- [x] Cards de stats com borda lateral colorida por categoria (laranja, azul, roxo, verde)
+- [x] Itens da agenda com linha lateral colorida por status + badge com ícone
+- [x] Ações rápidas em grid 2x2 com hover states coloridos por categoria
+- [x] Pacientes recentes com avatar inicial + chevron animado no hover
+- [x] Saudação dinâmica (Bom dia/tarde/noite) + contagem de realizadas
+- [x] Navegação ativa com destaque laranja (bg-orange-50 text-orange-600)
+- [x] Skeleton loading nos cards de pacientes
+- [x] Preservada identidade laranja Sapere em todos os elementos
+- [x] 101 testes passando, TypeScript sem erros
