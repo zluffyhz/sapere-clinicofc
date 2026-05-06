@@ -1202,3 +1202,7 @@
 - [x] Adicionar dropdown de seleção de terapeuta (Todos / individual)
 - [x] Filtrar tabela e cards resumo pelo terapeuta selecionado
 - [x] PDF export respeitar o filtro de terapeuta selecionado
+
+## Agendamentos Cancelados na Agenda
+- [x] Incluir agendamentos cancelados na visualização da agenda
+- [x] Exibir badge/identificação visual de "Cancelado" nesses agendamentos

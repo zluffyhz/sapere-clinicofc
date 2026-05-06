@@ -474,7 +474,7 @@ export const appRouter = router({
             const aptDateBRT = new Date(aptBRT);
             const aptDateStr = `${aptDateBRT.getFullYear()}-${String(aptDateBRT.getMonth() + 1).padStart(2, '0')}-${String(aptDateBRT.getDate()).padStart(2, '0')}`;
             return aptDateStr === todayDateStr &&
-              (apt.status === 'scheduled' || apt.status === 'completed');
+              (apt.status === 'scheduled' || apt.status === 'completed' || apt.status === 'cancelled');
           });
         }
 
