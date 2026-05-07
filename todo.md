@@ -1206,3 +1206,7 @@
 ## Agendamentos Cancelados na Agenda
 - [x] Incluir agendamentos cancelados na visualização da agenda
 - [x] Exibir badge/identificação visual de "Cancelado" nesses agendamentos
+
+## Cadastro de Filho para Família Existente
+- [x] Botão "Adicionar Filho" na linha de cada família na tabela de Gerenciar Usuários
+- [x] Modal de cadastro de novo paciente vinculado à família selecionada

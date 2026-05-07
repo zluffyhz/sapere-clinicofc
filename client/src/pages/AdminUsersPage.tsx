@@ -1,4 +1,5 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
+import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -48,6 +49,9 @@ export default function AdminUsersPage() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
+  const [isAddChildDialogOpen, setIsAddChildDialogOpen] = useState(false);
+  const [addChildFamilyUser, setAddChildFamilyUser] = useState<any>(null);
+  const [newChildForFamily, setNewChildForFamily] = useState<ChildData>({ name: "", dateOfBirth: "", diagnosis: "", imageAuthorization: false });
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [tempPassword, setTempPassword] = useState<string | null>(null);
 
@@ -104,6 +108,34 @@ export default function AdminUsersPage() {
       toast.error(`Erro ao criar usuário: ${error.message}`);
     },
   });
+
+  const addChildToFamilyMutation = trpc.patients.create.useMutation({
+    onSuccess: () => {
+      utils.patients.list.invalidate();
+      setIsAddChildDialogOpen(false);
+      setAddChildFamilyUser(null);
+      setNewChildForFamily({ name: "", dateOfBirth: "", diagnosis: "", imageAuthorization: false });
+      toast.success("Filho cadastrado com sucesso");
+    },
+    onError: (error) => {
+      toast.error(`Erro ao cadastrar filho: ${error.message}`);
+    },
+  });
+
+  const handleAddChildToFamily = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newChildForFamily.name.trim() || !addChildFamilyUser) {
+      toast.error("Nome do filho é obrigatório");
+      return;
+    }
+    addChildToFamilyMutation.mutate({
+      name: newChildForFamily.name.trim(),
+      dateOfBirth: newChildForFamily.dateOfBirth ? new Date(newChildForFamily.dateOfBirth) : undefined,
+      diagnosis: newChildForFamily.diagnosis?.trim() || undefined,
+      familyUserId: addChildFamilyUser.id,
+      imageAuthorization: newChildForFamily.imageAuthorization,
+    });
+  };
 
   const updateUserRoleMutation = trpc.admin.updateUserRole.useMutation({
     onSuccess: () => {
@@ -696,6 +728,20 @@ export default function AdminUsersPage() {
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
+                            {user.role === "family" && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                title="Adicionar filho"
+                                onClick={() => {
+                                  setAddChildFamilyUser(user);
+                                  setNewChildForFamily({ name: "", dateOfBirth: "", diagnosis: "", imageAuthorization: false });
+                                  setIsAddChildDialogOpen(true);
+                                }}
+                              >
+                                <UserPlus className="h-4 w-4 text-blue-600" />
+                              </Button>
+                            )}
                             <Button
                               variant="ghost"
                               size="sm"
@@ -728,6 +774,91 @@ export default function AdminUsersPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Add Child to Existing Family Dialog */}
+      <Dialog open={isAddChildDialogOpen} onOpenChange={(open) => {
+        setIsAddChildDialogOpen(open);
+        if (!open) {
+          setAddChildFamilyUser(null);
+          setNewChildForFamily({ name: "", dateOfBirth: "", diagnosis: "", imageAuthorization: false });
+        }
+      }}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <UserPlus className="h-5 w-5 text-blue-600" />
+              Adicionar Filho
+            </DialogTitle>
+            <DialogDescription>
+              Cadastrar novo filho vinculado a <strong>{addChildFamilyUser?.name}</strong>
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleAddChildToFamily} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="childName">Nome Completo *</Label>
+              <Input
+                id="childName"
+                value={newChildForFamily.name}
+                onChange={(e) => setNewChildForFamily({ ...newChildForFamily, name: e.target.value })}
+                placeholder="Nome do filho"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="childDob">Data de Nascimento</Label>
+              <Input
+                id="childDob"
+                type="date"
+                value={newChildForFamily.dateOfBirth}
+                onChange={(e) => setNewChildForFamily({ ...newChildForFamily, dateOfBirth: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="childDiagnosis">Diagnóstico</Label>
+              <Textarea
+                id="childDiagnosis"
+                value={newChildForFamily.diagnosis}
+                onChange={(e) => setNewChildForFamily({ ...newChildForFamily, diagnosis: e.target.value })}
+                placeholder="Diagnóstico inicial (opcional)"
+                rows={3}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Autorização de Imagem</Label>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="childImageAuth"
+                    checked={newChildForFamily.imageAuthorization === true}
+                    onChange={() => setNewChildForFamily({ ...newChildForFamily, imageAuthorization: true })}
+                    className="w-4 h-4"
+                  />
+                  <span>Sim</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="childImageAuth"
+                    checked={newChildForFamily.imageAuthorization === false}
+                    onChange={() => setNewChildForFamily({ ...newChildForFamily, imageAuthorization: false })}
+                    className="w-4 h-4"
+                  />
+                  <span>Não</span>
+                </label>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <Button type="button" variant="outline" onClick={() => setIsAddChildDialogOpen(false)}>
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={addChildToFamilyMutation.isPending}>
+                {addChildToFamilyMutation.isPending ? "Cadastrando..." : "Cadastrar Filho"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
