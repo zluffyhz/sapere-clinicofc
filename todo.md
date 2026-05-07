@@ -1210,3 +1210,9 @@
 ## Cadastro de Filho para Família Existente
 - [x] Botão "Adicionar Filho" na linha de cada família na tabela de Gerenciar Usuários
 - [x] Modal de cadastro de novo paciente vinculado à família selecionada
+
+## Bug Fix: patients.create sem assignment de terapeuta
+- [x] Bug: patients.create forçava therapistUserId do admin logado, sem criar assignment
+- [x] Fix: admin pode especificar therapistUserId opcional; assignment criado automaticamente quando terapeuta+terapia informados
+- [x] Modal "Adicionar Filho" agora inclui campos de terapeuta e tipo de terapia
+- [x] 108 testes passando (7 novos de integração)

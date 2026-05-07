@@ -143,13 +143,33 @@ export const appRouter = router({
         diagnosis: z.string().optional(),
         notes: z.string().optional(),
         imageAuthorization: z.boolean().default(false),
+        therapistUserId: z.number().optional(),
+        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]).optional(),
       }))
       .mutation(async ({ input, ctx }) => {
+        // Admin pode especificar um terapeuta; terapeuta usa a si mesmo
+        const resolvedTherapistId = ctx.user.role === 'admin'
+          ? (input.therapistUserId ?? null)
+          : ctx.user.id;
+
+        const { therapistUserId: _t, therapyType, ...patientData } = input;
         const result = await db.createPatient({
-          ...input,
-          therapistUserId: ctx.user.id,
+          ...patientData,
+          therapistUserId: resolvedTherapistId,
         });
-        return { success: true, id: result[0].insertId };
+        const patientId = result[0].insertId;
+
+        // Criar vínculo na tabela de assignments se terapeuta e tipo de terapia foram informados
+        if (resolvedTherapistId && therapyType) {
+          await db.createPatientTherapistAssignment({
+            patientId,
+            therapistUserId: resolvedTherapistId,
+            therapyType,
+            isActive: true,
+          });
+        }
+
+        return { success: true, id: patientId };
       }),
 
     list: protectedProcedure.query(async ({ ctx }) => {

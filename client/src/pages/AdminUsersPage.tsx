@@ -134,6 +134,8 @@ export default function AdminUsersPage() {
       diagnosis: newChildForFamily.diagnosis?.trim() || undefined,
       familyUserId: addChildFamilyUser.id,
       imageAuthorization: newChildForFamily.imageAuthorization,
+      therapistUserId: newChildForFamily.therapistUserId || undefined,
+      therapyType: (newChildForFamily.therapyType as any) || undefined,
     });
   };
 
@@ -823,6 +825,41 @@ export default function AdminUsersPage() {
                 rows={3}
               />
             </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="childTherapist">Terapeuta Responsável</Label>
+                <NativeSelect
+                  value={newChildForFamily.therapistUserId?.toString() || ""}
+                  onChange={(e) => setNewChildForFamily({ ...newChildForFamily, therapistUserId: e.target.value ? parseInt(e.target.value) : undefined })}
+                  placeholder="Selecionar (opcional)"
+                  options={therapistOptions.map((t) => ({ value: t.id.toString(), label: t.name }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="childTherapyType">Tipo de Terapia</Label>
+                <NativeSelect
+                  value={newChildForFamily.therapyType || ""}
+                  onChange={(e) => setNewChildForFamily({ ...newChildForFamily, therapyType: e.target.value || undefined })}
+                  placeholder="Selecionar (opcional)"
+                  options={[
+                    { value: "fonoaudiologia", label: "Fonoaudiologia" },
+                    { value: "psicologia", label: "Psicologia" },
+                    { value: "terapia_ocupacional", label: "Terapia Ocupacional" },
+                    { value: "psicopedagogia", label: "Psicopedagogia" },
+                    { value: "psicomotricidade", label: "Psicomotricidade" },
+                    { value: "musicoterapia", label: "Musicoterapia" },
+                    { value: "fisioterapia", label: "Fisioterapia" },
+                    { value: "neuropsicopedagogia", label: "Neuropsicopedagogia" },
+                    { value: "nutricao", label: "Nutrição" },
+                    { value: "aplicadora_denver_aba", label: "Denver/ABA" },
+                    { value: "outro", label: "Outro" },
+                  ]}
+                />
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground -mt-2">
+              Vincular terapeuta e tipo de terapia permite que o terapeuta visualize este paciente.
+            </p>
             <div className="space-y-2">
               <Label>Autorização de Imagem</Label>
               <div className="flex gap-4">
