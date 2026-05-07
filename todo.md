@@ -1216,3 +1216,8 @@
 - [x] Fix: admin pode especificar therapistUserId opcional; assignment criado automaticamente quando terapeuta+terapia informados
 - [x] Modal "Adicionar Filho" agora inclui campos de terapeuta e tipo de terapia
 - [x] 108 testes passando (7 novos de integração)
+
+## Atendimentos Pontuais com Terapeutas Não Vinculados
+- [x] Permitir agendar com qualquer terapeuta (não apenas vinculados ao paciente)
+- [x] Opção de vincular permanentemente o terapeuta ao paciente durante agendamento
+- [x] Portal da família: exibir nome do terapeuta que realizou cada atendimento específico

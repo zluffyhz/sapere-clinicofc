@@ -337,9 +337,11 @@ export async function getAppointmentsByDateRange(startDate: Date, endDate: Date,
     isJointSession: appointments.isJointSession,
     createdAt: appointments.createdAt,
     patientName: patients.name,
+    therapistName: users.name,
   })
     .from(appointments)
     .leftJoin(patients, eq(appointments.patientId, patients.id))
+    .leftJoin(users, eq(appointments.therapistUserId, users.id))
     .where(
       and(
         gte(appointments.startTime, startDate),

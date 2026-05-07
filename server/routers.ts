@@ -293,6 +293,7 @@ export const appRouter = router({
         endTime: z.date(),
         notes: z.string().optional(),
         replicateWeekly: z.boolean().optional(), // Admin only: replicate weekly for 30 days
+        alsoLinkTherapist: z.boolean().optional(), // Create permanent assignment for this therapist+patient
       }))
       .mutation(async ({ input, ctx }) => {
         try {
@@ -301,6 +302,23 @@ export const appRouter = router({
             throw new TRPCError({ code: 'FORBIDDEN', message: 'Famílias não podem criar agendamentos diretamente' });
           }
           const therapistUserId = input.therapistUserId || ctx.user.id;
+
+          // If alsoLinkTherapist is true, create a permanent assignment
+          if (input.alsoLinkTherapist) {
+            // Check if assignment already exists
+            const existingAssignments = await db.getPatientTherapistAssignments(input.patientId);
+            const alreadyLinked = existingAssignments.some(
+              (a: any) => a.therapistUserId === therapistUserId && a.therapyType === input.therapyType && a.isActive
+            );
+            if (!alreadyLinked) {
+              await db.createPatientTherapistAssignment({
+                patientId: input.patientId,
+                therapistUserId,
+                therapyType: input.therapyType,
+                isActive: true,
+              });
+            }
+          }
 
           // Generate seriesId if replicating weekly
           const seriesId = (input.replicateWeekly && ctx.user.role === 'admin') 

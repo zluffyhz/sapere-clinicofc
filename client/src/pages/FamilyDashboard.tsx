@@ -119,7 +119,7 @@ export default function FamilyDashboard() {
               </div>
             ) : (
               <div className="space-y-4">
-                {upcomingAppointments.map((apt) => {
+                {upcomingAppointments.map((apt: any) => {
                   const patient = patients?.find(p => p.id === apt.patientId);
                   return (
                     <div key={apt.id} className="flex items-start gap-4 p-3 rounded-lg border">
@@ -130,6 +130,11 @@ export default function FamilyDashboard() {
                         <p className="text-xs text-muted-foreground">
                           {patient?.name || "Paciente"}
                         </p>
+                        {apt.therapistName && (
+                          <p className="text-xs text-muted-foreground">
+                            Terapeuta: <span className="font-medium">{apt.therapistName}</span>
+                          </p>
+                        )}
                         <p className="text-xs text-muted-foreground">
                           {formatBRT(apt.startTime, "PPP 'às' HH:mm")}
                         </p>

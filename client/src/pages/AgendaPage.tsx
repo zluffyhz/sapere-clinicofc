@@ -47,6 +47,7 @@ type AppointmentFormData = {
   replicateWeekly?: boolean;
   isJointSession?: boolean;
   coTherapistIds?: number[];
+  alsoLinkTherapist?: boolean;
 };
 
 export default function AgendaPage() {
@@ -296,6 +297,7 @@ export default function AgendaPage() {
       endTime: endDateTime,
       notes: formData.notes || undefined,
       replicateWeekly: formData.replicateWeekly || false,
+      alsoLinkTherapist: formData.alsoLinkTherapist || false,
     });
   };
 
@@ -778,6 +780,27 @@ export default function AgendaPage() {
         </div>
       )}
 
+      {/* Link Therapist Permanently - Admin Only, only in create mode */}
+      {!isEdit && isAdmin && (
+        <div className="flex items-center space-x-2 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <input
+            type="checkbox"
+            id="alsoLinkTherapist"
+            checked={formData.alsoLinkTherapist || false}
+            onChange={(e) =>
+              setFormData({ ...formData, alsoLinkTherapist: e.target.checked })
+            }
+            className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+          />
+          <div>
+            <Label htmlFor="alsoLinkTherapist" className="text-sm font-medium text-gray-900 cursor-pointer">
+              Vincular terapeuta ao paciente permanentemente
+            </Label>
+            <p className="text-xs text-muted-foreground mt-0.5">Marque se este terapeuta passará a atender este paciente regularmente</p>
+          </div>
+        </div>
+      )}
+
       {/* Replicate Weekly - Admin Only, only in create mode */}
       {!isEdit && isAdmin && (
         <div className="flex items-center space-x-2 p-4 bg-amber-50 border border-amber-200 rounded-lg">
@@ -1000,6 +1023,7 @@ export default function AgendaPage() {
                 {selectedDateAppointments.map((apt) => {
                   const patient = patients?.find((p) => p.id === apt.patientId);
                   const therapist = therapists?.find((t) => t.id === apt.therapistUserId);
+                  const therapistDisplayName = therapist?.name || (apt as any).therapistName || null;
                   return (
                     <div
                       key={apt.id}
@@ -1070,9 +1094,9 @@ export default function AgendaPage() {
                           <p className="text-sm text-muted-foreground">
                             Paciente: {patient?.name || "Não identificado"}
                           </p>
-                          {therapist && (
+                          {therapistDisplayName && (
                             <p className="text-sm text-muted-foreground">
-                              Terapeuta: {therapist.name}
+                              Terapeuta: {therapistDisplayName}
                             </p>
                           )}
                           {apt.isJointSession && (
