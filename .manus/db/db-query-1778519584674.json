@@ -1,0 +1,9 @@
+{
+  "query": "SELECT id, patientId, LEFT(mainComplaints, 100) as mc, LEFT(therapyGoals, 100) as tg FROM patient_data WHERE therapistUserId = 468419 AND (mainComplaints LIKE '%Não%' OR therapyGoals LIKE '%Não%' OR additionalNotes LIKE '%Não%');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, patientId, LEFT(mainComplaints, 100) as mc, LEFT(therapyGoals, 100) as tg FROM patient_data WHERE therapistUserId = 468419 AND (mainComplaints LIKE '%Não%' OR therapyGoals LIKE '%Não%' OR additionalNotes LIKE '%Não%');",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 267
+}

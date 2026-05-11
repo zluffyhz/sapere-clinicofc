@@ -93,17 +93,17 @@ export default function SapereLayout({ children }: { children: React.ReactNode }
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-1">
               {filteredNavItems.map((item) => (
-                <Link key={item.href} href={item.href}>
-                  <a
-                    className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      location === item.href
-                        ? "bg-accent text-accent-foreground"
-                        : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
-                    }`}
-                  >
-                    {item.icon}
-                    <span>{item.label}</span>
-                  </a>
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    location === item.href
+                      ? "bg-accent text-accent-foreground"
+                      : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
+                  }`}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
                 </Link>
               ))}
             </nav>
@@ -179,18 +179,18 @@ export default function SapereLayout({ children }: { children: React.ReactNode }
           <nav className="md:hidden border-t bg-background">
             <div className="container py-4 space-y-1">
               {filteredNavItems.map((item) => (
-                <Link key={item.href} href={item.href}>
-                  <a
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${
-                      location === item.href
-                        ? "bg-accent text-accent-foreground"
-                        : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
-                    }`}
-                  >
-                    {item.icon}
-                    <span>{item.label}</span>
-                  </a>
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${
+                    location === item.href
+                      ? "bg-accent text-accent-foreground"
+                      : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
+                  }`}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
                 </Link>
               ))}
             </div>

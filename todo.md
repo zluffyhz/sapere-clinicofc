@@ -1221,3 +1221,8 @@
 - [x] Permitir agendar com qualquer terapeuta (não apenas vinculados ao paciente)
 - [x] Opção de vincular permanentemente o terapeuta ao paciente durante agendamento
 - [x] Portal da família: exibir nome do terapeuta que realizou cada atendimento específico
+
+## Bug: Texto vazando para header do dashboard de terapeutas
+- [x] Investigar e corrigir texto "Não se trata de uma questão de..." aparecendo no header/nav
+- Causa: nested anchor tags (<Link><a>...</a></Link>) no SapereLayout causando renderização imprevisível
+- Correção: removidos <a> tags aninhados, usando apenas <Link> com classes diretas

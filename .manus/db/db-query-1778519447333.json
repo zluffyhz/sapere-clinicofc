@@ -1,0 +1,46 @@
+{
+  "query": "SHOW TABLES;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SHOW TABLES;",
+  "rows": [
+    {
+      "Tables_in_EGarZwiW5PSBt7KQSMeJXj": "__drizzle_migrations"
+    },
+    {
+      "Tables_in_EGarZwiW5PSBt7KQSMeJXj": "appointment_co_therapists"
+    },
+    {
+      "Tables_in_EGarZwiW5PSBt7KQSMeJXj": "appointment_dual_patients"
+    },
+    {
+      "Tables_in_EGarZwiW5PSBt7KQSMeJXj": "appointments"
+    },
+    {
+      "Tables_in_EGarZwiW5PSBt7KQSMeJXj": "attendance"
+    },
+    {
+      "Tables_in_EGarZwiW5PSBt7KQSMeJXj": "documents"
+    },
+    {
+      "Tables_in_EGarZwiW5PSBt7KQSMeJXj": "evolutions"
+    },
+    {
+      "Tables_in_EGarZwiW5PSBt7KQSMeJXj": "notifications"
+    },
+    {
+      "Tables_in_EGarZwiW5PSBt7KQSMeJXj": "patient_data"
+    },
+    {
+      "Tables_in_EGarZwiW5PSBt7KQSMeJXj": "patient_therapist_assignments"
+    },
+    {
+      "Tables_in_EGarZwiW5PSBt7KQSMeJXj": "patients"
+    },
+    {
+      "Tables_in_EGarZwiW5PSBt7KQSMeJXj": "users"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_EGarZwiW5PSBt7KQSMeJXj\n__drizzle_migrations\nappointment_co_therapists\nappointment_dual_patients\nappointments\nattendance\ndocuments\nevolutions\nnotifications\npatient_data\npatient_therapist_assignments\npatients\nusers\n",
+  "stderr": "",
+  "execution_time_ms": 259
+}

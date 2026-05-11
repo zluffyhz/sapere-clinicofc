@@ -1,0 +1,9 @@
+{
+  "query": "SELECT id, name, LEFT(diagnosis, 100) as diag FROM patients WHERE diagnosis LIKE '%Não se trata%' OR diagnosis LIKE '%questão%' LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, LEFT(diagnosis, 100) as diag FROM patients WHERE diagnosis LIKE '%Não se trata%' OR diagnosis LIKE '%questão%' LIMIT 5;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 269
+}

@@ -1,0 +1,80 @@
+{
+  "query": "SELECT id, type, LEFT(title, 100) as title, LEFT(message, 100) as msg, isRead FROM notifications WHERE userId = 468419 ORDER BY createdAt DESC LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, type, LEFT(title, 100) as title, LEFT(message, 100) as msg, isRead FROM notifications WHERE userId = 468419 ORDER BY createdAt DESC LIMIT 10;",
+  "rows": [
+    {
+      "id": "9930050",
+      "type": "schedule_change",
+      "title": "Nova sessão agendada",
+      "msg": "Uma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 09/06/2030 às 10:00",
+      "isRead": "0"
+    },
+    {
+      "id": "9930053",
+      "type": "schedule_change",
+      "title": "Nova sessão agendada",
+      "msg": "Uma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 23/06/2030 às 10:00",
+      "isRead": "0"
+    },
+    {
+      "id": "9930046",
+      "type": "schedule_change",
+      "title": "Nova sessão agendada",
+      "msg": "Uma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 02/06/2030 às 10:00",
+      "isRead": "0"
+    },
+    {
+      "id": "9930051",
+      "type": "schedule_change",
+      "title": "Nova sessão agendada",
+      "msg": "Uma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 16/06/2030 às 10:00",
+      "isRead": "0"
+    },
+    {
+      "id": "9930036",
+      "type": "schedule_change",
+      "title": "Nova sessão agendada",
+      "msg": "Uma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 03/03/2031 às 09:00",
+      "isRead": "0"
+    },
+    {
+      "id": "9930042",
+      "type": "schedule_change",
+      "title": "Nova sessão agendada",
+      "msg": "Uma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 24/03/2031 às 09:00",
+      "isRead": "0"
+    },
+    {
+      "id": "9930044",
+      "type": "schedule_change",
+      "title": "Nova sessão agendada",
+      "msg": "Uma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 31/03/2031 às 09:00",
+      "isRead": "0"
+    },
+    {
+      "id": "9930040",
+      "type": "schedule_change",
+      "title": "Nova sessão agendada",
+      "msg": "Uma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 17/03/2031 às 09:00",
+      "isRead": "0"
+    },
+    {
+      "id": "9930038",
+      "type": "schedule_change",
+      "title": "Nova sessão agendada",
+      "msg": "Uma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 10/03/2031 às 09:00",
+      "isRead": "0"
+    },
+    {
+      "id": "9930029",
+      "type": "schedule_change",
+      "title": "Nova sessão agendada",
+      "msg": "Uma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 21/04/2031 às 10:00",
+      "isRead": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttype\ttitle\tmsg\tisRead\n9930050\tschedule_change\tNova sessão agendada\tUma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 09/06/2030 às 10:00\t0\n9930053\tschedule_change\tNova sessão agendada\tUma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 23/06/2030 às 10:00\t0\n9930046\tschedule_change\tNova sessão agendada\tUma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 02/06/2030 às 10:00\t0\n9930051\tschedule_change\tNova sessão agendada\tUma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 16/06/2030 às 10:00\t0\n9930036\tschedule_change\tNova sessão agendada\tUma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 03/03/2031 às 09:00\t0\n9930042\tschedule_change\tNova sessão agendada\tUma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 24/03/2031 às 09:00\t0\n9930044\tschedule_change\tNova sessão agendada\tUma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 31/03/2031 às 09:00\t0\n9930040\tschedule_change\tNova sessão agendada\tUma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 17/03/2031 às 09:00\t0\n9930038\tschedule_change\tNova sessão agendada\tUma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 10/03/2031 às 09:00\t0\n9930029\tschedule_change\tNova sessão agendada\tUma nova sessão de fonoaudiologia foi agendada com  ANA JÚLIA SILVA DE AGUIAR em 21/04/2031 às 10:00\t0\n",
+  "stderr": "",
+  "execution_time_ms": 293
+}

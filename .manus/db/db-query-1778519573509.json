@@ -1,0 +1,49 @@
+{
+  "query": "SELECT id, patientId, LEFT(sessionSummary, 150) as summary, LEFT(patientBehavior, 150) as behavior, LEFT(goalsAchieved, 150) as goals, LEFT(nextSessionPlan, 150) as plan FROM evolutions WHERE therapistUserId = 468419 ORDER BY createdAt DESC LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, patientId, LEFT(sessionSummary, 150) as summary, LEFT(patientBehavior, 150) as behavior, LEFT(goalsAchieved, 150) as goals, LEFT(nextSessionPlan, 150) as plan FROM evolutions WHERE therapistUserId = 468419 ORDER BY createdAt DESC LIMIT 10;",
+  "rows": [
+    {
+      "id": "8010001",
+      "patientId": "930001",
+      "summary": "Hoje ele falou trem, carro, ambulância. Bem participativo. Comeu bolacha.",
+      "behavior": "Brincar de falar /imagens",
+      "goals": "Ótima ",
+      "plan": "Engajamento em atividade de tracejado"
+    },
+    {
+      "id": "7440001",
+      "patientId": "1020001",
+      "summary": "Trabalhamos atividades voltadas para o dia das mães ",
+      "behavior": "Pintura e blocos",
+      "goals": "Ótima",
+      "plan": "Leitura"
+    }
+  ],
+  "messages": [
+    "7980001\t840003\tHoje o Vicente engajou 20 minutos no brincar de comidinha. Interagiu, solicitou, realizou montagem de quebra-cabeça de 3/4/6 partes, brincou com os pi\tPinos",
+    "Quebra-cabeça",
+    "Brinquedos \tÓtima \tEngajamento em outras brincadeiras ",
+    "7830002\t930003\tAtividade de arte com a mãe, brincar de bolha, montar quebra-cabeça\tPintura",
+    "Bolhas ",
+    "Quebra-cabeça \tmuito boa \tAtividades estruturadas",
+    "7830001\t1200002\tHoje ele ficou muito bem. Observei que ela não saber fazer o traçado das letras.\tMusica e movimento",
+    "Brinquedos",
+    "Alfabeto \tMuito boa\tEngajamento em atividades estruturadas",
+    "7710001\t1260001\tHoje ele fez atividade de pintura com a mãe, brincou com bolhas de sabão. \tBolhas de sabão",
+    "Tinta ",
+    "tela\tÓtima \tTrabalhar o tempo de execução ",
+    "7470001\t990003\tAtividade de leitura e pintura \tPintura ",
+    "texto\tÓtima\tLeitura",
+    "7440002\t750003\tAtividade de arte com a mãe, blocos e bolhas de sabão.\tPintura",
+    "Blocos ",
+    "Bolhas de sabão \tÓtima\tTracejado de letras",
+    "7410002\t1260001\tO Joaquim ficou muito bem na sessão, realizou as demandas \tPinos",
+    "Quebra-cabeça",
+    "Forma geométrica\tÓtima\tEngajamento das atividades ",
+    "7380001\t930002\tHoje trambalhamos  o que eles estão fazendo e onde eles estão. Usamos card's\tQuebra-cabeça",
+    "Card'S\tÓtima\tEngajamento nas atividades de construção de frases"
+  ],
+  "stdout": "id\tpatientId\tsummary\tbehavior\tgoals\tplan\n8010001\t930001\tHoje ele falou trem, carro, ambulância. Bem participativo. Comeu bolacha.\tBrincar de falar /imagens\tÓtima \tEngajamento em atividade de tracejado\n7980001\t840003\tHoje o Vicente engajou 20 minutos no brincar de comidinha. Interagiu, solicitou, realizou montagem de quebra-cabeça de 3/4/6 partes, brincou com os pi\tPinos\nQuebra-cabeça\nBrinquedos \tÓtima \tEngajamento em outras brincadeiras \n7830002\t930003\tAtividade de arte com a mãe, brincar de bolha, montar quebra-cabeça\tPintura\nBolhas \nQuebra-cabeça \tmuito boa \tAtividades estruturadas\n7830001\t1200002\tHoje ele ficou muito bem. Observei que ela não saber fazer o traçado das letras.\tMusica e movimento\nBrinquedos\nAlfabeto \tMuito boa\tEngajamento em atividades estruturadas\n7710001\t1260001\tHoje ele fez atividade de pintura com a mãe, brincou com bolhas de sabão. \tBolhas de sabão\nTinta \ntela\tÓtima \tTrabalhar o tempo de execução \n7470001\t990003\tAtividade de leitura e pintura \tPintura \ntexto\tÓtima\tLeitura\n7440002\t750003\tAtividade de arte com a mãe, blocos e bolhas de sabão.\tPintura\nBlocos \nBolhas de sabão \tÓtima\tTracejado de letras\n7440001\t1020001\tTrabalhamos atividades voltadas para o dia das mães \tPintura e blocos\tÓtima\tLeitura\n7410002\t1260001\tO Joaquim ficou muito bem na sessão, realizou as demandas \tPinos\nQuebra-cabeça\nForma geométrica\tÓtima\tEngajamento das atividades \n7380001\t930002\tHoje trambalhamos  o que eles estão fazendo e onde eles estão. Usamos card's\tQuebra-cabeça\nCard'S\tÓtima\tEngajamento nas atividades de construção de frases\n",
+  "stderr": "",
+  "execution_time_ms": 265
+}

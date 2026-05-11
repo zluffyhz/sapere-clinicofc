@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, name, email, role, LEFT(specialties, 200) as specialties FROM users WHERE name LIKE '%Marcely%' OR name LIKE '%marcely%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, email, role, LEFT(specialties, 200) as specialties FROM users WHERE name LIKE '%Marcely%' OR name LIKE '%marcely%';",
+  "rows": [
+    {
+      "id": "468419",
+      "name": "Marcely Almeida Silva",
+      "email": "celyneuro@gmail.com",
+      "role": "therapist",
+      "specialties": "[\"psicopedagogia\",\"neuropsicopedagogia\"]"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\tspecialties\n468419\tMarcely Almeida Silva\tcelyneuro@gmail.com\ttherapist\t[\"psicopedagogia\",\"neuropsicopedagogia\"]\n",
+  "stderr": "",
+  "execution_time_ms": 325
+}

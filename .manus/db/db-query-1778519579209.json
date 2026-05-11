@@ -1,0 +1,215 @@
+{
+  "query": "SELECT p.id, p.name, LEFT(p.diagnosis, 200) as diagnosis FROM patients p INNER JOIN patient_therapist_assignments pta ON p.id = pta.patientId WHERE pta.therapistUserId = 468419;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT p.id, p.name, LEFT(p.diagnosis, 200) as diagnosis FROM patients p INNER JOIN patient_therapist_assignments pta ON p.id = pta.patientId WHERE pta.therapistUserId = 468419;",
+  "rows": [
+    {
+      "id": "750001",
+      "name": "Maria Julia Gama Alves Torres",
+      "diagnosis": "TEA - Transtorno do Espectro Autista"
+    },
+    {
+      "id": "750003",
+      "name": "Antonella Salles Romanini",
+      "diagnosis": "TEA - Transtorno do Espectro Autista"
+    },
+    {
+      "id": "780001",
+      "name": "ADAM RODRIGUES GOUVEIA",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "780002",
+      "name": "ADRIEL RODRIGUES  GOUVEIA ",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "810002",
+      "name": "Christian Daniel Araújo valente",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "810003",
+      "name": "Heitor Alencar Arruda Oliveira Barbosa",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "810003",
+      "name": "Heitor Alencar Arruda Oliveira Barbosa",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "840003",
+      "name": "VICENTE AMAZONAS NAVEGANTE",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "840003",
+      "name": "VICENTE AMAZONAS NAVEGANTE",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "870001",
+      "name": "LORENZO SALLES ROMANINI",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "900001",
+      "name": "JOAQUIM ROSA GARCIA",
+      "diagnosis": "TEA  (Transtorno do Espectro Autista)"
+    },
+    {
+      "id": "930001",
+      "name": "ROBERTO HELIO NEGREIROS DE ALBUQUERQUE NETO",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "930002",
+      "name": "ANALU DE OLIVEIRA CRUZ MANSUR",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "930003",
+      "name": "HEITOR FELIX MARINHO",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "930004",
+      "name": "Antonella guedes de oliveira cruz",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "930006",
+      "name": "JULIA GOMES MASSULO",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "990001",
+      "name": "AYLA PIETRA DINIZ GOMES",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "990003",
+      "name": "SOFIA DE OLIVEIRA GONÇALVES",
+      "diagnosis": "TDAH "
+    },
+    {
+      "id": "990003",
+      "name": "SOFIA DE OLIVEIRA GONÇALVES",
+      "diagnosis": "TDAH "
+    },
+    {
+      "id": "1020001",
+      "name": "GABRIEL AFONSO DE MENEZES BARRA",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1080001",
+      "name": "WILLIAN ELISEU BARBOSA BARROSO",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1080002",
+      "name": "NICOLAS ELIAS BARBOSA BARROSO",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1080003",
+      "name": "SOFIA HELLENA FERNANDES KAWATI",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1080004",
+      "name": "HENRIQUE COSTA DA SILVA",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1080007",
+      "name": "GABRIEL ZANOTTO DA FROTA ",
+      "diagnosis": "TDAH "
+    },
+    {
+      "id": "1080007",
+      "name": "GABRIEL ZANOTTO DA FROTA ",
+      "diagnosis": "TDAH "
+    },
+    {
+      "id": "1200001",
+      "name": "Matheus Alves Courtes Martorelli",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1200001",
+      "name": "Matheus Alves Courtes Martorelli",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1200002",
+      "name": "Acsa Gomes da Silva",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1200002",
+      "name": "Acsa Gomes da Silva",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1260001",
+      "name": "JOAQUIM DE SOUSA MAGALHÃES",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1260001",
+      "name": "JOAQUIM DE SOUSA MAGALHÃES",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1350001",
+      "name": "REINALDO FERNANDES DOS SANTOS FILHO ",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1350003",
+      "name": "Victor Ribeiro Moreno",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1410001",
+      "name": "Betina Sobreira de Oliveira",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1530001",
+      "name": "Luma Amador Sampaio Risuenho",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1620001",
+      "name": "Gustavo Peterson Matos Conde",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1740002",
+      "name": "NOAH VINÍCIUS DE SOUZA GONZAGA",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1980006",
+      "name": "Davila Madalena Marques Ferreira ",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "1980006",
+      "name": "Davila Madalena Marques Ferreira ",
+      "diagnosis": "NULL"
+    },
+    {
+      "id": "2130001",
+      "name": "EDUARDA A COURTES MARTORELLI",
+      "diagnosis": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdiagnosis\n750001\tMaria Julia Gama Alves Torres\tTEA - Transtorno do Espectro Autista\n750003\tAntonella Salles Romanini\tTEA - Transtorno do Espectro Autista\n780001\tADAM RODRIGUES GOUVEIA\tNULL\n780002\tADRIEL RODRIGUES  GOUVEIA \tNULL\n810002\tChristian Daniel Araújo valente\tNULL\n810003\tHeitor Alencar Arruda Oliveira Barbosa\tNULL\n810003\tHeitor Alencar Arruda Oliveira Barbosa\tNULL\n840003\tVICENTE AMAZONAS NAVEGANTE\tNULL\n840003\tVICENTE AMAZONAS NAVEGANTE\tNULL\n870001\tLORENZO SALLES ROMANINI\tNULL\n900001\tJOAQUIM ROSA GARCIA\tTEA  (Transtorno do Espectro Autista)\n930001\tROBERTO HELIO NEGREIROS DE ALBUQUERQUE NETO\tNULL\n930002\tANALU DE OLIVEIRA CRUZ MANSUR\tNULL\n930003\tHEITOR FELIX MARINHO\tNULL\n930004\tAntonella guedes de oliveira cruz\tNULL\n930006\tJULIA GOMES MASSULO\tNULL\n990001\tAYLA PIETRA DINIZ GOMES\tNULL\n990003\tSOFIA DE OLIVEIRA GONÇALVES\tTDAH \n990003\tSOFIA DE OLIVEIRA GONÇALVES\tTDAH \n1020001\tGABRIEL AFONSO DE MENEZES BARRA\tNULL\n1080001\tWILLIAN ELISEU BARBOSA BARROSO\tNULL\n1080002\tNICOLAS ELIAS BARBOSA BARROSO\tNULL\n1080003\tSOFIA HELLENA FERNANDES KAWATI\tNULL\n1080004\tHENRIQUE COSTA DA SILVA\tNULL\n1080007\tGABRIEL ZANOTTO DA FROTA \tTDAH \n1080007\tGABRIEL ZANOTTO DA FROTA \tTDAH \n1200001\tMatheus Alves Courtes Martorelli\tNULL\n1200001\tMatheus Alves Courtes Martorelli\tNULL\n1200002\tAcsa Gomes da Silva\tNULL\n1200002\tAcsa Gomes da Silva\tNULL\n1260001\tJOAQUIM DE SOUSA MAGALHÃES\tNULL\n1260001\tJOAQUIM DE SOUSA MAGALHÃES\tNULL\n1350001\tREINALDO FERNANDES DOS SANTOS FILHO \tNULL\n1350003\tVictor Ribeiro Moreno\tNULL\n1410001\tBetina Sobreira de Oliveira\tNULL\n1530001\tLuma Amador Sampaio Risuenho\tNULL\n1620001\tGustavo Peterson Matos Conde\tNULL\n1740002\tNOAH VINÍCIUS DE SOUZA GONZAGA\tNULL\n1980006\tDavila Madalena Marques Ferreira \tNULL\n1980006\tDavila Madalena Marques Ferreira \tNULL\n2130001\tEDUARDA A COURTES MARTORELLI\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 269
+}
