@@ -72,6 +72,7 @@ export default function AgendaPage() {
   // Cancel confirmation dialog
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const [cancellingAppointment, setCancellingAppointment] = useState<any | null>(null);
+  const [cancelSeriesMode, setCancelSeriesMode] = useState<"single" | "all">("single");
   
   // Series edit/delete state
   const [editingSeriesId, setEditingSeriesId] = useState<string | null>(null);
@@ -372,24 +373,44 @@ export default function AgendaPage() {
 
   const openCancelDialog = (apt: any) => {
     setCancellingAppointment(apt);
+    setCancelSeriesMode("single"); // always reset to single when opening
     setIsCancelDialogOpen(true);
   };
 
   const handleCancelAppointment = () => {
     if (!cancellingAppointment) return;
-    updateAppointmentMutation.mutate(
-      { id: cancellingAppointment.id, status: "cancelled" },
-      {
-        onSuccess: () => {
-          setIsCancelDialogOpen(false);
-          setCancellingAppointment(null);
-          toast.success("Atendimento marcado como cancelado.");
-        },
-        onError: (err) => {
-          toast.error(`Erro ao cancelar: ${err.message}`);
-        },
-      }
-    );
+    
+    // If series mode "all" and appointment belongs to a series, cancel the whole series
+    if (cancelSeriesMode === "all" && cancellingAppointment.seriesId) {
+      cancelSeriesMutation.mutate(
+        { seriesId: cancellingAppointment.seriesId },
+        {
+          onSuccess: (data) => {
+            setIsCancelDialogOpen(false);
+            setCancellingAppointment(null);
+            toast.success(`${data.cancelledCount} agendamentos da série cancelados.`);
+          },
+          onError: (err) => {
+            toast.error(`Erro ao cancelar série: ${err.message}`);
+          },
+        }
+      );
+    } else {
+      // Cancel only this single appointment
+      updateAppointmentMutation.mutate(
+        { id: cancellingAppointment.id, status: "cancelled" },
+        {
+          onSuccess: () => {
+            setIsCancelDialogOpen(false);
+            setCancellingAppointment(null);
+            toast.success("Atendimento marcado como cancelado.");
+          },
+          onError: (err) => {
+            toast.error(`Erro ao cancelar: ${err.message}`);
+          },
+        }
+      );
+    }
   };
 
   const handleDeleteAppointment = () => {
@@ -1283,18 +1304,53 @@ export default function AgendaPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar cancelamento</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja marcar este atendimento como <strong>cancelado</strong>?<br />
               O agendamento continuará visível na agenda com o status "Cancelado".
             </AlertDialogDescription>
           </AlertDialogHeader>
+
+          {/* Series cancel options — shown only when appointment belongs to a series */}
+          {cancellingAppointment?.seriesId && (
+            <div className="px-6 pb-4">
+              <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
+                <p className="text-sm font-medium text-gray-900">Este agendamento faz parte de uma série recorrente:</p>
+                <div className="flex flex-col gap-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="cancelMode"
+                      checked={cancelSeriesMode === "single"}
+                      onChange={() => setCancelSeriesMode("single")}
+                      className="h-4 w-4 text-orange-600 focus:ring-orange-500"
+                    />
+                    <span className="text-sm">Cancelar apenas <strong>este</strong> agendamento</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="cancelMode"
+                      checked={cancelSeriesMode === "all"}
+                      onChange={() => setCancelSeriesMode("all")}
+                      className="h-4 w-4 text-orange-600 focus:ring-orange-500"
+                    />
+                    <span className="text-sm font-semibold text-destructive">Cancelar <strong>toda a série</strong></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          )}
+
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={updateAppointmentMutation.isPending}>Voltar</AlertDialogCancel>
+            <AlertDialogCancel disabled={updateAppointmentMutation.isPending || cancelSeriesMutation.isPending}>Voltar</AlertDialogCancel>
             <Button
               onClick={handleCancelAppointment}
-              disabled={updateAppointmentMutation.isPending}
+              disabled={updateAppointmentMutation.isPending || cancelSeriesMutation.isPending}
               className="bg-orange-600 text-white hover:bg-orange-700"
             >
-              {updateAppointmentMutation.isPending ? "Cancelando..." : "Confirmar cancelamento"}
+              {(updateAppointmentMutation.isPending || cancelSeriesMutation.isPending)
+                ? "Cancelando..."
+                : cancelSeriesMode === "all" && cancellingAppointment?.seriesId
+                  ? "Cancelar toda a série"
+                  : "Cancelar este agendamento"}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

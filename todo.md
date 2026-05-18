@@ -1226,3 +1226,10 @@
 - [x] Investigar e corrigir texto "Não se trata de uma questão de..." aparecendo no header/nav
 - Causa: nested anchor tags (<Link><a>...</a></Link>) no SapereLayout causando renderização imprevisível
 - Correção: removidos <a> tags aninhados, usando apenas <Link> com classes diretas
+
+## Bug: Cancelamento de agendamento em série cancela toda a série
+- [x] Investigar lógica de cancelamento no backend (appointments.cancel/update)
+- [x] Corrigir: cancelar UM agendamento deve afetar apenas aquele (backend já estava correto)
+- [x] Implementar opção explícita "Cancelar apenas este" vs "Cancelar toda a série" no dialog
+- Causa: estado cancelSeriesMode não era resetado entre aberturas do dialog; dialog não mostrava opções de série
+- Correção: reset para "single" ao abrir dialog; dialog agora mostra opções de série quando agendamento é recorrente
