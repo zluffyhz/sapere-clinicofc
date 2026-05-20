@@ -577,7 +577,9 @@ export const appRouter = router({
         seriesId: z.string(),
         therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]).optional(),
         notes: z.string().optional(),
-        status: z.enum(["scheduled", "completed", "cancelled", "rescheduled"]).optional(),
+        // NOTE: status is intentionally excluded from updateSeries.
+        // Cancelling a series must go through cancelSeries procedure.
+        // This prevents accidental mass-cancellation when editing a series.
         // New time: when provided, shift ALL appointments in the series to this time-of-day
         startTime: z.date().optional(),
         endTime: z.date().optional(),

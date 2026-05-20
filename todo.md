@@ -1233,3 +1233,10 @@
 - [x] Implementar opção explícita "Cancelar apenas este" vs "Cancelar toda a série" no dialog
 - Causa: estado cancelSeriesMode não era resetado entre aberturas do dialog; dialog não mostrava opções de série
 - Correção: reset para "single" ao abrir dialog; dialog agora mostra opções de série quando agendamento é recorrente
+
+## Bug Persistente: Cancelamento cancela mais sessões do que o selecionado
+- [x] Investigar causa raiz: cancelar uma sessão ainda cancela sessões de semanas anteriores
+- [x] Verificar getAppointmentsBySeries e todos os pontos de chamada de cancelamento
+- [x] Corrigir definitivamente
+- Causa raiz: updateSeries aceitava campo 'status' no input e propagava para toda a série via ...rest
+- Correção: removido 'status' do input de updateSeries (backend e frontend); campo de status ocultado no modal quando editando série inteira

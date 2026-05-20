@@ -317,12 +317,13 @@ export default function AgendaPage() {
     });
 
     // If editing all in series, use updateSeries mutation
+    // NOTE: status is intentionally NOT sent to updateSeries.
+    // Cancelling a series must use the dedicated cancel flow (Ban button).
     if (editSeriesMode === "all" && editingSeriesId) {
       updateSeriesMutation.mutate({
         seriesId: editingSeriesId,
         therapyType: formData.therapyType,
         notes: formData.notes || undefined,
-        status: formData.status,
         startTime: startDateTime,
         endTime: endDateTime,
       });
@@ -593,8 +594,8 @@ export default function AgendaPage() {
         />
       </div>
 
-      {/* Status - only in edit mode */}
-      {isEdit && (
+      {/* Status - only in edit mode and only when editing a single appointment (not the whole series) */}
+      {isEdit && editSeriesMode !== "all" && (
         <div className="grid gap-2">
           <Label htmlFor="status">Status</Label>
           <NativeSelect
@@ -607,6 +608,14 @@ export default function AgendaPage() {
               { value: "rescheduled", label: "Remarcada" },
             ]}
           />
+        </div>
+      )}
+      {/* When editing whole series, show info that status changes must use the cancel button */}
+      {isEdit && editSeriesMode === "all" && (
+        <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <p className="text-xs text-amber-800">
+            Para cancelar agendamentos da série, use o botão de cancelamento (icone de proibido) em cada agendamento individualmente.
+          </p>
         </div>
       )}
 
