@@ -8,7 +8,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { formatBRT, parseBRTDateTime, getBRTDateString, getBRTTimeString, isSameDayBRT, CLINIC_TIMEZONE } from "@/lib/timezone";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X, Repeat, UserPlus, Search, Ban, CheckCircle2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X, Repeat, UserPlus, Search, Ban, CheckCircle2, RotateCcw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { NativeSelect } from "@/components/ui/native-select";
 import {
@@ -223,6 +223,17 @@ export default function AgendaPage() {
     },
     onError: (error) => {
       toast.error(`Erro ao excluir agendamento: ${error.message}`);
+    },
+  });
+
+  // Reactivate (un-cancel) mutation
+  const reactivateAppointmentMutation = trpc.appointments.update.useMutation({
+    onSuccess: () => {
+      toast.success("Agendamento reativado com sucesso!");
+      utils.appointments.listByDateRange.invalidate();
+    },
+    onError: (error) => {
+      toast.error(`Erro ao reativar agendamento: ${error.message}`);
     },
   });
 
@@ -1184,15 +1195,27 @@ export default function AgendaPage() {
                               </>
                             )}
                             {apt.status === 'cancelled' && (
-                              <Button
-                                variant="outline"
-                                size="icon"
-                                onClick={() => openDeleteDialog(apt)}
-                                className="text-destructive hover:text-destructive"
-                                title="Excluir agendamento"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
+                              <>
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  onClick={() => reactivateAppointmentMutation.mutate({ id: apt.id, status: 'scheduled' })}
+                                  className="text-green-600 hover:text-green-700 hover:border-green-400"
+                                  title="Reativar agendamento"
+                                  disabled={reactivateAppointmentMutation.isPending}
+                                >
+                                  <RotateCcw className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  onClick={() => openDeleteDialog(apt)}
+                                  className="text-destructive hover:text-destructive"
+                                  title="Excluir agendamento"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </>
                             )}
                           </div>
                         )}

@@ -1240,3 +1240,7 @@
 - [x] Corrigir definitivamente
 - Causa raiz: updateSeries aceitava campo 'status' no input e propagava para toda a série via ...rest
 - Correção: removido 'status' do input de updateSeries (backend e frontend); campo de status ocultado no modal quando editando série inteira
+
+## Botão Reativar Agendamento Cancelado
+- [x] Botão "Reativar" (ícone verde RotateCcw) visível apenas em agendamentos com status "cancelled"
+- [x] Reativação direta (sem dialog) revertendo status para "scheduled" com toast de confirmação
