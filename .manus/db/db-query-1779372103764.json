@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, name, email, role FROM users WHERE name LIKE '%Tania%' OR name LIKE '%Tânia%' OR email LIKE '%tania%' OR email LIKE '%tânia%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT id, name, email, role FROM users WHERE name LIKE '%Tania%' OR name LIKE '%Tânia%' OR email LIKE '%tania%' OR email LIKE '%tânia%';",
+  "rows": [
+    {
+      "id": "24840035",
+      "name": "Tânia Maria de Souza Madeira ",
+      "email": "Tania_maria.0518@hotmail.com",
+      "role": "therapist"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\n24840035\tTânia Maria de Souza Madeira \tTania_maria.0518@hotmail.com\ttherapist\n",
+  "stderr": "",
+  "execution_time_ms": 686
+}

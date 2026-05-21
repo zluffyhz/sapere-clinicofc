@@ -1244,3 +1244,11 @@
 ## Botão Reativar Agendamento Cancelado
 - [x] Botão "Reativar" (ícone verde RotateCcw) visível apenas em agendamentos com status "cancelled"
 - [x] Reativação direta (sem dialog) revertendo status para "scheduled" com toast de confirmação
+
+## Bug: Tania não consegue evoluir sessões (nenhuma sessão aparece)
+- [x] Investigar agendamentos e vínculos da Tania no banco
+- [x] Verificar lógica de carregamento de sessões no frontend de evolução
+- [x] Corrigir o problema
+- Causa: documents.listByPatient usava campo legado therapistUserId do paciente para verificar acesso
+  A Tania tem 18 de 19 pacientes com therapistUserId de outro terapeuta, causando FORBIDDEN ao abrir prontuário
+- Correção: documents.listByPatient agora verifica acesso via patient_therapist_assignments (igual a patients.getById)

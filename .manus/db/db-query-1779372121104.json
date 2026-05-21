@@ -1,0 +1,16 @@
+{
+  "query": "\n-- Agendamentos da Tania em maio 2026\nSELECT COUNT(*) as total_appointments,\n       SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) as cancelled,\n       SUM(CASE WHEN status = 'scheduled' THEN 1 ELSE 0 END) as scheduled,\n       SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed\nFROM appointments \nWHERE therapistUserId = 24840035\n  AND startTime >= '2026-05-01'\n  AND startTime < '2026-06-01';\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \n-- Agendamentos da Tania em maio 2026\nSELECT COUNT(*) as total_appointments,\n       SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) as cancelled,\n       SUM(CASE WHEN status = 'scheduled' THEN 1 ELSE 0 END) as scheduled,\n       SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed\nFROM appointments \nWHERE therapistUserId = 24840035\n  AND startTime >= '2026-05-01'\n  AND startTime < '2026-06-01';\n",
+  "rows": [
+    {
+      "total_appointments": "88",
+      "cancelled": "21",
+      "scheduled": "42",
+      "completed": "25"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_appointments\tcancelled\tscheduled\tcompleted\n88\t21\t42\t25\n",
+  "stderr": "",
+  "execution_time_ms": 265
+}

@@ -1,0 +1,124 @@
+{
+  "query": "\n-- Pacientes vinculados via assignments\nSELECT p.id, p.name, p.therapistUserId as legacyTherapistId,\n       CASE WHEN p.therapistUserId = 24840035 THEN 'SIM' ELSE 'NÃO' END as isLegacyTherapist\nFROM patients p\nJOIN patient_therapist_assignments pta ON pta.patientId = p.id\nWHERE pta.therapistUserId = 24840035\nLIMIT 20;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \n-- Pacientes vinculados via assignments\nSELECT p.id, p.name, p.therapistUserId as legacyTherapistId,\n       CASE WHEN p.therapistUserId = 24840035 THEN 'SIM' ELSE 'NÃO' END as isLegacyTherapist\nFROM patients p\nJOIN patient_therapist_assignments pta ON pta.patientId = p.id\nWHERE pta.therapistUserId = 24840035\nLIMIT 20;\n",
+  "rows": [
+    {
+      "id": "750016",
+      "name": "Bernardo Henrique Gomes Teixeira",
+      "legacyTherapistId": "1",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "750016",
+      "name": "Bernardo Henrique Gomes Teixeira",
+      "legacyTherapistId": "1",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "810001",
+      "name": "Heloisa de Souza Brito",
+      "legacyTherapistId": "5130006",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "840002",
+      "name": "Gustavo Peterson Matos Conde",
+      "legacyTherapistId": "5130006",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "990004",
+      "name": "HELOISA DE SOUZA BRITO",
+      "legacyTherapistId": "5130006",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "990004",
+      "name": "HELOISA DE SOUZA BRITO",
+      "legacyTherapistId": "5130006",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "1620001",
+      "name": "Gustavo Peterson Matos Conde",
+      "legacyTherapistId": "5130006",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "1740002",
+      "name": "NOAH VINÍCIUS DE SOUZA GONZAGA",
+      "legacyTherapistId": "5130006",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "1980006",
+      "name": "Davila Madalena Marques Ferreira ",
+      "legacyTherapistId": "9990210",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "2130001",
+      "name": "EDUARDA A COURTES MARTORELLI",
+      "legacyTherapistId": "5130006",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "2340001",
+      "name": "Mariana Benício de Sousa",
+      "legacyTherapistId": "NULL",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "2400001",
+      "name": "Gabriel Mateus Dos Santos Cunha",
+      "legacyTherapistId": "NULL",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "2460001",
+      "name": "BRENDA RAFAELA LIMA SILVA",
+      "legacyTherapistId": "9990210",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "2550001",
+      "name": "Bernardo Machado Garcez",
+      "legacyTherapistId": "NULL",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "2580001",
+      "name": "Theo Fernando de Melo Nunes",
+      "legacyTherapistId": "NULL",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "2610001",
+      "name": "MARIA CLARA LITAIFF PEIXOTO",
+      "legacyTherapistId": "NULL",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "2610002",
+      "name": "MARIA LOUISE LITAIFF PEIXOTO",
+      "legacyTherapistId": "NULL",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "2790002",
+      "name": "Helena Alves Courtes Martorelli",
+      "legacyTherapistId": "4530223",
+      "isLegacyTherapist": "NÃO"
+    },
+    {
+      "id": "3150001",
+      "name": "Eliene Christine Menezes bilby",
+      "legacyTherapistId": "24840035",
+      "isLegacyTherapist": "SIM"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tlegacyTherapistId\tisLegacyTherapist\n750016\tBernardo Henrique Gomes Teixeira\t1\tNÃO\n750016\tBernardo Henrique Gomes Teixeira\t1\tNÃO\n810001\tHeloisa de Souza Brito\t5130006\tNÃO\n840002\tGustavo Peterson Matos Conde\t5130006\tNÃO\n990004\tHELOISA DE SOUZA BRITO\t5130006\tNÃO\n990004\tHELOISA DE SOUZA BRITO\t5130006\tNÃO\n1620001\tGustavo Peterson Matos Conde\t5130006\tNÃO\n1740002\tNOAH VINÍCIUS DE SOUZA GONZAGA\t5130006\tNÃO\n1980006\tDavila Madalena Marques Ferreira \t9990210\tNÃO\n2130001\tEDUARDA A COURTES MARTORELLI\t5130006\tNÃO\n2340001\tMariana Benício de Sousa\tNULL\tNÃO\n2400001\tGabriel Mateus Dos Santos Cunha\tNULL\tNÃO\n2460001\tBRENDA RAFAELA LIMA SILVA\t9990210\tNÃO\n2550001\tBernardo Machado Garcez\tNULL\tNÃO\n2580001\tTheo Fernando de Melo Nunes\tNULL\tNÃO\n2610001\tMARIA CLARA LITAIFF PEIXOTO\tNULL\tNÃO\n2610002\tMARIA LOUISE LITAIFF PEIXOTO\tNULL\tNÃO\n2790002\tHelena Alves Courtes Martorelli\t4530223\tNÃO\n3150001\tEliene Christine Menezes bilby\t24840035\tSIM\n",
+  "stderr": "",
+  "execution_time_ms": 262
+}

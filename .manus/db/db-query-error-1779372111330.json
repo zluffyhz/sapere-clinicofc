@@ -1,0 +1,8 @@
+{
+  "query": "\n-- Agendamentos da Tania em maio 2026\nSELECT COUNT(*) as total_appointments, \n       SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) as cancelled,\n       SUM(CASE WHEN status = 'scheduled' THEN 1 ELSE 0 END) as scheduled,\n       SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed\nFROM appointments \nWHERE therapist_user_id = 24840035\n  AND start_time >= 1746057600000\n  AND start_time < 1748736000000;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \n-- Agendamentos da Tania em maio 2026\nSELECT COUNT(*) as total_appointments, \n       SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) as cancelled,\n       SUM(CASE WHEN status = 'scheduled' THEN 1 ELSE 0 END) as scheduled,\n       SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed\nFROM appointments \nWHERE therapist_user_id = 24840035\n  AND start_time >= 1746057600000\n  AND start_time < 1748736000000;\n",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 3: Unknown column 'therapist_user_id' in 'where clause'"
+  ]
+}

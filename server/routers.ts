@@ -878,8 +878,13 @@ export const appRouter = router({
         if (ctx.user.role === 'family' && patient.familyUserId !== ctx.user.id) {
           throw new TRPCError({ code: 'FORBIDDEN' });
         }
-        if (ctx.user.role === 'therapist' && patient.therapistUserId !== ctx.user.id) {
-          throw new TRPCError({ code: 'FORBIDDEN' });
+        if (ctx.user.role === 'therapist') {
+          // Check via assignments (not legacy therapistUserId field)
+          const assignments = await db.getPatientTherapistAssignments(input.patientId);
+          const hasAssignment = assignments.some((a: any) => a.therapistUserId === ctx.user.id);
+          if (!hasAssignment) {
+            throw new TRPCError({ code: 'FORBIDDEN' });
+          }
         }
         
         return await db.getDocumentsByPatient(input.patientId);
