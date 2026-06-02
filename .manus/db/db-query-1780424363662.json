@@ -1,0 +1,15 @@
+{
+  "query": "\nSELECT id, name, specialties FROM users WHERE specialties LIKE '%sicomotri%' AND role = 'therapist';\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \nSELECT id, name, specialties FROM users WHERE specialties LIKE '%sicomotri%' AND role = 'therapist';\n",
+  "rows": [
+    {
+      "id": "11490205",
+      "name": "Monalisa Reis",
+      "specialties": "[\"psicomotricidade\"]"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tspecialties\n11490205\tMonalisa Reis\t[\"psicomotricidade\"]\n",
+  "stderr": "",
+  "execution_time_ms": 265
+}

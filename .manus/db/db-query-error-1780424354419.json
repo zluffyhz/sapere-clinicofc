@@ -1,0 +1,10 @@
+{
+  "query": "\n-- Terapeutas com psicomotricidade na especialidade\nSELECT id, name, email, specialties\nFROM users\nWHERE specialties LIKE '%sicomotri%' AND role = 'therapist';\n\n-- Assignments com psicomotricidade\nSELECT pta.id, pta.patient_id, pta.therapist_user_id, pta.therapy_type,\n       u.name as therapist_name\nFROM patient_therapist_assignments pta\nJOIN users u ON u.id = pta.therapist_user_id\nWHERE pta.therapy_type LIKE '%sicomotri%';\n\n-- Agendamentos com psicomotricidade\nSELECT COUNT(*) as total, status\nFROM appointments\nWHERE therapy_type LIKE '%sicomotri%'\nGROUP BY status;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \n-- Terapeutas com psicomotricidade na especialidade\nSELECT id, name, email, specialties\nFROM users\nWHERE specialties LIKE '%sicomotri%' AND role = 'therapist';\n\n-- Assignments com psicomotricidade\nSELECT pta.id, pta.patient_id, pta.therapist_user_id, pta.therapy_type,\n       u.name as therapist_name\nFROM patient_therapist_assignments pta\nJOIN users u ON u.id = pta.therapist_user_id\nWHERE pta.therapy_type LIKE '%sicomotri%';\n\n-- Agendamentos com psicomotricidade\nSELECT COUNT(*) as total, status\nFROM appointments\nWHERE therapy_type LIKE '%sicomotri%'\nGROUP BY status;\n",
+  "returncode": 1,
+  "logs": [
+    "id\tname\temail\tspecialties",
+    "11490205\tMonalisa Reis\tmonalisareis.bassal12@gmail.com\t[\"psicomotricidade\"]",
+    "ERROR 1054 (42S22) at line 8: Unknown column 'pta.therapist_user_id' in 'on clause'"
+  ]
+}

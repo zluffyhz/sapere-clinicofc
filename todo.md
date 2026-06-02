@@ -1252,3 +1252,14 @@
 - Causa: documents.listByPatient usava campo legado therapistUserId do paciente para verificar acesso
   A Tania tem 18 de 19 pacientes com therapistUserId de outro terapeuta, causando FORBIDDEN ao abrir prontuário
 - Correção: documents.listByPatient agora verifica acesso via patient_therapist_assignments (igual a patients.getById)
+
+## Investigação: Desvinculamento da Psicomotricidade
+- [x] Investigar causa do desvinculamento da especialidade Psicomotricidade
+- [x] Identificar se há bug no sistema que pode causar isso novamente
+- Resultado: dados intactos no banco (19 assignments, 49 agendamentos). Causa provável: edição manual do perfil
+  da terapeuta via interface. Não há bug automático no sistema.
+
+## Melhoria: Busca e Ordem Alfabética no Dropdown de Terapeutas (Agendamento)
+- [x] Criar componente SearchableSelect com campo de busca embutido
+- [x] Substituir NativeSelect do terapeuta por SearchableSelect no formulário de agendamento
+- [x] Terapeutas ordenados alfabeticamente (localeCompare pt-BR)

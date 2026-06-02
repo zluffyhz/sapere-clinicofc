@@ -1,0 +1,19 @@
+{
+  "query": "\nSELECT COUNT(*) as total_assignments FROM patient_therapist_assignments WHERE therapyType = 'psicomotricidade';\nSELECT COUNT(*) as total_appointments, status FROM appointments WHERE therapyType = 'psicomotricidade' GROUP BY status;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute \nSELECT COUNT(*) as total_assignments FROM patient_therapist_assignments WHERE therapyType = 'psicomotricidade';\nSELECT COUNT(*) as total_appointments, status FROM appointments WHERE therapyType = 'psicomotricidade' GROUP BY status;\n",
+  "rows": [
+    {
+      "total_assignments": "19"
+    },
+    {
+      "total_assignments": "total_appointments\tstatus"
+    },
+    {
+      "total_assignments": "49\tscheduled"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_assignments\n19\ntotal_appointments\tstatus\n49\tscheduled\n",
+  "stderr": "",
+  "execution_time_ms": 284
+}

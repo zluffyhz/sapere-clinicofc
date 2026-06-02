@@ -11,6 +11,7 @@ import { formatBRT, parseBRTDateTime, getBRTDateString, getBRTTimeString, isSame
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X, Repeat, UserPlus, Search, Ban, CheckCircle2, RotateCcw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { NativeSelect } from "@/components/ui/native-select";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import {
   Dialog,
   DialogContent,
@@ -557,10 +558,10 @@ export default function AgendaPage() {
       {!isEdit && (
         <div className="grid gap-2">
           <Label htmlFor="therapist">Terapeuta *</Label>
-          <NativeSelect
+          <SearchableSelect
             value={formData.therapistId ? formData.therapistId.toString() : ""}
-            onChange={(e) => {
-              const therapistId = parseInt(e.target.value);
+            onChange={(val) => {
+              const therapistId = parseInt(val);
               const selectedTherapist = therapists?.find((t) => t.id === therapistId);
               let autoTherapyType = formData.therapyType;
               if (selectedTherapist?.specialties) {
@@ -573,9 +574,10 @@ export default function AgendaPage() {
                   }
                 } catch {}
               }
-              setFormData({ ...formData, therapistId, therapyType: autoTherapyType });
+              setFormData({ ...formData, therapistId: therapistId || 0, therapyType: autoTherapyType });
             }}
             placeholder="Selecione o terapeuta"
+            searchPlaceholder="Buscar terapeuta..."
             options={(therapists || [])
               .filter((u) => u.role === "therapist" || u.role === "admin")
               .map((t) => ({ value: t.id.toString(), label: t.name ?? "" }))}
