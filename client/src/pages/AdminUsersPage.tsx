@@ -409,6 +409,7 @@ export default function AdminUsersPage() {
                       "Psicologia",
                       "Terapia Ocupacional",
                       "Psicopedagogia",
+                      "Neuropsicopedagogia",
                       "Musicoterapia",
                       "Fisioterapia",
                       "Nutrição",
