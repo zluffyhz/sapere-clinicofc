@@ -823,24 +823,13 @@ export default function AgendaPage() {
         </div>
       )}
 
-      {/* Link Therapist Permanently - Admin Only, only in create mode */}
+      {/* Info: Auto-link notice - Admin Only, only in create mode */}
       {!isEdit && isAdmin && (
-        <div className="flex items-center space-x-2 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <input
-            type="checkbox"
-            id="alsoLinkTherapist"
-            checked={formData.alsoLinkTherapist || false}
-            onChange={(e) =>
-              setFormData({ ...formData, alsoLinkTherapist: e.target.checked })
-            }
-            className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-          />
-          <div>
-            <Label htmlFor="alsoLinkTherapist" className="text-sm font-medium text-gray-900 cursor-pointer">
-              Vincular terapeuta ao paciente permanentemente
-            </Label>
-            <p className="text-xs text-muted-foreground mt-0.5">Marque se este terapeuta passará a atender este paciente regularmente</p>
-          </div>
+        <div className="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-600 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+          </svg>
+          <p className="text-xs text-green-800">O terapeuta será vinculado automaticamente ao paciente ao registrar o agendamento.</p>
         </div>
       )}
 

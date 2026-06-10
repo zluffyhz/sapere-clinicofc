@@ -1263,3 +1263,5 @@
 - [x] Criar componente SearchableSelect com campo de busca embutido
 - [x] Substituir NativeSelect do terapeuta por SearchableSelect no formulário de agendamento
 - [x] Terapeutas ordenados alfabeticamente (localeCompare pt-BR)
+## Auto-vincular terapeuta ao paciente ao criar agendamento
+- [x] Quando admin cria agendamento com terapeuta não vinculado ao paciente, criar assignment automaticamente

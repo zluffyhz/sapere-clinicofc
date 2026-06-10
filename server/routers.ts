@@ -303,9 +303,8 @@ export const appRouter = router({
           }
           const therapistUserId = input.therapistUserId || ctx.user.id;
 
-          // If alsoLinkTherapist is true, create a permanent assignment
-          if (input.alsoLinkTherapist) {
-            // Check if assignment already exists
+          // Auto-link: always create assignment if therapist is not already linked to this patient for this therapy type
+          {
             const existingAssignments = await db.getPatientTherapistAssignments(input.patientId);
             const alreadyLinked = existingAssignments.some(
               (a: any) => a.therapistUserId === therapistUserId && a.therapyType === input.therapyType && a.isActive
