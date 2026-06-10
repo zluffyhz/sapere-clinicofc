@@ -39,7 +39,7 @@ import { toast } from "sonner";
 type AppointmentFormData = {
   patientId: number;
   therapistId: number;
-  therapyType: "fonoaudiologia" | "psicologia" | "terapia_ocupacional" | "psicopedagogia" | "musicoterapia" | "fisioterapia" | "neuropsicopedagogia" | "nutricao" | "psicomotricidade" | "aplicadora_denver_aba" | "outro";
+  therapyType: "fonoaudiologia" | "psicologia" | "terapia_ocupacional" | "psicopedagogia" | "musicoterapia" | "fisioterapia" | "neuropsicopedagogia" | "nutricao" | "psicomotricidade" | "aplicadora_denver_aba" | "assistente_terapeutico" | "outro";
   date: string;
   startTime: string;
   endTime: string;
@@ -474,6 +474,7 @@ export default function AgendaPage() {
     neuropsicopedagogia: "Neuropsicopedagogia",
     nutricao: "Nutrição",
     aplicadora_denver_aba: "Aplicadora Denver/ABA",
+    assistente_terapeutico: "Assistente Terapêutico",
     outro: "Outro",
   };
 
@@ -568,7 +569,7 @@ export default function AgendaPage() {
                 try {
                   const specialties: string[] = JSON.parse(selectedTherapist.specialties);
                   if (specialties.length > 0) {
-                    const validTypes = ["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"];
+                    const validTypes = ["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "assistente_terapeutico", "outro"];
                     const firstValid = specialties.find((s) => validTypes.includes(s));
                     if (firstValid) autoTherapyType = firstValid as typeof formData.therapyType;
                   }
@@ -602,6 +603,7 @@ export default function AgendaPage() {
             { value: "neuropsicopedagogia", label: "Neuropsicopedagogia" },
             { value: "nutricao", label: "Nutrição" },
             { value: "aplicadora_denver_aba", label: "Aplicadora Denver/ABA" },
+            { value: "assistente_terapeutico", label: "Assistente Terapêutico" },
             { value: "outro", label: "Outro" },
           ]}
         />

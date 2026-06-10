@@ -144,7 +144,7 @@ export const appRouter = router({
         notes: z.string().optional(),
         imageAuthorization: z.boolean().default(false),
         therapistUserId: z.number().optional(),
-        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]).optional(),
+        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "assistente_terapeutico", "outro"]).optional(),
       }))
       .mutation(async ({ input, ctx }) => {
         // Admin pode especificar um terapeuta; terapeuta usa a si mesmo
@@ -256,7 +256,7 @@ export const appRouter = router({
       .input(z.object({
         patientId: z.number(),
         therapistUserId: z.number(),
-        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]),
+        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "assistente_terapeutico", "outro"]),
       }))
       .mutation(async ({ input }) => {
         await db.createPatientTherapistAssignment(input);
@@ -288,7 +288,7 @@ export const appRouter = router({
       .input(z.object({
         patientId: z.number(),
         therapistUserId: z.number().optional(), // Admin can specify therapist, therapist defaults to self
-        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]),
+        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "assistente_terapeutico", "outro"]),
         startTime: z.date(),
         endTime: z.date(),
         notes: z.string().optional(),
@@ -521,7 +521,7 @@ export const appRouter = router({
     update: therapistProcedure
       .input(z.object({
         id: z.number(),
-        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]).optional(),
+        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "assistente_terapeutico", "outro"]).optional(),
         startTime: z.date().optional(),
         endTime: z.date().optional(),
         status: z.enum(["scheduled", "completed", "cancelled", "rescheduled"]).optional(),
@@ -574,7 +574,7 @@ export const appRouter = router({
     updateSeries: therapistProcedure
       .input(z.object({
         seriesId: z.string(),
-        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]).optional(),
+        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "assistente_terapeutico", "outro"]).optional(),
         notes: z.string().optional(),
         // NOTE: status is intentionally excluded from updateSeries.
         // Cancelling a series must go through cancelSeries procedure.
@@ -659,7 +659,7 @@ export const appRouter = router({
         // First patient appointment data
         patientId: z.number(),
         therapistUserId: z.number().optional(),
-        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]),
+        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "assistente_terapeutico", "outro"]),
         startTime: z.date(),
         endTime: z.date(),
         notes: z.string().optional(),
@@ -1193,7 +1193,7 @@ export const appRouter = router({
         patientId: z.number(),
         familyUserId: z.number(),
         therapistUserId: z.number(),
-        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]),
+        therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "assistente_terapeutico", "outro"]),
         scheduledDate: z.date(),
         status: z.enum(["present", "absent"]).default("present"),
         notes: z.string().optional(),
@@ -1544,7 +1544,7 @@ export const appRouter = router({
           notes: z.string().optional(),
           imageAuthorization: z.boolean().default(false),
           // Vínculo terapêutico opcional
-          therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]).optional(),
+          therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "assistente_terapeutico", "outro"]).optional(),
           therapistUserId: z.number().int().positive().optional(),
         })).optional(),
       }))

@@ -26,6 +26,7 @@ const therapyTypeLabels: Record<string, string> = {
   nutricao: "Nutrição",
   psicomotricidade: "Psicomotricidade",
   aplicadora_denver_aba: "Aplicadora Denver/ABA",
+  assistente_terapeutico: "Assistente Terapêutico",
   outro: "Outro",
 };
 

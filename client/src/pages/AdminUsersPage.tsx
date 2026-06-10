@@ -415,6 +415,7 @@ export default function AdminUsersPage() {
                       "Nutrição",
                       "Psicomotricidade",
                       "Aplicadora DENVER e ABA",
+                      "Assistente Terapêutico",
                     ].map((specialty) => (
                       <label key={specialty} className="flex items-center space-x-2 cursor-pointer">
                         <input
@@ -853,6 +854,7 @@ export default function AdminUsersPage() {
                     { value: "neuropsicopedagogia", label: "Neuropsicopedagogia" },
                     { value: "nutricao", label: "Nutrição" },
                     { value: "aplicadora_denver_aba", label: "Denver/ABA" },
+                    { value: "assistente_terapeutico", label: "Assistente Terapêutico" },
                     { value: "outro", label: "Outro" },
                   ]}
                 />

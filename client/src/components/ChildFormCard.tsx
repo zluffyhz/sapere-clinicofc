@@ -29,6 +29,7 @@ const THERAPY_OPTIONS = [
   { value: "neuropsicopedagogia", label: "Neuropsicopedagogia" },
   { value: "nutricao", label: "Nutrição" },
   { value: "aplicadora_denver_aba", label: "Aplicadora Denver/ABA" },
+  { value: "assistente_terapeutico", label: "Assistente Terapêutico" },
   { value: "outro", label: "Outro" },
 ];
 

@@ -47,7 +47,7 @@ export const appointments = mysqlTable("appointments", {
   id: int("id").autoincrement().primaryKey(),
   patientId: int("patientId").notNull(),
   therapistUserId: int("therapistUserId").notNull(),
-  therapyType: mysqlEnum("therapyType", ["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]).notNull(),
+  therapyType: mysqlEnum("therapyType", ["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "assistente_terapeutico", "outro"]).notNull(),
   startTime: timestamp("startTime").notNull(),
   endTime: timestamp("endTime").notNull(),
   status: mysqlEnum("status", ["scheduled", "completed", "cancelled", "rescheduled"]).default("scheduled").notNull(),
@@ -167,7 +167,7 @@ export const attendance = mysqlTable("attendance", {
   patientId: int("patientId").notNull(),
   familyUserId: int("familyUserId").notNull(), // For family portal queries
   therapistUserId: int("therapistUserId").notNull(),
-  therapyType: mysqlEnum("therapyType", ["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]).notNull(),
+  therapyType: mysqlEnum("therapyType", ["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "assistente_terapeutico", "outro"]).notNull(),
   scheduledDate: timestamp("scheduledDate").notNull(),
   status: mysqlEnum("status", ["present", "absent", "late", "excused"]).default("present").notNull(),
   markedByUserId: int("markedByUserId").notNull(), // Admin/reception who marked
@@ -187,7 +187,7 @@ export const patientTherapistAssignments = mysqlTable("patient_therapist_assignm
   id: int("id").autoincrement().primaryKey(),
   patientId: int("patientId").notNull(),
   therapistUserId: int("therapistUserId").notNull(),
-  therapyType: mysqlEnum("therapyType", ["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "outro"]).notNull(),
+  therapyType: mysqlEnum("therapyType", ["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "assistente_terapeutico", "outro"]).notNull(),
   isActive: boolean("isActive").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
