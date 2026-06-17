@@ -1265,3 +1265,6 @@
 - [x] Terapeutas ordenados alfabeticamente (localeCompare pt-BR)
 ## Auto-vincular terapeuta ao paciente ao criar agendamento
 - [x] Quando admin cria agendamento com terapeuta não vinculado ao paciente, criar assignment automaticamente
+## Sinalização de Feriados na Agenda
+- [x] Criar utilitário de feriados (datas fixas + cálculo de Páscoa para móveis) no frontend
+- [x] Sinalizar feriados de forma sutil na agenda (sem impactar layout/UX)

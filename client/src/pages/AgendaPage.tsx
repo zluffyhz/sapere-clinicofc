@@ -8,6 +8,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { formatBRT, parseBRTDateTime, getBRTDateString, getBRTTimeString, isSameDayBRT, CLINIC_TIMEZONE } from "@/lib/timezone";
+import { getHoliday, isHoliday } from "@/lib/holidays";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X, Repeat, UserPlus, Search, Ban, CheckCircle2, RotateCcw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { NativeSelect } from "@/components/ui/native-select";
@@ -972,6 +973,7 @@ export default function AgendaPage() {
               modifiers={{
                 hasAppointment: (date) =>
                   datesWithAppointments.has(format(date, "yyyy-MM-dd")),
+                holiday: (date) => isHoliday(date),
               }}
               modifiersStyles={{
                 hasAppointment: {
@@ -979,10 +981,15 @@ export default function AgendaPage() {
                   textDecoration: "underline",
                   textDecorationColor: "oklch(0.65 0.18 50)",
                 },
+                holiday: {
+                  backgroundColor: "oklch(0.95 0.03 145)",
+                  borderRadius: "4px",
+                },
               }}
             />
-            <div className="mt-4 text-xs text-muted-foreground">
+            <div className="mt-4 text-xs text-muted-foreground space-y-1">
               <p>Datas sublinhadas possuem agendamentos</p>
+              <p className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-sm" style={{backgroundColor: "oklch(0.95 0.03 145)"}} /> Feriado</p>
             </div>
           </CardContent>
         </Card>
@@ -997,6 +1004,15 @@ export default function AgendaPage() {
                 </CardTitle>
                 <CardDescription>
                   {selectedDateAppointments.length} sessão(ões) agendada(s)
+                  {(() => {
+                    const holiday = getHoliday(selectedDate);
+                    if (!holiday) return null;
+                    return (
+                      <span className="ml-2 inline-flex items-center gap-1 text-green-700 bg-green-50 px-2 py-0.5 rounded text-xs font-medium">
+                        {holiday.name}
+                      </span>
+                    );
+                  })()}
                 </CardDescription>
               </div>
               <div className="flex gap-2">
