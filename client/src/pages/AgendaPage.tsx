@@ -47,6 +47,7 @@ type AppointmentFormData = {
   notes: string;
   status?: "scheduled" | "completed" | "cancelled" | "rescheduled";
   replicateWeekly?: boolean;
+  replicateWeeks?: number;
   isJointSession?: boolean;
   coTherapistIds?: number[];
   alsoLinkTherapist?: boolean;
@@ -102,6 +103,7 @@ export default function AgendaPage() {
     notes: "",
     status: "scheduled",
     replicateWeekly: false,
+    replicateWeeks: 8,
     isJointSession: false,
     coTherapistIds: [],
   });
@@ -311,6 +313,7 @@ export default function AgendaPage() {
       endTime: endDateTime,
       notes: formData.notes || undefined,
       replicateWeekly: formData.replicateWeekly || false,
+      replicateWeeks: formData.replicateWeeks || 8,
       alsoLinkTherapist: formData.alsoLinkTherapist || false,
     });
   };
@@ -838,19 +841,36 @@ export default function AgendaPage() {
 
       {/* Replicate Weekly - Admin Only, only in create mode */}
       {!isEdit && isAdmin && (
-        <div className="flex items-center space-x-2 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-          <input
-            type="checkbox"
-            id="replicateWeekly"
-            checked={formData.replicateWeekly || false}
-            onChange={(e) =>
-              setFormData({ ...formData, replicateWeekly: e.target.checked })
-            }
-            className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
-          />
-          <Label htmlFor="replicateWeekly" className="text-sm font-medium text-gray-900 cursor-pointer">
-            Replicar este agendamento semanalmente pelos próximos 30 dias (4 semanas)
-          </Label>
+        <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg space-y-3">
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="replicateWeekly"
+              checked={formData.replicateWeekly || false}
+              onChange={(e) =>
+                setFormData({ ...formData, replicateWeekly: e.target.checked })
+              }
+              className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+            />
+            <Label htmlFor="replicateWeekly" className="text-sm font-medium text-gray-900 cursor-pointer">
+              Replicar este agendamento semanalmente
+            </Label>
+          </div>
+          {formData.replicateWeekly && (
+            <div className="flex items-center gap-2 ml-6">
+              <Label className="text-sm text-gray-700">Repetir por</Label>
+              <select
+                value={formData.replicateWeeks || 8}
+                onChange={(e) => setFormData({ ...formData, replicateWeeks: parseInt(e.target.value) })}
+                className="h-8 px-2 text-sm border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500"
+              >
+                {[4, 5, 6, 7, 8, 9, 10, 11, 12].map(n => (
+                  <option key={n} value={n}>{n} semanas</option>
+                ))}
+              </select>
+              <span className="text-xs text-gray-500">({((formData.replicateWeeks || 8) + 1)} sessões no total)</span>
+            </div>
+          )}
         </div>
       )}
 

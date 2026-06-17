@@ -74,8 +74,8 @@ describe('Full create flow with replication and notifications', () => {
     console.log(`Result (${elapsed}ms):`, result);
     
     expect(result.success).toBe(true);
-    expect(result.replicatedCount).toBe(4);
-    expect(result.totalCreated).toBe(5);
+    expect(result.replicatedCount).toBe(8);
+    expect(result.totalCreated).toBe(9);
     
     // Should complete in reasonable time (under 10 seconds)
     expect(elapsed).toBeLessThan(10000);

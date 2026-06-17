@@ -1,0 +1,166 @@
+{
+  "query": "-- Séries de REGINA que começaram na primeira semana de junho - verificar se cobrem semana 3+\nSELECT a.seriesId, COUNT(*) as total, MIN(DATE(a.startTime)) as firstDate, MAX(DATE(a.startTime)) as lastDate\nFROM appointments a\nWHERE a.therapistUserId = 4620148\nAND a.seriesId IS NOT NULL\nAND a.seriesId IN (\n  SELECT DISTINCT seriesId FROM appointments \n  WHERE therapistUserId = 4620148 \n  AND DATE(startTime) BETWEEN '2026-06-01' AND '2026-06-07'\n  AND seriesId IS NOT NULL\n)\nGROUP BY a.seriesId\nORDER BY firstDate;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute -- Séries de REGINA que começaram na primeira semana de junho - verificar se cobrem semana 3+\nSELECT a.seriesId, COUNT(*) as total, MIN(DATE(a.startTime)) as firstDate, MAX(DATE(a.startTime)) as lastDate\nFROM appointments a\nWHERE a.therapistUserId = 4620148\nAND a.seriesId IS NOT NULL\nAND a.seriesId IN (\n  SELECT DISTINCT seriesId FROM appointments \n  WHERE therapistUserId = 4620148 \n  AND DATE(startTime) BETWEEN '2026-06-01' AND '2026-06-07'\n  AND seriesId IS NOT NULL\n)\nGROUP BY a.seriesId\nORDER BY firstDate;",
+  "rows": [
+    {
+      "seriesId": "series-1778786545062-mp60n8",
+      "total": "5",
+      "firstDate": "2026-05-12",
+      "lastDate": "2026-06-09"
+    },
+    {
+      "seriesId": "series-1778786462100-7vvxos",
+      "total": "5",
+      "firstDate": "2026-05-12",
+      "lastDate": "2026-06-09"
+    },
+    {
+      "seriesId": "series-1778786371732-dtfout",
+      "total": "5",
+      "firstDate": "2026-05-12",
+      "lastDate": "2026-06-09"
+    },
+    {
+      "seriesId": "series-1778784887561-3samx1",
+      "total": "4",
+      "firstDate": "2026-05-13",
+      "lastDate": "2026-06-03"
+    },
+    {
+      "seriesId": "series-1778786286051-l2fqgk",
+      "total": "5",
+      "firstDate": "2026-05-13",
+      "lastDate": "2026-06-10"
+    },
+    {
+      "seriesId": "series-1778785079648-zszy6",
+      "total": "5",
+      "firstDate": "2026-05-13",
+      "lastDate": "2026-06-10"
+    },
+    {
+      "seriesId": "series-1778785011843-0z2dq",
+      "total": "5",
+      "firstDate": "2026-05-13",
+      "lastDate": "2026-06-10"
+    },
+    {
+      "seriesId": "series-1778785116396-ig9v8",
+      "total": "4",
+      "firstDate": "2026-05-13",
+      "lastDate": "2026-06-03"
+    },
+    {
+      "seriesId": "series-1778784927858-rpdmkc",
+      "total": "5",
+      "firstDate": "2026-05-13",
+      "lastDate": "2026-06-10"
+    },
+    {
+      "seriesId": "series-1778786322258-0qj4zq",
+      "total": "4",
+      "firstDate": "2026-05-13",
+      "lastDate": "2026-06-03"
+    },
+    {
+      "seriesId": "series-1778784842904-y52d88",
+      "total": "5",
+      "firstDate": "2026-05-14",
+      "lastDate": "2026-06-11"
+    },
+    {
+      "seriesId": "series-1778784436409-f4tuk9",
+      "total": "5",
+      "firstDate": "2026-05-14",
+      "lastDate": "2026-06-11"
+    },
+    {
+      "seriesId": "series-1778784539359-d34j08",
+      "total": "5",
+      "firstDate": "2026-05-14",
+      "lastDate": "2026-06-11"
+    },
+    {
+      "seriesId": "series-1778784570942-ek9r9k",
+      "total": "5",
+      "firstDate": "2026-05-14",
+      "lastDate": "2026-06-11"
+    },
+    {
+      "seriesId": "series-1778784369799-gpxada",
+      "total": "5",
+      "firstDate": "2026-05-14",
+      "lastDate": "2026-06-11"
+    },
+    {
+      "seriesId": "series-1778784498510-ktsuz",
+      "total": "5",
+      "firstDate": "2026-05-14",
+      "lastDate": "2026-06-11"
+    },
+    {
+      "seriesId": "series-1778784793991-ivczmr",
+      "total": "5",
+      "firstDate": "2026-05-14",
+      "lastDate": "2026-06-11"
+    },
+    {
+      "seriesId": "series-1778784396042-9r3ptq",
+      "total": "5",
+      "firstDate": "2026-05-14",
+      "lastDate": "2026-06-11"
+    },
+    {
+      "seriesId": "series-1778784465150-ysc15h",
+      "total": "5",
+      "firstDate": "2026-05-14",
+      "lastDate": "2026-06-11"
+    },
+    {
+      "seriesId": "series-1778786835873-0cb53",
+      "total": "5",
+      "firstDate": "2026-05-16",
+      "lastDate": "2026-06-13"
+    },
+    {
+      "seriesId": "series-1778786858942-qr8seo",
+      "total": "5",
+      "firstDate": "2026-05-16",
+      "lastDate": "2026-06-13"
+    },
+    {
+      "seriesId": "series-1778786490962-96g0v",
+      "total": "3",
+      "firstDate": "2026-05-21",
+      "lastDate": "2026-06-04"
+    },
+    {
+      "seriesId": "series-1779719754824-w24esr",
+      "total": "5",
+      "firstDate": "2026-05-25",
+      "lastDate": "2026-06-22"
+    },
+    {
+      "seriesId": "series-1779718266136-64h9sr",
+      "total": "5",
+      "firstDate": "2026-05-25",
+      "lastDate": "2026-06-22"
+    },
+    {
+      "seriesId": "series-1779718243098-mcbed",
+      "total": "5",
+      "firstDate": "2026-05-25",
+      "lastDate": "2026-06-22"
+    },
+    {
+      "seriesId": "series-1780409521421-e37d1",
+      "total": "5",
+      "firstDate": "2026-05-30",
+      "lastDate": "2026-06-27"
+    }
+  ],
+  "messages": [],
+  "stdout": "seriesId\ttotal\tfirstDate\tlastDate\nseries-1778786545062-mp60n8\t5\t2026-05-12\t2026-06-09\nseries-1778786462100-7vvxos\t5\t2026-05-12\t2026-06-09\nseries-1778786371732-dtfout\t5\t2026-05-12\t2026-06-09\nseries-1778784887561-3samx1\t4\t2026-05-13\t2026-06-03\nseries-1778786286051-l2fqgk\t5\t2026-05-13\t2026-06-10\nseries-1778785079648-zszy6\t5\t2026-05-13\t2026-06-10\nseries-1778785011843-0z2dq\t5\t2026-05-13\t2026-06-10\nseries-1778785116396-ig9v8\t4\t2026-05-13\t2026-06-03\nseries-1778784927858-rpdmkc\t5\t2026-05-13\t2026-06-10\nseries-1778786322258-0qj4zq\t4\t2026-05-13\t2026-06-03\nseries-1778784842904-y52d88\t5\t2026-05-14\t2026-06-11\nseries-1778784436409-f4tuk9\t5\t2026-05-14\t2026-06-11\nseries-1778784539359-d34j08\t5\t2026-05-14\t2026-06-11\nseries-1778784570942-ek9r9k\t5\t2026-05-14\t2026-06-11\nseries-1778784369799-gpxada\t5\t2026-05-14\t2026-06-11\nseries-1778784498510-ktsuz\t5\t2026-05-14\t2026-06-11\nseries-1778784793991-ivczmr\t5\t2026-05-14\t2026-06-11\nseries-1778784396042-9r3ptq\t5\t2026-05-14\t2026-06-11\nseries-1778784465150-ysc15h\t5\t2026-05-14\t2026-06-11\nseries-1778786835873-0cb53\t5\t2026-05-16\t2026-06-13\nseries-1778786858942-qr8seo\t5\t2026-05-16\t2026-06-13\nseries-1778786490962-96g0v\t3\t2026-05-21\t2026-06-04\nseries-1779719754824-w24esr\t5\t2026-05-25\t2026-06-22\nseries-1779718266136-64h9sr\t5\t2026-05-25\t2026-06-22\nseries-1779718243098-mcbed\t5\t2026-05-25\t2026-06-22\nseries-1780409521421-e37d1\t5\t2026-05-30\t2026-06-27\n",
+  "stderr": "",
+  "execution_time_ms": 279
+}

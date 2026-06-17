@@ -1,0 +1,13 @@
+{
+  "query": "SELECT COUNT(*) as total \nFROM appointments \nWHERE startTime >= '2026-06-01 00:00:00'\nAND startTime <= '2026-06-30 23:59:59'\nAND status != 'rescheduled';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT COUNT(*) as total \nFROM appointments \nWHERE startTime >= '2026-06-01 00:00:00'\nAND startTime <= '2026-06-30 23:59:59'\nAND status != 'rescheduled';",
+  "rows": [
+    {
+      "total": "1120"
+    }
+  ],
+  "messages": [],
+  "stdout": "total\n1120\n",
+  "stderr": "",
+  "execution_time_ms": 279
+}

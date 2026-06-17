@@ -1,0 +1,31 @@
+{
+  "query": "SELECT a.id, a.startTime, a.createdAt, a.seriesId, p.name as patientName\nFROM appointments a\nLEFT JOIN patients p ON a.patientId = p.id\nWHERE a.therapistUserId = 4620148\nAND a.startTime >= '2026-06-17 00:00:00'\nAND a.startTime < '2026-06-18 00:00:00'\nORDER BY a.startTime;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT a.id, a.startTime, a.createdAt, a.seriesId, p.name as patientName\nFROM appointments a\nLEFT JOIN patients p ON a.patientId = p.id\nWHERE a.therapistUserId = 4620148\nAND a.startTime >= '2026-06-17 00:00:00'\nAND a.startTime < '2026-06-18 00:00:00'\nORDER BY a.startTime;",
+  "rows": [
+    {
+      "id": "6540001",
+      "startTime": "2026-06-17 12:00:00",
+      "createdAt": "2026-06-17 15:21:03",
+      "seriesId": "series-1781709663437-6ahe6c",
+      "patientName": "LORENZO SALLES ROMANINI"
+    },
+    {
+      "id": "6540006",
+      "startTime": "2026-06-17 13:00:00",
+      "createdAt": "2026-06-17 15:21:29",
+      "seriesId": "series-1781709689755-abt18c",
+      "patientName": "Antonella guedes de oliveira cruz"
+    },
+    {
+      "id": "6540011",
+      "startTime": "2026-06-17 14:00:00",
+      "createdAt": "2026-06-17 15:22:01",
+      "seriesId": "series-1781709721521-rkp0a",
+      "patientName": "LORENZO SALLES ROMANINI"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tstartTime\tcreatedAt\tseriesId\tpatientName\n6540001\t2026-06-17 12:00:00\t2026-06-17 15:21:03\tseries-1781709663437-6ahe6c\tLORENZO SALLES ROMANINI\n6540006\t2026-06-17 13:00:00\t2026-06-17 15:21:29\tseries-1781709689755-abt18c\tAntonella guedes de oliveira cruz\n6540011\t2026-06-17 14:00:00\t2026-06-17 15:22:01\tseries-1781709721521-rkp0a\tLORENZO SALLES ROMANINI\n",
+  "stderr": "",
+  "execution_time_ms": 287
+}

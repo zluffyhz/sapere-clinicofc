@@ -1,0 +1,118 @@
+{
+  "query": "SELECT a.id, a.startTime, a.endTime, a.therapyType, a.status, a.seriesId, p.name as patientName\nFROM appointments a\nLEFT JOIN patients p ON a.patientId = p.id\nLEFT JOIN users u ON a.therapistUserId = u.id\nWHERE u.name LIKE '%REGINA%'\nAND a.startTime >= '2026-06-22'\nAND a.startTime < '2026-06-29'\nORDER BY a.startTime ASC\nLIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT a.id, a.startTime, a.endTime, a.therapyType, a.status, a.seriesId, p.name as patientName\nFROM appointments a\nLEFT JOIN patients p ON a.patientId = p.id\nLEFT JOIN users u ON a.therapistUserId = u.id\nWHERE u.name LIKE '%REGINA%'\nAND a.startTime >= '2026-06-22'\nAND a.startTime < '2026-06-29'\nORDER BY a.startTime ASC\nLIMIT 20;",
+  "rows": [
+    {
+      "id": "4980004",
+      "startTime": "2026-06-22 11:00:00",
+      "endTime": "2026-06-22 11:50:00",
+      "therapyType": "fisioterapia",
+      "status": "scheduled",
+      "seriesId": "series-1779718243098-mcbed",
+      "patientName": "LORENZO SALLES ROMANINI"
+    },
+    {
+      "id": "4980010",
+      "startTime": "2026-06-22 12:00:00",
+      "endTime": "2026-06-22 12:50:00",
+      "therapyType": "fisioterapia",
+      "status": "scheduled",
+      "seriesId": "series-1779718266136-64h9sr",
+      "patientName": "HELENA BARBOSA AQUINO XAVIER"
+    },
+    {
+      "id": "5010005",
+      "startTime": "2026-06-22 14:00:00",
+      "endTime": "2026-06-22 14:50:00",
+      "therapyType": "fisioterapia",
+      "status": "scheduled",
+      "seriesId": "series-1779719754824-w24esr",
+      "patientName": "LORENZO SALLES ROMANINI"
+    },
+    {
+      "id": "6300088",
+      "startTime": "2026-06-23 11:00:00",
+      "endTime": "2026-06-23 11:50:00",
+      "therapyType": "fisioterapia",
+      "status": "scheduled",
+      "seriesId": "series-1781559638930-8o4kyf",
+      "patientName": "LORENZO SALLES ROMANINI"
+    },
+    {
+      "id": "5490003",
+      "startTime": "2026-06-23 11:00:00",
+      "endTime": "2026-06-23 11:50:00",
+      "therapyType": "terapia_ocupacional",
+      "status": "cancelled",
+      "seriesId": "series-1780409383163-0dizus",
+      "patientName": "Laura Felizzola Eugaly"
+    },
+    {
+      "id": "5490009",
+      "startTime": "2026-06-23 11:00:00",
+      "endTime": "2026-06-23 11:50:00",
+      "therapyType": "terapia_ocupacional",
+      "status": "cancelled",
+      "seriesId": "series-1780409430039-tf6o5",
+      "patientName": "Laura Felizzola Eugaly"
+    },
+    {
+      "id": "6300092",
+      "startTime": "2026-06-23 13:00:00",
+      "endTime": "2026-06-23 13:50:00",
+      "therapyType": "fisioterapia",
+      "status": "scheduled",
+      "seriesId": "series-1781559682135-b7rnpv",
+      "patientName": "LORENZO SALLES ROMANINI"
+    },
+    {
+      "id": "6300100",
+      "startTime": "2026-06-23 14:00:00",
+      "endTime": "2026-06-23 14:50:00",
+      "therapyType": "fisioterapia",
+      "status": "scheduled",
+      "seriesId": "series-1781559713754-g39xe",
+      "patientName": "AYLA PIETRA DINIZ GOMES"
+    },
+    {
+      "id": "6540003",
+      "startTime": "2026-06-24 12:00:00",
+      "endTime": "2026-06-24 12:50:00",
+      "therapyType": "terapia_ocupacional",
+      "status": "scheduled",
+      "seriesId": "series-1781709663437-6ahe6c",
+      "patientName": "LORENZO SALLES ROMANINI"
+    },
+    {
+      "id": "6540010",
+      "startTime": "2026-06-24 13:00:00",
+      "endTime": "2026-06-24 13:50:00",
+      "therapyType": "terapia_ocupacional",
+      "status": "scheduled",
+      "seriesId": "series-1781709689755-abt18c",
+      "patientName": "Antonella guedes de oliveira cruz"
+    },
+    {
+      "id": "6540013",
+      "startTime": "2026-06-24 14:00:00",
+      "endTime": "2026-06-24 14:50:00",
+      "therapyType": "terapia_ocupacional",
+      "status": "scheduled",
+      "seriesId": "series-1781709721521-rkp0a",
+      "patientName": "LORENZO SALLES ROMANINI"
+    },
+    {
+      "id": "5490015",
+      "startTime": "2026-06-27 11:00:00",
+      "endTime": "2026-06-27 11:50:00",
+      "therapyType": "terapia_ocupacional",
+      "status": "scheduled",
+      "seriesId": "series-1780409521421-e37d1",
+      "patientName": "Laura Felizzola Eugaly"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tstartTime\tendTime\ttherapyType\tstatus\tseriesId\tpatientName\n4980004\t2026-06-22 11:00:00\t2026-06-22 11:50:00\tfisioterapia\tscheduled\tseries-1779718243098-mcbed\tLORENZO SALLES ROMANINI\n4980010\t2026-06-22 12:00:00\t2026-06-22 12:50:00\tfisioterapia\tscheduled\tseries-1779718266136-64h9sr\tHELENA BARBOSA AQUINO XAVIER\n5010005\t2026-06-22 14:00:00\t2026-06-22 14:50:00\tfisioterapia\tscheduled\tseries-1779719754824-w24esr\tLORENZO SALLES ROMANINI\n6300088\t2026-06-23 11:00:00\t2026-06-23 11:50:00\tfisioterapia\tscheduled\tseries-1781559638930-8o4kyf\tLORENZO SALLES ROMANINI\n5490003\t2026-06-23 11:00:00\t2026-06-23 11:50:00\tterapia_ocupacional\tcancelled\tseries-1780409383163-0dizus\tLaura Felizzola Eugaly\n5490009\t2026-06-23 11:00:00\t2026-06-23 11:50:00\tterapia_ocupacional\tcancelled\tseries-1780409430039-tf6o5\tLaura Felizzola Eugaly\n6300092\t2026-06-23 13:00:00\t2026-06-23 13:50:00\tfisioterapia\tscheduled\tseries-1781559682135-b7rnpv\tLORENZO SALLES ROMANINI\n6300100\t2026-06-23 14:00:00\t2026-06-23 14:50:00\tfisioterapia\tscheduled\tseries-1781559713754-g39xe\tAYLA PIETRA DINIZ GOMES\n6540003\t2026-06-24 12:00:00\t2026-06-24 12:50:00\tterapia_ocupacional\tscheduled\tseries-1781709663437-6ahe6c\tLORENZO SALLES ROMANINI\n6540010\t2026-06-24 13:00:00\t2026-06-24 13:50:00\tterapia_ocupacional\tscheduled\tseries-1781709689755-abt18c\tAntonella guedes de oliveira cruz\n6540013\t2026-06-24 14:00:00\t2026-06-24 14:50:00\tterapia_ocupacional\tscheduled\tseries-1781709721521-rkp0a\tLORENZO SALLES ROMANINI\n5490015\t2026-06-27 11:00:00\t2026-06-27 11:50:00\tterapia_ocupacional\tscheduled\tseries-1780409521421-e37d1\tLaura Felizzola Eugaly\n",
+  "stderr": "",
+  "execution_time_ms": 273
+}

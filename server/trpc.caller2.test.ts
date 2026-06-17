@@ -46,8 +46,8 @@ describe('Create appointment via tRPC caller with replication', () => {
     
     console.log(`Result (${elapsed}ms):`, result);
     expect(result.success).toBe(true);
-    expect(result.replicatedCount).toBe(4);
-    expect(result.totalCreated).toBe(5);
+    expect(result.replicatedCount).toBe(8);
+    expect(result.totalCreated).toBe(9);
     
     // Cleanup
     const allApts = await db.getAppointmentsByPatient(patient.id);

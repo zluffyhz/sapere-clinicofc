@@ -1,0 +1,38 @@
+{
+  "query": "SELECT a.id, a.startTime, a.therapyType, a.status, p.name as patientName\nFROM appointments a\nLEFT JOIN patients p ON a.patientId = p.id\nWHERE a.therapistUserId = 4620148\nAND DATE(a.startTime) = '2026-06-10'\nAND a.status != 'rescheduled'\nORDER BY a.startTime;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT a.id, a.startTime, a.therapyType, a.status, p.name as patientName\nFROM appointments a\nLEFT JOIN patients p ON a.patientId = p.id\nWHERE a.therapistUserId = 4620148\nAND DATE(a.startTime) = '2026-06-10'\nAND a.status != 'rescheduled'\nORDER BY a.startTime;",
+  "rows": [
+    {
+      "id": "4410052",
+      "startTime": "2026-06-10 12:00:00",
+      "therapyType": "fisioterapia",
+      "status": "scheduled",
+      "patientName": "LORENZO SALLES ROMANINI"
+    },
+    {
+      "id": "4410060",
+      "startTime": "2026-06-10 13:00:00",
+      "therapyType": "fisioterapia",
+      "status": "scheduled",
+      "patientName": "Antonella guedes de oliveira cruz"
+    },
+    {
+      "id": "4410065",
+      "startTime": "2026-06-10 14:00:00",
+      "therapyType": "fisioterapia",
+      "status": "completed",
+      "patientName": "LORENZO SALLES ROMANINI"
+    },
+    {
+      "id": "4440004",
+      "startTime": "2026-06-10 18:00:00",
+      "therapyType": "fisioterapia",
+      "status": "completed",
+      "patientName": "LORENZO SALLES ROMANINI"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tstartTime\ttherapyType\tstatus\tpatientName\n4410052\t2026-06-10 12:00:00\tfisioterapia\tscheduled\tLORENZO SALLES ROMANINI\n4410060\t2026-06-10 13:00:00\tfisioterapia\tscheduled\tAntonella guedes de oliveira cruz\n4410065\t2026-06-10 14:00:00\tfisioterapia\tcompleted\tLORENZO SALLES ROMANINI\n4440004\t2026-06-10 18:00:00\tfisioterapia\tcompleted\tLORENZO SALLES ROMANINI\n",
+  "stderr": "",
+  "execution_time_ms": 288
+}

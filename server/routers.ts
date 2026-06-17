@@ -292,7 +292,8 @@ export const appRouter = router({
         startTime: z.date(),
         endTime: z.date(),
         notes: z.string().optional(),
-        replicateWeekly: z.boolean().optional(), // Admin only: replicate weekly for 30 days
+        replicateWeekly: z.boolean().optional(), // Admin only: replicate weekly
+        replicateWeeks: z.number().min(1).max(12).optional(), // Number of weeks to replicate (default 8)
         alsoLinkTherapist: z.boolean().optional(), // Create permanent assignment for this therapist+patient
       }))
       .mutation(async ({ input, ctx }) => {
@@ -385,8 +386,9 @@ export const appRouter = router({
             const currentDate = new Date(input.startTime);
             const durationMs = input.endTime.getTime() - input.startTime.getTime();
 
-            // Build all 4 weekly appointments data
-            const weeksData = Array.from({ length: 4 }, (_, i) => {
+            // Build weekly appointments data (configurable, default 8 weeks)
+            const numWeeks = input.replicateWeeks || 8;
+            const weeksData = Array.from({ length: numWeeks }, (_, i) => {
               const week = i + 1;
               const newStartTime = new Date(currentDate);
               newStartTime.setDate(currentDate.getDate() + week * 7);

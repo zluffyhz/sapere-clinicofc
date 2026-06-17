@@ -1,0 +1,45 @@
+{
+  "query": "SELECT a.id, DATE(a.startTime) as appointmentDate, TIME(a.startTime) as appointmentTime, a.status, p.name as patientName\nFROM appointments a\nLEFT JOIN patients p ON a.patientId = p.id\nWHERE a.seriesId = 'series-1781709663437-6ahe6c'\nORDER BY a.startTime;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4EhbpnytSh9u8Li.77fae6186695 --database EGarZwiW5PSBt7KQSMeJXj --execute SELECT a.id, DATE(a.startTime) as appointmentDate, TIME(a.startTime) as appointmentTime, a.status, p.name as patientName\nFROM appointments a\nLEFT JOIN patients p ON a.patientId = p.id\nWHERE a.seriesId = 'series-1781709663437-6ahe6c'\nORDER BY a.startTime;",
+  "rows": [
+    {
+      "id": "6540001",
+      "appointmentDate": "2026-06-17",
+      "appointmentTime": "12:00:00",
+      "status": "scheduled",
+      "patientName": "LORENZO SALLES ROMANINI"
+    },
+    {
+      "id": "6540003",
+      "appointmentDate": "2026-06-24",
+      "appointmentTime": "12:00:00",
+      "status": "scheduled",
+      "patientName": "LORENZO SALLES ROMANINI"
+    },
+    {
+      "id": "6540002",
+      "appointmentDate": "2026-07-01",
+      "appointmentTime": "12:00:00",
+      "status": "scheduled",
+      "patientName": "LORENZO SALLES ROMANINI"
+    },
+    {
+      "id": "6540004",
+      "appointmentDate": "2026-07-08",
+      "appointmentTime": "12:00:00",
+      "status": "scheduled",
+      "patientName": "LORENZO SALLES ROMANINI"
+    },
+    {
+      "id": "6540005",
+      "appointmentDate": "2026-07-15",
+      "appointmentTime": "12:00:00",
+      "status": "scheduled",
+      "patientName": "LORENZO SALLES ROMANINI"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tappointmentDate\tappointmentTime\tstatus\tpatientName\n6540001\t2026-06-17\t12:00:00\tscheduled\tLORENZO SALLES ROMANINI\n6540003\t2026-06-24\t12:00:00\tscheduled\tLORENZO SALLES ROMANINI\n6540002\t2026-07-01\t12:00:00\tscheduled\tLORENZO SALLES ROMANINI\n6540004\t2026-07-08\t12:00:00\tscheduled\tLORENZO SALLES ROMANINI\n6540005\t2026-07-15\t12:00:00\tscheduled\tLORENZO SALLES ROMANINI\n",
+  "stderr": "",
+  "execution_time_ms": 281
+}

@@ -92,6 +92,6 @@ describe('Debug appointment creation', () => {
     
     console.log('Result:', result);
     expect(result.success).toBe(true);
-    expect(result.replicatedCount).toBe(4);
+    expect(result.replicatedCount).toBe(8);
   });
 });

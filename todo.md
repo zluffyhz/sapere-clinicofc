@@ -1268,3 +1268,7 @@
 ## Sinalização de Feriados na Agenda
 - [x] Criar utilitário de feriados (datas fixas + cálculo de Páscoa para móveis) no frontend
 - [x] Sinalizar feriados de forma sutil na agenda (sem impactar layout/UX)
+## Bug Crítico: Agendamentos de séries desaparecem a partir da 3ª semana
+- [x] Investigar lógica de criação de séries recorrentes (appointments.create)
+- [x] Investigar lógica de consulta de agendamentos por data (appointments.byDate)
+- [x] Corrigir: séries agora replicam por 8 semanas (padrão) em vez de 4, configurável até 12 semanas
