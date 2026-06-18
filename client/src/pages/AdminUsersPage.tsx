@@ -405,35 +405,35 @@ export default function AdminUsersPage() {
                   <Label>Especialidades *</Label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {[
-                      "Fonoaudiologia",
-                      "Psicologia",
-                      "Terapia Ocupacional",
-                      "Psicopedagogia",
-                      "Neuropsicopedagogia",
-                      "Musicoterapia",
-                      "Fisioterapia",
-                      "Nutrição",
-                      "Psicomotricidade",
-                      "Aplicadora DENVER e ABA",
-                      "Assistente Terapêutico",
-                    ].map((specialty) => (
-                      <label key={specialty} className="flex items-center space-x-2 cursor-pointer">
+                      { value: "fonoaudiologia", label: "Fonoaudiologia" },
+                      { value: "psicologia", label: "Psicologia" },
+                      { value: "terapia_ocupacional", label: "Terapia Ocupacional" },
+                      { value: "psicopedagogia", label: "Psicopedagogia" },
+                      { value: "neuropsicopedagogia", label: "Neuropsicopedagogia" },
+                      { value: "musicoterapia", label: "Musicoterapia" },
+                      { value: "fisioterapia", label: "Fisioterapia" },
+                      { value: "nutricao", label: "Nutrição" },
+                      { value: "psicomotricidade", label: "Psicomotricidade" },
+                      { value: "aplicadora_denver_aba", label: "Aplicadora Denver/ABA" },
+                      { value: "assistente_terapeutico", label: "Assistente Terapêutico" },
+                    ].map(({ value, label }) => (
+                      <label key={value} className="flex items-center space-x-2 cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={newUser.specialties.includes(specialty)}
+                          checked={newUser.specialties.includes(value)}
                           onChange={(e) => {
                             if (e.target.checked) {
-                              setNewUser({ ...newUser, specialties: [...newUser.specialties, specialty] });
+                              setNewUser({ ...newUser, specialties: [...newUser.specialties, value] });
                             } else {
                               setNewUser({
                                 ...newUser,
-                                specialties: newUser.specialties.filter((s) => s !== specialty),
+                                specialties: newUser.specialties.filter((s) => s !== value),
                               });
                             }
                           }}
                           className="rounded border-gray-300"
                         />
-                        <span className="text-sm">{specialty}</span>
+                        <span className="text-sm">{label}</span>
                       </label>
                     ))}
                   </div>
