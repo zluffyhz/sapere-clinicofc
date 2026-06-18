@@ -1272,3 +1272,8 @@
 - [x] Investigar lógica de criação de séries recorrentes (appointments.create)
 - [x] Investigar lógica de consulta de agendamentos por data (appointments.byDate)
 - [x] Corrigir: séries agora replicam por 8 semanas (padrão) em vez de 4, configurável até 12 semanas
+## Correção de especialidades e validação de tipo de terapia
+- [x] Corrigir cadastro de REGINA MENEZES: especialidade deve ser terapia_ocupacional (não fisioterapia)
+- [x] Corrigir agendamentos de REGINA MENEZES que estão como fisioterapia para terapia_ocupacional
+- [x] Corrigir vinculações (assignments) de REGINA MENEZES de fisioterapia para terapia_ocupacional
+- [x] Implementar validação: ao criar agendamento, restringir tipo de terapia às especialidades do terapeuta selecionado

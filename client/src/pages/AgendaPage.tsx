@@ -590,27 +590,54 @@ export default function AgendaPage() {
         </div>
       )}
 
-      {/* Therapy Type */}
+      {/* Therapy Type - filtered by therapist specialties when a therapist is selected */}
       <div className="grid gap-2">
         <Label htmlFor="therapyType">Tipo de Terapia *</Label>
         <NativeSelect
           value={formData.therapyType}
           onChange={(e) => setFormData({ ...formData, therapyType: e.target.value as any })}
-          options={[
-            { value: "fonoaudiologia", label: "Fonoaudiologia" },
-            { value: "psicologia", label: "Psicologia" },
-            { value: "terapia_ocupacional", label: "Terapia Ocupacional" },
-            { value: "psicopedagogia", label: "Psicopedagogia" },
-            { value: "psicomotricidade", label: "Psicomotricidade" },
-            { value: "musicoterapia", label: "Musicoterapia" },
-            { value: "fisioterapia", label: "Fisioterapia" },
-            { value: "neuropsicopedagogia", label: "Neuropsicopedagogia" },
-            { value: "nutricao", label: "Nutrição" },
-            { value: "aplicadora_denver_aba", label: "Aplicadora Denver/ABA" },
-            { value: "assistente_terapeutico", label: "Assistente Terapêutico" },
-            { value: "outro", label: "Outro" },
-          ]}
+          options={(() => {
+            const allOptions = [
+              { value: "fonoaudiologia", label: "Fonoaudiologia" },
+              { value: "psicologia", label: "Psicologia" },
+              { value: "terapia_ocupacional", label: "Terapia Ocupacional" },
+              { value: "psicopedagogia", label: "Psicopedagogia" },
+              { value: "psicomotricidade", label: "Psicomotricidade" },
+              { value: "musicoterapia", label: "Musicoterapia" },
+              { value: "fisioterapia", label: "Fisioterapia" },
+              { value: "neuropsicopedagogia", label: "Neuropsicopedagogia" },
+              { value: "nutricao", label: "Nutrição" },
+              { value: "aplicadora_denver_aba", label: "Aplicadora Denver/ABA" },
+              { value: "assistente_terapeutico", label: "Assistente Terapêutico" },
+              { value: "outro", label: "Outro" },
+            ];
+            // Filter by therapist specialties if a therapist is selected
+            if (formData.therapistId) {
+              const selectedTherapist = therapists?.find((t) => t.id === formData.therapistId);
+              if (selectedTherapist?.specialties) {
+                try {
+                  const specialties: string[] = JSON.parse(selectedTherapist.specialties);
+                  if (specialties.length > 0) {
+                    return allOptions.filter((opt) => specialties.includes(opt.value));
+                  }
+                } catch {}
+              }
+            }
+            return allOptions;
+          })()}
         />
+        {formData.therapistId && (() => {
+          const selectedTherapist = therapists?.find((t) => t.id === formData.therapistId);
+          if (selectedTherapist?.specialties) {
+            try {
+              const specialties: string[] = JSON.parse(selectedTherapist.specialties);
+              if (specialties.length > 0) {
+                return <p className="text-xs text-muted-foreground">Filtrado pelas especialidades de {selectedTherapist.name}</p>;
+              }
+            } catch {}
+          }
+          return null;
+        })()}
       </div>
 
       {/* Status - only in edit mode and only when editing a single appointment (not the whole series) */}
