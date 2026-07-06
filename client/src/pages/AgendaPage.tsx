@@ -994,7 +994,7 @@ export default function AgendaPage() {
                   onChange={(e) => setSelectedTherapistId(e.target.value === "all" ? null : parseInt(e.target.value))}
                   options={[
                     { value: "all", label: "Todos os terapeutas" },
-                    ...((therapists || []).filter((u) => u.role === "therapist").map((t) => ({ value: t.id.toString(), label: t.name ?? "" }))),
+                    ...((therapists || []).filter((u) => u.role === "therapist").sort((a, b) => (a.name ?? "").localeCompare(b.name ?? "", 'pt-BR')).map((t) => ({ value: t.id.toString(), label: t.name ?? "" }))),
                   ]}
                 />
               </div>
