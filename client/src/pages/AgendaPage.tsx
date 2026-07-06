@@ -1315,38 +1315,71 @@ export default function AgendaPage() {
       </div>
 
       {/* Summary by Therapy Type */}
-      {appointments && appointments.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Resumo do Período</CardTitle>
-            <CardDescription>
-              {format(startDate, "dd/MM", { locale: ptBR })} -{" "}
-              {format(endDate, "dd/MM/yyyy", { locale: ptBR })}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-              {Object.entries(
-                appointments.reduce((acc, apt) => {
-                  acc[apt.therapyType] = (acc[apt.therapyType] || 0) + 1;
-                  return acc;
-                }, {} as Record<string, number>)
-              ).map(([type, count]) => (
-                <div 
-                  key={type} 
-                  className={`p-4 rounded-lg border-l-4 ${therapyTypeColors[type]?.bg || "bg-gray-50"} ${therapyTypeColors[type]?.border || "border-gray-300"}`}
-                >
-                  <p className="text-sm font-medium text-foreground">
-                    {therapyTypeLabels[type] || type}
-                  </p>
-                  <p className="text-2xl font-bold mt-2">{count}</p>
-                  <p className="text-xs text-muted-foreground mt-1">sessões</p>
+      {appointments && appointments.length > 0 && (() => {
+        const filteredForSummary = selectedTherapistId
+          ? appointments.filter(apt => apt.therapistUserId === selectedTherapistId || (apt.coTherapistIds || []).includes(selectedTherapistId))
+          : appointments;
+        const selectedTherapistName = selectedTherapistId
+          ? therapists?.find(t => t.id === selectedTherapistId)?.name || 'Terapeuta'
+          : null;
+        const totalScheduled = filteredForSummary.filter(a => a.status === 'scheduled').length;
+        const totalCompleted = filteredForSummary.filter(a => a.status === 'completed').length;
+        const totalAbsent = filteredForSummary.filter(a => a.status === 'absent').length;
+        const totalCancelled = filteredForSummary.filter(a => a.status === 'cancelled').length;
+        return filteredForSummary.length > 0 ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Resumo do Período{selectedTherapistName ? ` — ${selectedTherapistName}` : ''}</CardTitle>
+              <CardDescription>
+                {format(startDate, "dd/MM", { locale: ptBR })} -{" "}
+                {format(endDate, "dd/MM/yyyy", { locale: ptBR })}
+                {selectedTherapistName && <span className="ml-2 text-orange-600 font-medium">(filtrado)</span>}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Status summary */}
+              <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
+                <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
+                  <p className="text-xs font-medium text-blue-700">Agendadas</p>
+                  <p className="text-xl font-bold text-blue-900">{totalScheduled}</p>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+                <div className="p-3 rounded-lg bg-green-50 border border-green-200">
+                  <p className="text-xs font-medium text-green-700">Concluídas</p>
+                  <p className="text-xl font-bold text-green-900">{totalCompleted}</p>
+                </div>
+                <div className="p-3 rounded-lg bg-orange-50 border border-orange-200">
+                  <p className="text-xs font-medium text-orange-700">Faltas</p>
+                  <p className="text-xl font-bold text-orange-900">{totalAbsent}</p>
+                </div>
+                <div className="p-3 rounded-lg bg-red-50 border border-red-200">
+                  <p className="text-xs font-medium text-red-700">Cancelamentos</p>
+                  <p className="text-xl font-bold text-red-900">{totalCancelled}</p>
+                </div>
+              </div>
+              {/* By therapy type */}
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+                {Object.entries(
+                  filteredForSummary.reduce((acc, apt) => {
+                    acc[apt.therapyType] = (acc[apt.therapyType] || 0) + 1;
+                    return acc;
+                  }, {} as Record<string, number>)
+                ).map(([type, count]) => (
+                  <div 
+                    key={type} 
+                    className={`p-4 rounded-lg border-l-4 ${therapyTypeColors[type]?.bg || "bg-gray-50"} ${therapyTypeColors[type]?.border || "border-gray-300"}`}
+                  >
+                    <p className="text-sm font-medium text-foreground">
+                      {therapyTypeLabels[type] || type}
+                    </p>
+                    <p className="text-2xl font-bold mt-2">{count}</p>
+                    <p className="text-xs text-muted-foreground mt-1">sessões</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ) : null;
+      })()}
 
       {/* Edit Modal */}
       <Dialog open={isEditModalOpen} onOpenChange={(open) => {

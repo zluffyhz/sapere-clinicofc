@@ -1282,3 +1282,4 @@
 - [x] Adicionar botão/opção de marcar falta diretamente nos cards de agendamento na agenda
 - [x] Criar status "absent" (falta paciente) nos agendamentos
 - [x] Exibir badge visual de falta no card do agendamento
+- [x] Resumo do período na agenda deve filtrar pela terapeuta selecionada e incluir contagem de faltas e cancelamentos
