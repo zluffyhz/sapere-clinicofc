@@ -528,7 +528,7 @@ export default function ProntuarioPage() {
                       { value: "0", label: "Vincular automaticamente" },
                       ...(appointments || []).map((apt) => ({
                         value: apt.id.toString(),
-                        label: `${formatBRT(apt.startTime, "HH:mm")} – ${formatBRT(apt.startTime, "dd/MM/yyyy")} (${apt.status === 'completed' ? 'Concluída' : 'Agendada'})`
+                        label: `${formatBRT(apt.startTime, "HH:mm")} – ${formatBRT(apt.startTime, "dd/MM/yyyy")} (${apt.status === 'completed' ? 'Concluída' : apt.status === 'absent' ? 'Falta' : apt.status === 'cancelled' ? 'Cancelada' : 'Agendada'})`
                       }))
                     ]}
                   />

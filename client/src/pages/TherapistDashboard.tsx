@@ -188,7 +188,7 @@ export default function TherapistDashboard() {
                   .map((apt) => {
                     const patient = patients?.find((p) => p.id === apt.patientId);
                     return (
-                      <div key={apt.id} className={`flex items-start gap-4 p-3 rounded-lg border ${apt.status === 'cancelled' ? 'opacity-60 bg-gray-50' : ''}`}>
+                      <div key={apt.id} className={`flex items-start gap-4 p-3 rounded-lg border ${apt.status === 'cancelled' ? 'opacity-60 bg-gray-50' : apt.status === 'absent' ? 'opacity-75 bg-orange-50' : ''}`}>
                         <div className="flex-1 space-y-1">
                           <p className="text-sm font-medium">
                             {formatBRT(apt.startTime, "HH:mm")} -{" "}
@@ -209,6 +209,8 @@ export default function TherapistDashboard() {
                               ? "bg-green-100 text-green-700"
                               : apt.status === "cancelled"
                               ? "bg-red-100 text-red-700"
+                              : apt.status === "absent"
+                              ? "bg-orange-100 text-orange-700"
                               : "bg-muted text-muted-foreground"
                           }`}
                         >
@@ -218,6 +220,8 @@ export default function TherapistDashboard() {
                             ? "Concluída"
                             : apt.status === "cancelled"
                             ? "Cancelada"
+                            : apt.status === "absent"
+                            ? "Falta"
                             : "Remarcada"}
                         </div>
                       </div>

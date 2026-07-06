@@ -142,10 +142,13 @@ export default function FamilyDashboard() {
                       <div className={`text-xs px-2 py-1 rounded-full ${
                         apt.status === 'scheduled' ? 'bg-primary/10 text-primary' :
                         apt.status === 'completed' ? 'bg-green-100 text-green-700' :
+                        apt.status === 'absent' ? 'bg-orange-100 text-orange-700' :
+                        apt.status === 'cancelled' ? 'bg-red-100 text-red-700' :
                         'bg-muted text-muted-foreground'
                       }`}>
                         {apt.status === 'scheduled' ? 'Agendada' :
                          apt.status === 'completed' ? 'Concluída' :
+                         apt.status === 'absent' ? 'Falta' :
                          apt.status === 'cancelled' ? 'Cancelada' : 'Remarcada'}
                       </div>
                     </div>
