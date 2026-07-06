@@ -50,7 +50,7 @@ export const appointments = mysqlTable("appointments", {
   therapyType: mysqlEnum("therapyType", ["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "assistente_terapeutico", "outro"]).notNull(),
   startTime: timestamp("startTime").notNull(),
   endTime: timestamp("endTime").notNull(),
-  status: mysqlEnum("status", ["scheduled", "completed", "cancelled", "rescheduled"]).default("scheduled").notNull(),
+  status: mysqlEnum("status", ["scheduled", "completed", "cancelled", "rescheduled", "absent"]).default("scheduled").notNull(),
   notes: text("notes"),
   seriesId: varchar("seriesId", { length: 64 }), // Groups recurring appointments together
   isJointSession: boolean("isJointSession").default(false).notNull(), // Atendimento em conjunto

@@ -526,7 +526,7 @@ export const appRouter = router({
         therapyType: z.enum(["fonoaudiologia", "psicologia", "terapia_ocupacional", "psicopedagogia", "musicoterapia", "fisioterapia", "neuropsicopedagogia", "nutricao", "psicomotricidade", "aplicadora_denver_aba", "assistente_terapeutico", "outro"]).optional(),
         startTime: z.date().optional(),
         endTime: z.date().optional(),
-        status: z.enum(["scheduled", "completed", "cancelled", "rescheduled"]).optional(),
+        status: z.enum(["scheduled", "completed", "cancelled", "rescheduled", "absent"]).optional(),
         notes: z.string().optional(),
       }))
       .mutation(async ({ input, ctx }) => {

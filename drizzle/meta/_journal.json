@@ -106,6 +106,13 @@
       "when": 1781115486030,
       "tag": "0014_even_sentinel",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "5",
+      "when": 1783086713896,
+      "tag": "0015_silky_kid_colt",
+      "breakpoints": true
     }
   ]
 }

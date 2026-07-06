@@ -9,7 +9,7 @@ import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-f
 import { ptBR } from "date-fns/locale";
 import { formatBRT, parseBRTDateTime, getBRTDateString, getBRTTimeString, isSameDayBRT, CLINIC_TIMEZONE } from "@/lib/timezone";
 import { getHoliday, isHoliday } from "@/lib/holidays";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X, Repeat, UserPlus, Search, Ban, CheckCircle2, RotateCcw } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users, Plus, Pencil, Trash2, X, Repeat, UserPlus, Search, Ban, CheckCircle2, RotateCcw, UserX } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { NativeSelect } from "@/components/ui/native-select";
 import { SearchableSelect } from "@/components/ui/searchable-select";
@@ -45,7 +45,7 @@ type AppointmentFormData = {
   startTime: string;
   endTime: string;
   notes: string;
-  status?: "scheduled" | "completed" | "cancelled" | "rescheduled";
+  status?: "scheduled" | "completed" | "cancelled" | "rescheduled" | "absent";
   replicateWeekly?: boolean;
   replicateWeeks?: number;
   isJointSession?: boolean;
@@ -227,6 +227,17 @@ export default function AgendaPage() {
     },
     onError: (error) => {
       toast.error(`Erro ao excluir agendamento: ${error.message}`);
+    },
+  });
+
+  // Mark absent mutation
+  const markAbsentMutation = trpc.appointments.update.useMutation({
+    onSuccess: () => {
+      toast.success("Falta registrada!");
+      utils.appointments.listByDateRange.invalidate();
+    },
+    onError: (error) => {
+      toast.error(`Erro ao registrar falta: ${error.message}`);
     },
   });
 
@@ -487,6 +498,7 @@ export default function AgendaPage() {
     completed: "Concluída",
     cancelled: "Cancelada",
     rescheduled: "Remarcada",
+    absent: "Falta",
   };
 
   // Cores por tipo de terapia
@@ -1127,6 +1139,8 @@ export default function AgendaPage() {
                       className={`p-4 rounded-lg border-l-4 transition-colors ${
                         apt.status === 'cancelled'
                           ? 'bg-gray-50 border-gray-300 opacity-60'
+                          : apt.status === 'absent'
+                          ? 'bg-orange-50 border-orange-400 opacity-80'
                           : apt.status === 'completed' 
                           ? 'bg-green-50 border-green-500' 
                           : `${therapyTypeColors[apt.therapyType]?.bg || "bg-gray-50"} ${
@@ -1146,6 +1160,8 @@ export default function AgendaPage() {
                                   ? "bg-green-600 text-white hover:bg-green-700"
                                   : apt.status === "cancelled"
                                   ? "bg-red-100 text-red-700 border border-red-300"
+                                  : apt.status === "absent"
+                                  ? "bg-orange-100 text-orange-700 border border-orange-300"
                                   : ""
                               }
                               variant={
@@ -1158,6 +1174,7 @@ export default function AgendaPage() {
                             >
                               {apt.status === "completed" && <CheckCircle2 className="h-3 w-3 mr-1" />}
                               {apt.status === "cancelled" && <Ban className="h-3 w-3 mr-1" />}
+                              {apt.status === "absent" && <UserX className="h-3 w-3 mr-1" />}
                               {statusLabels[apt.status]}
                             </Badge>
                             {apt.seriesId && (
@@ -1228,13 +1245,25 @@ export default function AgendaPage() {
                                 >
                                   <Pencil className="h-4 w-4" />
                                 </Button>
-                                {apt.status !== 'completed' && (
+                                {apt.status !== 'completed' && apt.status !== 'absent' && (
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => markAbsentMutation.mutate({ id: apt.id, status: 'absent' })}
+                                    className="text-orange-500 hover:text-orange-600 hover:border-orange-400"
+                                    title="Registrar falta do paciente"
+                                    disabled={markAbsentMutation.isPending}
+                                  >
+                                    <UserX className="h-4 w-4" />
+                                  </Button>
+                                )}
+                                {apt.status !== 'completed' && apt.status !== 'absent' && (
                                   <Button
                                     variant="outline"
                                     size="icon"
                                     onClick={() => openCancelDialog(apt)}
-                                    className="text-orange-600 hover:text-orange-700 hover:border-orange-400"
-                                    title="Marcar como cancelado"
+                                    className="text-red-500 hover:text-red-600 hover:border-red-400"
+                                    title="Cancelar agendamento"
                                   >
                                     <Ban className="h-4 w-4" />
                                   </Button>
@@ -1250,7 +1279,7 @@ export default function AgendaPage() {
                                 </Button>
                               </>
                             )}
-                            {apt.status === 'cancelled' && (
+                            {(apt.status === 'cancelled' || apt.status === 'absent') && (
                               <>
                                 <Button
                                   variant="outline"

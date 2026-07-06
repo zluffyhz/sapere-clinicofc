@@ -1277,3 +1277,8 @@
 - [x] Corrigir agendamentos de REGINA MENEZES que estão como fisioterapia para terapia_ocupacional
 - [x] Corrigir vinculações (assignments) de REGINA MENEZES de fisioterapia para terapia_ocupacional
 - [x] Implementar validação: ao criar agendamento, restringir tipo de terapia às especialidades do terapeuta selecionado
+
+## Marcar Falta do Paciente na Agenda
+- [x] Adicionar botão/opção de marcar falta diretamente nos cards de agendamento na agenda
+- [x] Criar status "absent" (falta paciente) nos agendamentos
+- [x] Exibir badge visual de falta no card do agendamento
