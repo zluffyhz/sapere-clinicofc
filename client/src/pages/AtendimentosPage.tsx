@@ -134,12 +134,15 @@ export default function AtendimentosPage() {
 
   const totalTerapeutas = groupedByTherapist.length;
 
-  // Opções de terapeutas para o filtro
+  // Opções de terapeutas para o filtro (ordem alfabética)
   const therapistOptions = useMemo(() => {
+    const sorted = [...groupedByTherapist].sort((a, b) =>
+      a.therapistName.localeCompare(b.therapistName, 'pt-BR', { sensitivity: 'base' })
+    );
     const options: { value: string; label: string }[] = [
       { value: "all", label: "Todos os terapeutas" },
     ];
-    for (const group of groupedByTherapist) {
+    for (const group of sorted) {
       options.push({
         value: String(group.therapistId),
         label: `${group.therapistName} (${group.total})`,
