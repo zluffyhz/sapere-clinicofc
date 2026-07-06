@@ -400,7 +400,8 @@ export async function getAppointmentsBySeries(seriesId: string) {
     .where(
       and(
         eq(appointments.seriesId, seriesId),
-        ne(appointments.status, 'cancelled')
+        ne(appointments.status, 'cancelled'),
+        ne(appointments.status, 'absent')
       )
     )
     .orderBy(asc(appointments.startTime));
@@ -1028,6 +1029,7 @@ export async function checkScheduleConflicts(
   const therapistConditions = [
     eq(appointments.therapistUserId, therapistUserId),
     ne(appointments.status, 'cancelled'),
+    ne(appointments.status, 'absent'),
     or(
       // New appointment starts during existing appointment
       and(
@@ -1058,6 +1060,7 @@ export async function checkScheduleConflicts(
   const patientConditions = [
     eq(appointments.patientId, patientId),
     ne(appointments.status, 'cancelled'),
+    ne(appointments.status, 'absent'),
     or(
       // New appointment starts during existing appointment
       and(

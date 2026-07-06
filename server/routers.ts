@@ -998,12 +998,12 @@ export const appRouter = router({
           if (matchingApt) {
             resolvedAppointmentId = matchingApt.id;
           } else {
-            // Last resort: use any appointment (scheduled or completed) on that day
+            // Last resort: use any appointment (scheduled or completed) on that day, excluding absent/cancelled
             const anyApt = therapistApts.find((apt: any) => {
               const aptBRT = new Date(apt.startTime).toLocaleString('en-US', { timeZone: BRT });
               const aptDateObj = new Date(aptBRT);
               const aptDateStr = `${aptDateObj.getFullYear()}-${String(aptDateObj.getMonth() + 1).padStart(2, '0')}-${String(aptDateObj.getDate()).padStart(2, '0')}`;
-              return aptDateStr === sessionDateStr;
+              return aptDateStr === sessionDateStr && apt.status !== 'absent' && apt.status !== 'cancelled';
             });
             if (anyApt) resolvedAppointmentId = anyApt.id;
           }

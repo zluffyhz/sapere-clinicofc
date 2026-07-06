@@ -662,6 +662,7 @@ export default function AgendaPage() {
             options={[
               { value: "scheduled", label: "Agendada" },
               { value: "completed", label: "Concluída" },
+              { value: "absent", label: "Falta" },
               { value: "cancelled", label: "Cancelada" },
               { value: "rescheduled", label: "Remarcada" },
             ]}
