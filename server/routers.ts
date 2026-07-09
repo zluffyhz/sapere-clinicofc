@@ -320,8 +320,8 @@ export const appRouter = router({
             }
           }
 
-          // Generate seriesId if replicating weekly (admin or therapist can replicate)
-          const canReplicate = ctx.user.role === 'admin' || ctx.user.role === 'therapist';
+          // Generate seriesId if replicating weekly (admin only)
+          const canReplicate = ctx.user.role === 'admin';
           const seriesId = (input.replicateWeekly && canReplicate) 
             ? `series-${Date.now()}-${Math.random().toString(36).substring(7)}`
             : undefined;

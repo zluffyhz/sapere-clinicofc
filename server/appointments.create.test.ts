@@ -50,7 +50,7 @@ describe('Appointment Create with Replication', () => {
     console.log('adminUserId:', adminUserId, 'patientId:', patientId, 'therapistId:', therapistId);
   });
 
-  it('should create appointment with weekly replication without error', async () => {
+  it('should create appointment with weekly replication without error (admin only)', async () => {
     const { ctx } = createAdminContext(adminUserId);
     const caller = appRouter.createCaller(ctx);
     

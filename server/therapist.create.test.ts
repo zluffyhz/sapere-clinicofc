@@ -46,15 +46,14 @@ describe('Therapist create with replication', () => {
     console.log('therapistId:', therapistId, 'patientId:', patientId);
   });
 
-  it('should create appointment as therapist WITH replication (replicateWeekly allowed for therapist)', async () => {
+  it('should create single appointment as therapist (replication is admin-only)', async () => {
     const { ctx } = createTherapistContext(therapistId);
     const caller = appRouter.createCaller(ctx);
     
     const startTime = new Date('2030-09-01T14:00:00Z');
     const endTime = new Date('2030-09-01T14:50:00Z');
     
-    console.log('Creating appointment as THERAPIST with replicateWeekly=true...');
-    const start = Date.now();
+    console.log('Creating appointment as THERAPIST with replicateWeekly=true (should be ignored)...');
     
     const result = await caller.appointments.create({
       patientId,
@@ -62,16 +61,15 @@ describe('Therapist create with replication', () => {
       therapyType: 'psicologia',
       startTime,
       endTime,
-      replicateWeekly: true, // Now allowed for therapist role too
+      replicateWeekly: true, // Ignored for therapist role — admin only
       replicateWeeks: 8,
     });
     
-    const elapsed = Date.now() - start;
-    console.log(`Result (${elapsed}ms):`, result);
+    console.log('Result:', result);
     
     expect(result.success).toBe(true);
-    // Therapist CAN now replicate (admin and therapist roles both allowed)
-    expect(result.replicatedCount).toBe(8);
-    expect(result.totalCreated).toBe(9);
+    // Therapist cannot replicate — only 1 appointment created, replicatedCount = 0
+    expect(result.replicatedCount).toBe(0);
+    expect(result.totalCreated).toBe(1);
   });
 });
