@@ -320,8 +320,9 @@ export const appRouter = router({
             }
           }
 
-          // Generate seriesId if replicating weekly
-          const seriesId = (input.replicateWeekly && ctx.user.role === 'admin') 
+          // Generate seriesId if replicating weekly (admin or therapist can replicate)
+          const canReplicate = ctx.user.role === 'admin' || ctx.user.role === 'therapist';
+          const seriesId = (input.replicateWeekly && canReplicate) 
             ? `series-${Date.now()}-${Math.random().toString(36).substring(7)}`
             : undefined;
           
@@ -379,10 +380,10 @@ export const appRouter = router({
             });
           }
 
-          // --- Replicate weekly if requested (admin only) ---
+          // --- Replicate weekly if requested (admin or therapist) ---
           const createdIds = [firstId];
           
-          if (input.replicateWeekly && ctx.user.role === 'admin') {
+          if (input.replicateWeekly && canReplicate) {
             const currentDate = new Date(input.startTime);
             const durationMs = input.endTime.getTime() - input.startTime.getTime();
 
