@@ -985,28 +985,37 @@ export const appRouter = router({
           const sessionDateBRT = input.sessionDate.toLocaleString('en-US', { timeZone: BRT });
           const sessionDateObj = new Date(sessionDateBRT);
           const sessionDateStr = `${sessionDateObj.getFullYear()}-${String(sessionDateObj.getMonth() + 1).padStart(2, '0')}-${String(sessionDateObj.getDate()).padStart(2, '0')}`;
-          
-          // Filter to therapist's own appointments
-          const therapistApts = allApts.filter((apt: any) => apt.therapistUserId === ctx.user.id);
-          
-          const matchingApt = therapistApts.find((apt: any) => {
+
+          // Helper to get date string in BRT from an appointment
+          const getAptDateStr = (apt: any) => {
             const aptBRT = new Date(apt.startTime).toLocaleString('en-US', { timeZone: BRT });
             const aptDateObj = new Date(aptBRT);
-            const aptDateStr = `${aptDateObj.getFullYear()}-${String(aptDateObj.getMonth() + 1).padStart(2, '0')}-${String(aptDateObj.getDate()).padStart(2, '0')}`;
-            return aptDateStr === sessionDateStr && apt.status === 'scheduled';
-          });
-          
+            return `${aptDateObj.getFullYear()}-${String(aptDateObj.getMonth() + 1).padStart(2, '0')}-${String(aptDateObj.getDate()).padStart(2, '0')}`;
+          };
+
+          // Priority 1: own appointment (scheduled) on that day
+          const therapistApts = allApts.filter((apt: any) => apt.therapistUserId === ctx.user.id);
+          const matchingApt = therapistApts.find((apt: any) =>
+            getAptDateStr(apt) === sessionDateStr && apt.status === 'scheduled'
+          );
+
           if (matchingApt) {
             resolvedAppointmentId = matchingApt.id;
           } else {
-            // Last resort: use any appointment (scheduled or completed) on that day, excluding absent/cancelled
-            const anyApt = therapistApts.find((apt: any) => {
-              const aptBRT = new Date(apt.startTime).toLocaleString('en-US', { timeZone: BRT });
-              const aptDateObj = new Date(aptBRT);
-              const aptDateStr = `${aptDateObj.getFullYear()}-${String(aptDateObj.getMonth() + 1).padStart(2, '0')}-${String(aptDateObj.getDate()).padStart(2, '0')}`;
-              return aptDateStr === sessionDateStr && apt.status !== 'absent' && apt.status !== 'cancelled';
-            });
-            if (anyApt) resolvedAppointmentId = anyApt.id;
+            // Priority 2: own appointment (any valid status) on that day
+            const ownAnyApt = therapistApts.find((apt: any) =>
+              getAptDateStr(apt) === sessionDateStr && apt.status !== 'absent' && apt.status !== 'cancelled'
+            );
+            if (ownAnyApt) {
+              resolvedAppointmentId = ownAnyApt.id;
+            } else {
+              // Priority 3: joint session — any appointment for this patient on that day
+              // (covers cases where another therapist is the primary but this therapist is co-attending)
+              const jointApt = allApts.find((apt: any) =>
+                getAptDateStr(apt) === sessionDateStr && apt.status !== 'absent' && apt.status !== 'cancelled'
+              );
+              if (jointApt) resolvedAppointmentId = jointApt.id;
+            }
           }
         }
         
