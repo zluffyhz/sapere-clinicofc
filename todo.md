@@ -1283,3 +1283,4 @@
 - [x] Criar status "absent" (falta paciente) nos agendamentos
 - [x] Exibir badge visual de falta no card do agendamento
 - [x] Resumo do período na agenda deve filtrar pela terapeuta selecionada e incluir contagem de faltas e cancelamentos
+- [x] Corrigir acesso ao prontuário para terapeutas: fallback por agendamento quando assignment não existe no cache (bug "Paciente não identificado" - Heitor Firmino / Vitória Santos)

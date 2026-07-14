@@ -200,7 +200,13 @@ export const appRouter = router({
           const assignments = await db.getPatientTherapistAssignments(input.id);
           const hasAssignment = assignments.some((a: any) => a.therapistUserId === ctx.user.id);
           if (!hasAssignment) {
-            throw new TRPCError({ code: 'FORBIDDEN', message: 'Sem permissão para acessar este paciente' });
+            // Fallback: check if therapist has any appointment with this patient
+            // (covers cases where assignment hasn't been created yet or cache is stale)
+            const recentApts = await db.getAppointmentsByPatient(input.id);
+            const hasAppointment = recentApts.some((a: any) => a.therapistUserId === ctx.user.id);
+            if (!hasAppointment) {
+              throw new TRPCError({ code: 'FORBIDDEN', message: 'Sem permissão para acessar este paciente' });
+            }
           }
         }
         
