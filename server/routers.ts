@@ -412,11 +412,12 @@ export const appRouter = router({
               };
             });
 
-            // Create all 4 appointments in parallel
-            const weekResults = await Promise.all(
-              weeksData.map(apt => db.createAppointment(apt))
-            );
-            const weekIds = weekResults.map(r => r[0].insertId);
+            // Create appointments sequentially to avoid overwhelming the single DB connection
+            const weekIds: number[] = [];
+            for (const apt of weeksData) {
+              const result = await db.createAppointment(apt);
+              weekIds.push(result[0].insertId);
+            }
             createdIds.push(...weekIds);
 
             // Fire-and-forget all notifications for replicated appointments
