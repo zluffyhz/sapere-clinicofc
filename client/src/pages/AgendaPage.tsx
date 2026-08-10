@@ -204,8 +204,9 @@ export default function AgendaPage() {
   
   // Cancel series mutation
   const cancelSeriesMutation = trpc.appointments.cancelSeries.useMutation({
-    onSuccess: (data) => {
-      toast.success(`${data.cancelledCount} agendamentos da série cancelados com sucesso!`);
+    onSuccess: () => {
+      // Global handler: manages delete dialog state and cache invalidation
+      // The cancel dialog flow shows its own toast via inline onSuccess callback
       setIsDeleteDialogOpen(false);
       setDeletingAppointmentId(null);
       setEditingSeriesId(null);
@@ -1462,8 +1463,8 @@ export default function AgendaPage() {
           {/* Series cancel options — shown only when appointment belongs to a series */}
           {cancellingAppointment?.seriesId && (
             <div className="px-6 pb-4">
-              <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
-                <p className="text-sm font-medium text-gray-900">Este agendamento faz parte de uma série recorrente:</p>
+              <div className={`p-4 rounded-lg space-y-2 border-2 transition-colors ${cancelSeriesMode === "all" ? "bg-red-50 border-red-300" : "bg-amber-50 border-amber-200"}`}>
+                <p className="text-sm font-medium text-gray-900">Este agendamento faz parte de uma série recorrente. Escolha uma opção:</p>
                 <div className="flex flex-col gap-2">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -1473,7 +1474,7 @@ export default function AgendaPage() {
                       onChange={() => setCancelSeriesMode("single")}
                       className="h-4 w-4 text-orange-600 focus:ring-orange-500"
                     />
-                    <span className="text-sm">Cancelar apenas <strong>este</strong> agendamento</span>
+                    <span className={`text-sm ${cancelSeriesMode === "single" ? "font-semibold text-gray-900" : "text-gray-600"}`}>Cancelar apenas <strong>este</strong> agendamento</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -1483,7 +1484,7 @@ export default function AgendaPage() {
                       onChange={() => setCancelSeriesMode("all")}
                       className="h-4 w-4 text-orange-600 focus:ring-orange-500"
                     />
-                    <span className="text-sm font-semibold text-destructive">Cancelar <strong>toda a série</strong></span>
+                    <span className={`text-sm font-semibold ${cancelSeriesMode === "all" ? "text-red-700" : "text-gray-600"}`}>Cancelar <strong>toda a série</strong></span>
                   </label>
                 </div>
               </div>
@@ -1495,7 +1496,9 @@ export default function AgendaPage() {
             <Button
               onClick={handleCancelAppointment}
               disabled={updateAppointmentMutation.isPending || cancelSeriesMutation.isPending}
-              className="bg-orange-600 text-white hover:bg-orange-700"
+              className={cancelSeriesMode === "all" && cancellingAppointment?.seriesId
+                ? "bg-red-600 text-white hover:bg-red-700"
+                : "bg-orange-600 text-white hover:bg-orange-700"}
             >
               {(updateAppointmentMutation.isPending || cancelSeriesMutation.isPending)
                 ? "Cancelando..."
