@@ -4,6 +4,7 @@ import {
   InsertUser, users, 
   patients, InsertPatient,
   appointments, InsertAppointment,
+  appointmentStatusAudit, InsertAppointmentStatusAudit,
   documents, InsertDocument,
   patientData, InsertPatientData,
   evolutions, InsertEvolution,
@@ -434,6 +435,22 @@ export async function updateAppointmentStatus(id: number, status: 'scheduled' | 
   if (!db) throw new Error("Database not available");
   
   return await db.update(appointments).set({ status }).where(eq(appointments.id, id));
+}
+
+export async function createAppointmentStatusAudit(entry: InsertAppointmentStatusAudit) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  return await db.insert(appointmentStatusAudit).values(entry);
+}
+
+export async function getAppointmentStatusAudit(appointmentId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return await db.select().from(appointmentStatusAudit)
+    .where(eq(appointmentStatusAudit.appointmentId, appointmentId))
+    .orderBy(desc(appointmentStatusAudit.createdAt));
 }
 
 export async function deleteAppointment(id: number) {

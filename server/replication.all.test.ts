@@ -25,6 +25,26 @@ function createAdminContext(userId: number): { ctx: TrpcContext } {
   return { ctx };
 }
 
+function createTherapistContext(userId: number): { ctx: TrpcContext } {
+  const user: AuthenticatedUser = {
+    id: userId,
+    openId: "therapist-replication-test",
+    email: "terapeuta@sapere.test",
+    name: "Terapeuta Sapere",
+    loginMethod: "password",
+    role: "therapist",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    lastSignedIn: new Date(),
+  };
+  const ctx: TrpcContext = {
+    user,
+    req: { protocol: "https", headers: {} } as TrpcContext["req"],
+    res: {} as TrpcContext["res"],
+  };
+  return { ctx };
+}
+
 describe('Replication - All week options (4 to 12)', () => {
   let adminUserId: number;
   let patientId: number;
@@ -149,9 +169,58 @@ describe('Replication - All week options (4 to 12)', () => {
     expect(allSeriesAppointments).toHaveLength(5);
     expect(allSeriesAppointments.every(appointment => appointment.status === 'cancelled')).toBe(true);
 
+    const statusAudit = await db.getAppointmentStatusAudit(created.id);
+    expect(statusAudit).toHaveLength(1);
+    expect(statusAudit[0]).toMatchObject({
+      previousStatus: 'scheduled',
+      nextStatus: 'cancelled',
+      changedByUserId: adminUserId,
+      source: 'appointments.cancelSeries',
+    });
+
     const retryCancellation = await caller.appointments.cancelSeries({ seriesId });
     expect(retryCancellation.success).toBe(true);
     expect(retryCancellation.cancelledCount).toBe(0);
     expect(retryCancellation.alreadyProcessed).toBe(true);
+  });
+
+  it('should block cancellation through generic edit and audit explicit single cancellation', async () => {
+    const { ctx } = createAdminContext(adminUserId);
+    const caller = appRouter.createCaller(ctx);
+    const startTime = new Date('2037-12-10T10:00:00Z');
+    const endTime = new Date('2037-12-10T10:50:00Z');
+
+    const created = await caller.appointments.create({
+      patientId,
+      therapistUserId: therapistId,
+      therapyType: 'fonoaudiologia',
+      startTime,
+      endTime,
+      replicateWeekly: false,
+    });
+
+    await expect(
+      caller.appointments.update({ id: created.id, status: 'cancelled' })
+    ).rejects.toMatchObject({ code: 'BAD_REQUEST' });
+
+    const afterBlockedEdit = await db.getAppointmentById(created.id);
+    expect(afterBlockedEdit?.status).toBe('scheduled');
+
+    const therapistCaller = appRouter.createCaller(createTherapistContext(therapistId).ctx);
+    await expect(
+      therapistCaller.appointments.cancel({ id: created.id })
+    ).rejects.toMatchObject({ code: 'FORBIDDEN' });
+
+    const cancellation = await caller.appointments.cancel({ id: created.id });
+    expect(cancellation).toMatchObject({ success: true, alreadyCancelled: false });
+
+    const statusAudit = await db.getAppointmentStatusAudit(created.id);
+    expect(statusAudit).toHaveLength(1);
+    expect(statusAudit[0]).toMatchObject({
+      previousStatus: 'scheduled',
+      nextStatus: 'cancelled',
+      changedByUserId: adminUserId,
+      source: 'appointments.cancel',
+    });
   });
 });

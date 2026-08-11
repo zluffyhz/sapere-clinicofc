@@ -63,6 +63,24 @@ export type Appointment = typeof appointments.$inferSelect;
 export type InsertAppointment = typeof appointments.$inferInsert;
 
 /**
+ * Immutable audit trail for appointment status changes. It makes every
+ * cancellation, absence, completion and reactivation traceable to its actor
+ * and source route.
+ */
+export const appointmentStatusAudit = mysqlTable("appointment_status_audit", {
+  id: int("id").autoincrement().primaryKey(),
+  appointmentId: int("appointmentId").notNull(),
+  previousStatus: varchar("previousStatus", { length: 24 }).notNull(),
+  nextStatus: varchar("nextStatus", { length: 24 }).notNull(),
+  changedByUserId: int("changedByUserId").notNull(),
+  source: varchar("source", { length: 64 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AppointmentStatusAudit = typeof appointmentStatusAudit.$inferSelect;
+export type InsertAppointmentStatusAudit = typeof appointmentStatusAudit.$inferInsert;
+
+/**
  * Documents table - stores references to files in S3
  */
 export const documents = mysqlTable("documents", {

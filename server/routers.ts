@@ -539,9 +539,42 @@ export const appRouter = router({
       }))
       .mutation(async ({ input, ctx }) => {
         const { id, ...data } = input;
-        
-        
+        const existingAppointment = await db.getAppointmentById(id);
+        if (!existingAppointment) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Agendamento não encontrado' });
+        }
+
+        if (ctx.user.role === 'therapist' && existingAppointment.therapistUserId !== ctx.user.id) {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Você não pode alterar este agendamento' });
+        }
+
+        if (data.status && ctx.user.role !== 'admin') {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'A alteração manual de status é restrita à recepção',
+          });
+        }
+
+        // A cancellation must use the explicit cancellation route, never the
+        // generic edit form. This protects against stale status values.
+        if (data.status === 'cancelled') {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Use a ação de cancelamento para cancelar um agendamento',
+          });
+        }
+
         await db.updateAppointment(id, data);
+
+        if (data.status && data.status !== existingAppointment.status) {
+          await db.createAppointmentStatusAudit({
+            appointmentId: id,
+            previousStatus: existingAppointment.status,
+            nextStatus: data.status,
+            changedByUserId: ctx.user.id,
+            source: 'appointments.update',
+          });
+        }
         
         // Notify family if schedule changed
         if (data.startTime || data.endTime || data.status) {
@@ -572,6 +605,41 @@ export const appRouter = router({
         }
         
         return { success: true };
+      }),
+
+    cancel: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input, ctx }) => {
+        const appointment = await db.getAppointmentById(input.id);
+        if (!appointment) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Agendamento não encontrado' });
+        }
+
+        if (appointment.status === 'cancelled') {
+          return { success: true, alreadyCancelled: true };
+        }
+
+        await db.updateAppointment(input.id, { status: 'cancelled' });
+        await db.createAppointmentStatusAudit({
+          appointmentId: input.id,
+          previousStatus: appointment.status,
+          nextStatus: 'cancelled',
+          changedByUserId: ctx.user.id,
+          source: 'appointments.cancel',
+        });
+
+        const patient = await db.getPatientById(appointment.patientId);
+        if (patient) {
+          await db.createNotification({
+            userId: patient.familyUserId,
+            type: 'schedule_change',
+            title: 'Sessão cancelada',
+            message: `A sessão de ${appointment.therapyType} agendada para ${appointment.startTime.toLocaleDateString('pt-BR')} foi cancelada`,
+            relatedId: appointment.id,
+          });
+        }
+
+        return { success: true, alreadyCancelled: false };
       }),
 
     delete: therapistProcedure
@@ -630,7 +698,7 @@ export const appRouter = router({
         return { success: true, updatedCount: seriesAppointments.length };
       }),
 
-    cancelSeries: therapistProcedure
+    cancelSeries: adminProcedure
       .input(z.object({ seriesId: z.string() }))
       .mutation(async ({ input, ctx }) => {
         // Use the complete series here. Unlike the edit flow, cancellation must
@@ -653,6 +721,13 @@ export const appRouter = router({
         // Cancel every remaining active appointment in the series.
         for (const appointment of appointmentsToCancel) {
           await db.updateAppointment(appointment.id, { status: 'cancelled' });
+          await db.createAppointmentStatusAudit({
+            appointmentId: appointment.id,
+            previousStatus: appointment.status,
+            nextStatus: 'cancelled',
+            changedByUserId: ctx.user.id,
+            source: 'appointments.cancelSeries',
+          });
           
           // Notify family about cancellation
           const patient = await db.getPatientById(appointment.patientId);
@@ -1052,7 +1127,17 @@ export const appRouter = router({
         });
         
         // Update appointment status to completed
+        const matchedAppointment = await db.getAppointmentById(resolvedAppointmentId);
         await db.updateAppointmentStatus(resolvedAppointmentId, 'completed');
+        if (matchedAppointment && matchedAppointment.status !== 'completed') {
+          await db.createAppointmentStatusAudit({
+            appointmentId: resolvedAppointmentId,
+            previousStatus: matchedAppointment.status,
+            nextStatus: 'completed',
+            changedByUserId: ctx.user.id,
+            source: 'evolutions.create',
+          });
+        }
         
         // Send collaboration notification to family
         const patient = await db.getPatientById(input.patientId);

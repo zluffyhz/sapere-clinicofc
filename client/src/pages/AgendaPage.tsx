@@ -186,6 +186,16 @@ export default function AgendaPage() {
       toast.error(`Erro ao atualizar agendamento: ${error.message}`);
     },
   });
+
+  // Cancellation has a dedicated backend route, separate from ordinary edits.
+  const cancelAppointmentMutation = trpc.appointments.cancel.useMutation({
+    onSuccess: () => {
+      utils.appointments.listByDateRange.invalidate();
+    },
+    onError: (error) => {
+      toast.error(`Erro ao cancelar: ${error.message}`);
+    },
+  });
   
   // Update series mutation
   const updateSeriesMutation = trpc.appointments.updateSeries.useMutation({
@@ -430,13 +440,17 @@ export default function AgendaPage() {
       );
     } else {
       // Cancel only this single appointment
-      updateAppointmentMutation.mutate(
-        { id: cancellingAppointment.id, status: "cancelled" },
+      cancelAppointmentMutation.mutate(
+        { id: cancellingAppointment.id },
         {
-          onSuccess: () => {
+          onSuccess: (data) => {
             setIsCancelDialogOpen(false);
             setCancellingAppointment(null);
-            toast.success("Atendimento marcado como cancelado.");
+            toast.success(
+              data.alreadyCancelled
+                ? "Este atendimento já estava cancelado."
+                : "Atendimento marcado como cancelado."
+            );
           },
           onError: (err) => {
             toast.error(`Erro ao cancelar: ${err.message}`);
@@ -679,7 +693,6 @@ export default function AgendaPage() {
               { value: "scheduled", label: "Agendada" },
               { value: "completed", label: "Concluída" },
               { value: "absent", label: "Falta" },
-              { value: "cancelled", label: "Cancelada" },
               { value: "rescheduled", label: "Remarcada" },
             ]}
           />
@@ -1507,15 +1520,15 @@ export default function AgendaPage() {
           )}
 
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={updateAppointmentMutation.isPending || cancelSeriesMutation.isPending}>Voltar</AlertDialogCancel>
+            <AlertDialogCancel disabled={cancelAppointmentMutation.isPending || cancelSeriesMutation.isPending}>Voltar</AlertDialogCancel>
             <Button
               onClick={handleCancelAppointment}
-              disabled={updateAppointmentMutation.isPending || cancelSeriesMutation.isPending}
+              disabled={cancelAppointmentMutation.isPending || cancelSeriesMutation.isPending}
               className={cancelSeriesMode === "all" && cancellingAppointment?.seriesId
                 ? "bg-red-600 text-white hover:bg-red-700"
                 : "bg-orange-600 text-white hover:bg-orange-700"}
             >
-              {(updateAppointmentMutation.isPending || cancelSeriesMutation.isPending)
+              {(cancelAppointmentMutation.isPending || cancelSeriesMutation.isPending)
                 ? "Cancelando..."
                 : cancelSeriesMode === "all" && cancellingAppointment?.seriesId
                   ? "Cancelar toda a série"
