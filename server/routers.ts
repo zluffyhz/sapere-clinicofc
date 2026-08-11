@@ -633,18 +633,25 @@ export const appRouter = router({
     cancelSeries: therapistProcedure
       .input(z.object({ seriesId: z.string() }))
       .mutation(async ({ input, ctx }) => {
-        // Get all appointments in the series
-        const seriesAppointments = await db.getAppointmentsBySeries(input.seriesId);
+        // Use the complete series here. Unlike the edit flow, cancellation must
+        // be resilient when prior sessions were already cancelled or marked absent.
+        const allSeriesAppointments = await db.getAllAppointmentsBySeries(input.seriesId);
         
-        if (seriesAppointments.length === 0) {
+        if (allSeriesAppointments.length === 0) {
           throw new TRPCError({
             code: 'NOT_FOUND',
             message: 'Série de agendamentos não encontrada',
           });
         }
+
+        // Preserve prior absences and avoid reprocessing appointments that were
+        // already cancelled. The operation is idempotent for repeat clicks.
+        const appointmentsToCancel = allSeriesAppointments.filter(
+          appointment => appointment.status !== 'cancelled' && appointment.status !== 'absent'
+        );
         
-        // Cancel all appointments in the series
-        for (const appointment of seriesAppointments) {
+        // Cancel every remaining active appointment in the series.
+        for (const appointment of appointmentsToCancel) {
           await db.updateAppointment(appointment.id, { status: 'cancelled' });
           
           // Notify family about cancellation
@@ -660,7 +667,11 @@ export const appRouter = router({
           }
         }
         
-        return { success: true, cancelledCount: seriesAppointments.length };
+        return {
+          success: true,
+          cancelledCount: appointmentsToCancel.length,
+          alreadyProcessed: appointmentsToCancel.length === 0,
+        };
       }),
 
     // ---- Dual session (atendimento em dupla - dois pacientes) ----

@@ -417,7 +417,11 @@ export default function AgendaPage() {
           onSuccess: (data) => {
             setIsCancelDialogOpen(false);
             setCancellingAppointment(null);
-            toast.success(`${data.cancelledCount} agendamentos da série cancelados.`);
+            toast.success(
+              data.alreadyProcessed
+                ? "Esta série já estava integralmente cancelada."
+                : `${data.cancelledCount} agendamentos da série cancelados.`
+            );
           },
           onError: (err) => {
             toast.error(`Erro ao cancelar série: ${err.message}`);
@@ -444,7 +448,18 @@ export default function AgendaPage() {
 
   const handleDeleteAppointment = () => {
     if (deleteSeriesMode === "all" && editingSeriesId) {
-      cancelSeriesMutation.mutate({ seriesId: editingSeriesId });
+      cancelSeriesMutation.mutate(
+        { seriesId: editingSeriesId },
+        {
+          onSuccess: (data) => {
+            toast.success(
+              data.alreadyProcessed
+                ? "Esta série já estava integralmente cancelada."
+                : `${data.cancelledCount} agendamentos da série cancelados.`
+            );
+          },
+        }
+      );
     } else if (deletingAppointmentId) {
       deleteAppointmentMutation.mutate({ id: deletingAppointmentId });
     }

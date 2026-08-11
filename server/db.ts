@@ -407,6 +407,21 @@ export async function getAppointmentsBySeries(seriesId: string) {
     .orderBy(asc(appointments.startTime));
 }
 
+/**
+ * Returns every appointment belonging to a series, including appointments that
+ * were already cancelled or marked as absent. This is intentionally separate
+ * from getAppointmentsBySeries(), which is used by the edit flow and only
+ * returns active appointments.
+ */
+export async function getAllAppointmentsBySeries(seriesId: string) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return await db.select().from(appointments)
+    .where(eq(appointments.seriesId, seriesId))
+    .orderBy(asc(appointments.startTime));
+}
+
 export async function updateAppointment(id: number, data: Partial<InsertAppointment>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");

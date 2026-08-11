@@ -119,4 +119,39 @@ describe('Replication - All week options (4 to 12)', () => {
       }
     }
   });
+
+  it('should cancel every active appointment in a series and remain idempotent on retry', async () => {
+    const { ctx } = createAdminContext(adminUserId);
+    const caller = appRouter.createCaller(ctx);
+    const startTime = new Date('2037-11-05T10:00:00Z');
+    const endTime = new Date('2037-11-05T10:50:00Z');
+
+    const created = await caller.appointments.create({
+      patientId,
+      therapistUserId: therapistId,
+      therapyType: 'fonoaudiologia',
+      startTime,
+      endTime,
+      replicateWeekly: true,
+      replicateWeeks: 4,
+    });
+    const firstAppointment = await db.getAppointmentById(created.id);
+
+    expect(firstAppointment?.seriesId).toBeTruthy();
+    const seriesId = firstAppointment!.seriesId!;
+
+    const firstCancellation = await caller.appointments.cancelSeries({ seriesId });
+    expect(firstCancellation.success).toBe(true);
+    expect(firstCancellation.cancelledCount).toBe(5);
+    expect(firstCancellation.alreadyProcessed).toBe(false);
+
+    const allSeriesAppointments = await db.getAllAppointmentsBySeries(seriesId);
+    expect(allSeriesAppointments).toHaveLength(5);
+    expect(allSeriesAppointments.every(appointment => appointment.status === 'cancelled')).toBe(true);
+
+    const retryCancellation = await caller.appointments.cancelSeries({ seriesId });
+    expect(retryCancellation.success).toBe(true);
+    expect(retryCancellation.cancelledCount).toBe(0);
+    expect(retryCancellation.alreadyProcessed).toBe(true);
+  });
 });
