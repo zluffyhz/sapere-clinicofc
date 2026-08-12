@@ -456,7 +456,16 @@ export async function getAppointmentStatusAudit(appointmentId: number) {
 export async function deleteAppointment(id: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
+
+  // Keep auxiliary scheduling tables consistent while preserving clinical records.
+  await db.delete(appointmentCoTherapists)
+    .where(eq(appointmentCoTherapists.appointmentId, id));
+  await db.delete(appointmentDualPatients)
+    .where(or(
+      eq(appointmentDualPatients.appointmentId1, id),
+      eq(appointmentDualPatients.appointmentId2, id)
+    ));
+
   return await db.delete(appointments).where(eq(appointments.id, id));
 }
 

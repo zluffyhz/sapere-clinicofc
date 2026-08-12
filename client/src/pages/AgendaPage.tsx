@@ -71,11 +71,7 @@ export default function AgendaPage() {
   // Delete confirmation dialog
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deletingAppointmentId, setDeletingAppointmentId] = useState<number | null>(null);
-  
-  // Cancel confirmation dialog
-  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
-  const [cancellingAppointment, setCancellingAppointment] = useState<any | null>(null);
-  const [cancelSeriesMode, setCancelSeriesMode] = useState<"single" | "all">("single");
+  const [deletingAppointment, setDeletingAppointment] = useState<any | null>(null);
   
   // Series edit/delete state
   const [editingSeriesId, setEditingSeriesId] = useState<string | null>(null);
@@ -133,6 +129,12 @@ export default function AgendaPage() {
 
   const { data: patients } = trpc.patients.list.useQuery();
   const { data: therapists } = trpc.admin.listUsers.useQuery();
+  const seriesPreviewQuery = trpc.appointments.seriesPreview.useQuery(
+    { seriesId: editingSeriesId! },
+    {
+      enabled: isDeleteDialogOpen && deleteSeriesMode === "all" && Boolean(editingSeriesId),
+    }
+  );
 
   // Sync co-therapists mutation — invalidate AFTER sync completes so co-therapists are already in DB
   const syncCoTherapistsMutation = trpc.appointments.syncCoTherapists.useMutation({
@@ -187,16 +189,6 @@ export default function AgendaPage() {
     },
   });
 
-  // Cancellation has a dedicated backend route, separate from ordinary edits.
-  const cancelAppointmentMutation = trpc.appointments.cancel.useMutation({
-    onSuccess: () => {
-      utils.appointments.listByDateRange.invalidate();
-    },
-    onError: (error) => {
-      toast.error(`Erro ao cancelar: ${error.message}`);
-    },
-  });
-  
   // Update series mutation
   const updateSeriesMutation = trpc.appointments.updateSeries.useMutation({
     onSuccess: (data) => {
@@ -212,18 +204,17 @@ export default function AgendaPage() {
     },
   });
   
-  // Cancel series mutation
-  const cancelSeriesMutation = trpc.appointments.cancelSeries.useMutation({
+  // Delete a complete series after its checklist has been confirmed.
+  const deleteSeriesMutation = trpc.appointments.deleteSeries.useMutation({
     onSuccess: () => {
-      // Global handler: manages delete dialog state and cache invalidation
-      // The cancel dialog flow shows its own toast via inline onSuccess callback
       setIsDeleteDialogOpen(false);
       setDeletingAppointmentId(null);
+      setDeletingAppointment(null);
       setEditingSeriesId(null);
       utils.appointments.listByDateRange.invalidate();
     },
     onError: (error) => {
-      toast.error(`Erro ao cancelar série: ${error.message}`);
+      toast.error(`Erro ao excluir série: ${error.message}`);
     },
   });
 
@@ -233,6 +224,7 @@ export default function AgendaPage() {
       toast.success("Agendamento excluído com sucesso!");
       setIsDeleteDialogOpen(false);
       setDeletingAppointmentId(null);
+      setDeletingAppointment(null);
       setEditingSeriesId(null);
       utils.appointments.listByDateRange.invalidate();
     },
@@ -405,72 +397,19 @@ export default function AgendaPage() {
 
   const openDeleteDialog = (apt: any) => {
     setDeletingAppointmentId(apt.id);
+    setDeletingAppointment(apt);
     setEditingSeriesId(apt.seriesId || null);
     setDeleteSeriesMode("single"); // reset to single every time dialog opens
     setIsDeleteDialogOpen(true);
   };
 
-  const openCancelDialog = (apt: any) => {
-    setCancellingAppointment(apt);
-    setCancelSeriesMode("single"); // always reset to single when opening
-    setIsCancelDialogOpen(true);
-  };
-
-  const handleCancelAppointment = () => {
-    if (!cancellingAppointment) return;
-    
-    // If series mode "all" and appointment belongs to a series, cancel the whole series
-    if (cancelSeriesMode === "all" && cancellingAppointment.seriesId) {
-      cancelSeriesMutation.mutate(
-        { seriesId: cancellingAppointment.seriesId },
-        {
-          onSuccess: (data) => {
-            setIsCancelDialogOpen(false);
-            setCancellingAppointment(null);
-            toast.success(
-              data.alreadyProcessed
-                ? "Esta série já estava integralmente cancelada."
-                : `${data.cancelledCount} agendamentos da série cancelados.`
-            );
-          },
-          onError: (err) => {
-            toast.error(`Erro ao cancelar série: ${err.message}`);
-          },
-        }
-      );
-    } else {
-      // Cancel only this single appointment
-      cancelAppointmentMutation.mutate(
-        { id: cancellingAppointment.id },
-        {
-          onSuccess: (data) => {
-            setIsCancelDialogOpen(false);
-            setCancellingAppointment(null);
-            toast.success(
-              data.alreadyCancelled
-                ? "Este atendimento já estava cancelado."
-                : "Atendimento marcado como cancelado."
-            );
-          },
-          onError: (err) => {
-            toast.error(`Erro ao cancelar: ${err.message}`);
-          },
-        }
-      );
-    }
-  };
-
   const handleDeleteAppointment = () => {
     if (deleteSeriesMode === "all" && editingSeriesId) {
-      cancelSeriesMutation.mutate(
+      deleteSeriesMutation.mutate(
         { seriesId: editingSeriesId },
         {
           onSuccess: (data) => {
-            toast.success(
-              data.alreadyProcessed
-                ? "Esta série já estava integralmente cancelada."
-                : `${data.cancelledCount} agendamentos da série cancelados.`
-            );
+            toast.success(`${data.deletedCount} agendamentos da série foram excluídos.`);
           },
         }
       );
@@ -530,6 +469,27 @@ export default function AgendaPage() {
     rescheduled: "Remarcada",
     absent: "Falta",
   };
+
+  const deletionChecklist = useMemo(() => {
+    if (deleteSeriesMode === "all" && editingSeriesId) {
+      return {
+        patientName: seriesPreviewQuery.data?.patientName ?? "Carregando paciente…",
+        therapyType: seriesPreviewQuery.data?.therapyType ?? "",
+        appointments: seriesPreviewQuery.data?.appointments ?? [],
+      };
+    }
+
+    if (!deletingAppointment) return null;
+    return {
+      patientName: patients?.find(patient => patient.id === deletingAppointment.patientId)?.name ?? "Paciente não identificado",
+      therapyType: deletingAppointment.therapyType,
+      appointments: [{
+        id: deletingAppointment.id,
+        startTime: deletingAppointment.startTime,
+        status: deletingAppointment.status,
+      }],
+    };
+  }, [deleteSeriesMode, deletingAppointment, editingSeriesId, patients, seriesPreviewQuery.data]);
 
   // Cores por tipo de terapia
   const therapyTypeColors: Record<string, { bg: string; border: string; accent: string }> = {
@@ -1272,6 +1232,7 @@ export default function AgendaPage() {
                                   size="icon"
                                   onClick={() => openEditModal(apt)}
                                   title="Editar agendamento"
+                                  aria-label="Editar agendamento"
                                 >
                                   <Pencil className="h-4 w-4" />
                                 </Button>
@@ -1282,20 +1243,10 @@ export default function AgendaPage() {
                                     onClick={() => markAbsentMutation.mutate({ id: apt.id, status: 'absent' })}
                                     className="text-orange-500 hover:text-orange-600 hover:border-orange-400"
                                     title="Registrar falta do paciente"
+                                    aria-label="Registrar falta do paciente"
                                     disabled={markAbsentMutation.isPending}
                                   >
                                     <UserX className="h-4 w-4" />
-                                  </Button>
-                                )}
-                                {apt.status !== 'completed' && apt.status !== 'absent' && (
-                                  <Button
-                                    variant="outline"
-                                    size="icon"
-                                    onClick={() => openCancelDialog(apt)}
-                                    className="text-red-500 hover:text-red-600 hover:border-red-400"
-                                    title="Cancelar agendamento"
-                                  >
-                                    <Ban className="h-4 w-4" />
                                   </Button>
                                 )}
                                 <Button
@@ -1304,6 +1255,7 @@ export default function AgendaPage() {
                                   onClick={() => openDeleteDialog(apt)}
                                   className="text-destructive hover:text-destructive"
                                   title="Excluir agendamento"
+                                  aria-label="Excluir agendamento"
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </Button>
@@ -1317,6 +1269,7 @@ export default function AgendaPage() {
                                   onClick={() => reactivateAppointmentMutation.mutate({ id: apt.id, status: 'scheduled' })}
                                   className="text-green-600 hover:text-green-700 hover:border-green-400"
                                   title="Reativar agendamento"
+                                  aria-label="Reativar agendamento"
                                   disabled={reactivateAppointmentMutation.isPending}
                                 >
                                   <RotateCcw className="h-4 w-4" />
@@ -1327,6 +1280,7 @@ export default function AgendaPage() {
                                   onClick={() => openDeleteDialog(apt)}
                                   className="text-destructive hover:text-destructive"
                                   title="Excluir agendamento"
+                                  aria-label="Excluir agendamento"
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </Button>
@@ -1477,83 +1431,22 @@ export default function AgendaPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
-      {/* Cancel Confirmation Dialog */}
-      <AlertDialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar cancelamento</AlertDialogTitle>
-            <AlertDialogDescription>
-              O agendamento continuará visível na agenda com o status "Cancelado".
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-
-          {/* Series cancel options — shown only when appointment belongs to a series */}
-          {cancellingAppointment?.seriesId && (
-            <div className="px-6 pb-4">
-              <div className={`p-4 rounded-lg space-y-2 border-2 transition-colors ${cancelSeriesMode === "all" ? "bg-red-50 border-red-300" : "bg-amber-50 border-amber-200"}`}>
-                <p className="text-sm font-medium text-gray-900">Este agendamento faz parte de uma série recorrente. Escolha uma opção:</p>
-                <div className="flex flex-col gap-2">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="cancelMode"
-                      checked={cancelSeriesMode === "single"}
-                      onChange={() => setCancelSeriesMode("single")}
-                      className="h-4 w-4 text-orange-600 focus:ring-orange-500"
-                    />
-                    <span className={`text-sm ${cancelSeriesMode === "single" ? "font-semibold text-gray-900" : "text-gray-600"}`}>Cancelar apenas <strong>este</strong> agendamento</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="cancelMode"
-                      checked={cancelSeriesMode === "all"}
-                      onChange={() => setCancelSeriesMode("all")}
-                      className="h-4 w-4 text-orange-600 focus:ring-orange-500"
-                    />
-                    <span className={`text-sm font-semibold ${cancelSeriesMode === "all" ? "text-red-700" : "text-gray-600"}`}>Cancelar <strong>toda a série</strong></span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={cancelAppointmentMutation.isPending || cancelSeriesMutation.isPending}>Voltar</AlertDialogCancel>
-            <Button
-              onClick={handleCancelAppointment}
-              disabled={cancelAppointmentMutation.isPending || cancelSeriesMutation.isPending}
-              className={cancelSeriesMode === "all" && cancellingAppointment?.seriesId
-                ? "bg-red-600 text-white hover:bg-red-700"
-                : "bg-orange-600 text-white hover:bg-orange-700"}
-            >
-              {(cancelAppointmentMutation.isPending || cancelSeriesMutation.isPending)
-                ? "Cancelando..."
-                : cancelSeriesMode === "all" && cancellingAppointment?.seriesId
-                  ? "Cancelar toda a série"
-                  : "Cancelar este agendamento"}
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain sm:max-w-lg">
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogTitle className="text-pretty">
+              {deleteSeriesMode === "all" && editingSeriesId ? "Excluir série de atendimentos?" : "Excluir sessão?"}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir este agendamento? Esta ação não pode ser desfeita.
+              A exclusão é permanente e não poderá ser desfeita. Revise os dados abaixo antes de confirmar.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          
-          {/* Series delete options */}
+
           {editingSeriesId && (
-            <div className="px-6 pb-4">
-              <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
-                <p className="text-sm font-medium text-gray-900">Este agendamento faz parte de uma série recorrente:</p>
-                <div className="flex flex-col gap-2">
-                  <label className="flex items-center gap-2 cursor-pointer">
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+              <p className="mb-2 text-sm font-medium text-amber-950">Este agendamento pertence a uma série recorrente.</p>
+              <div className="grid gap-2" role="radiogroup" aria-label="Escopo da exclusão">
+                  <label className="flex min-w-0 cursor-pointer items-center gap-2 rounded-md px-1 py-1 text-sm hover:bg-amber-100">
                     <input
                       type="radio"
                       name="deleteMode"
@@ -1561,33 +1454,74 @@ export default function AgendaPage() {
                       onChange={() => setDeleteSeriesMode("single")}
                       className="h-4 w-4 text-orange-600 focus:ring-orange-500"
                     />
-                    <span className="text-sm">Excluir apenas este agendamento</span>
+                    <span>Excluir apenas esta sessão</span>
                   </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
+                  <label className="flex min-w-0 cursor-pointer items-center gap-2 rounded-md px-1 py-1 text-sm hover:bg-amber-100">
                     <input
                       type="radio"
                       name="deleteMode"
                       checked={deleteSeriesMode === "all"}
                       onChange={() => setDeleteSeriesMode("all")}
-                      className="h-4 w-4 text-orange-600 focus:ring-orange-500"
+                      className="h-4 w-4 text-destructive focus:ring-red-500"
                     />
-                    <span className="text-sm font-semibold text-destructive">Cancelar toda a série</span>
+                    <span className="font-semibold text-destructive">Excluir esta sessão e a série de atendimentos</span>
                   </label>
-                </div>
               </div>
             </div>
           )}
-          
+
+          <section className="rounded-lg border bg-muted/30 p-3" aria-live="polite" aria-label="Checklist de exclusão">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Checklist antes da exclusão</p>
+            <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+              <div className="min-w-0">
+                <dt className="text-xs text-muted-foreground">Paciente</dt>
+                <dd className="truncate font-medium" title={deletionChecklist?.patientName}>{deletionChecklist?.patientName ?? "—"}</dd>
+              </div>
+              <div className="min-w-0">
+                <dt className="text-xs text-muted-foreground">Terapia</dt>
+                <dd className="truncate font-medium">{therapyTypeLabels[deletionChecklist?.therapyType ?? ""] ?? deletionChecklist?.therapyType ?? "—"}</dd>
+              </div>
+            </dl>
+
+            {deleteSeriesMode === "all" && seriesPreviewQuery.isLoading ? (
+              <p className="mt-3 text-sm text-muted-foreground">Carregando sessões da série…</p>
+            ) : deleteSeriesMode === "all" && seriesPreviewQuery.isError ? (
+              <p className="mt-3 text-sm text-destructive">Não foi possível carregar as sessões da série. Feche o diálogo e tente novamente.</p>
+            ) : (
+              <div className="mt-3 border-t pt-3">
+                <p className="mb-2 text-sm font-medium">
+                  {deletionChecklist?.appointments.length ?? 0} {(deletionChecklist?.appointments.length ?? 0) === 1 ? "sessão será excluída:" : "sessões serão excluídas:"}
+                </p>
+                <ul className="grid gap-1.5 sm:grid-cols-2" aria-label="Datas que serão excluídas">
+                  {deletionChecklist?.appointments.map(appointment => (
+                    <li key={appointment.id} className="min-w-0 rounded-md bg-background px-2 py-1.5 text-xs text-foreground shadow-sm ring-1 ring-border/70">
+                      <time dateTime={new Date(appointment.startTime).toISOString()}>
+                        {formatBRT(appointment.startTime, "EEE, dd/MM/yyyy · HH:mm")}
+                      </time>
+                      {appointment.status !== "scheduled" && (
+                        <span className="ml-1 text-muted-foreground">({statusLabels[appointment.status] ?? appointment.status})</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
+
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleteAppointmentMutation.isPending || cancelSeriesMutation.isPending}>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel disabled={deleteAppointmentMutation.isPending || deleteSeriesMutation.isPending}>Voltar</AlertDialogCancel>
             <Button
               onClick={handleDeleteAppointment}
-              disabled={deleteAppointmentMutation.isPending || cancelSeriesMutation.isPending}
+              disabled={
+                deleteAppointmentMutation.isPending ||
+                deleteSeriesMutation.isPending ||
+                (deleteSeriesMode === "all" && (!seriesPreviewQuery.data || seriesPreviewQuery.isLoading))
+              }
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {(deleteAppointmentMutation.isPending || cancelSeriesMutation.isPending)
-                ? (deleteSeriesMode === "all" ? "Cancelando série..." : "Excluindo...")
-                : (deleteSeriesMode === "all" && editingSeriesId ? "Cancelar toda a série" : "Excluir")}
+              {(deleteAppointmentMutation.isPending || deleteSeriesMutation.isPending)
+                ? "Excluindo…"
+                : (deleteSeriesMode === "all" && editingSeriesId ? "Excluir série & sessões" : "Excluir sessão")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

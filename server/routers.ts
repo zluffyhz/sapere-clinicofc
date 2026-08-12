@@ -642,11 +642,66 @@ export const appRouter = router({
         return { success: true, alreadyCancelled: false };
       }),
 
-    delete: therapistProcedure
+    seriesPreview: adminProcedure
+      .input(z.object({ seriesId: z.string() }))
+      .query(async ({ input }) => {
+        const seriesAppointments = await db.getAllAppointmentsBySeries(input.seriesId);
+        if (seriesAppointments.length === 0) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Série de agendamentos não encontrada' });
+        }
+
+        const firstAppointment = seriesAppointments[0];
+        const patient = await db.getPatientById(firstAppointment.patientId);
+        return {
+          patientName: patient?.name ?? 'Paciente não identificado',
+          therapyType: firstAppointment.therapyType,
+          appointments: seriesAppointments.map(appointment => ({
+            id: appointment.id,
+            startTime: appointment.startTime,
+            status: appointment.status,
+          })),
+        };
+      }),
+
+    delete: adminProcedure
       .input(z.object({ id: z.number() }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ input, ctx }) => {
+        const appointment = await db.getAppointmentById(input.id);
+        if (!appointment) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Agendamento não encontrado' });
+        }
+
+        await db.createAppointmentStatusAudit({
+          appointmentId: appointment.id,
+          previousStatus: appointment.status,
+          nextStatus: 'deleted',
+          changedByUserId: ctx.user.id,
+          source: 'appointments.delete',
+        });
         await db.deleteAppointment(input.id);
         return { success: true };
+      }),
+
+    deleteSeries: adminProcedure
+      .input(z.object({ seriesId: z.string() }))
+      .mutation(async ({ input, ctx }) => {
+        const seriesAppointments = await db.getAllAppointmentsBySeries(input.seriesId);
+        if (seriesAppointments.length === 0) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Série de agendamentos não encontrada' });
+        }
+
+        for (const appointment of seriesAppointments) {
+          await db.createAppointmentStatusAudit({
+            appointmentId: appointment.id,
+            previousStatus: appointment.status,
+            nextStatus: 'deleted',
+            changedByUserId: ctx.user.id,
+            source: 'appointments.deleteSeries',
+          });
+          await db.deleteAppointment(appointment.id);
+        }
+
+        return { success: true, deletedCount: seriesAppointments.length };
       }),
 
     updateSeries: therapistProcedure

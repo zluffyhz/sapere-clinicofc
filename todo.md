@@ -1286,3 +1286,4 @@
 - [x] Corrigir acesso ao prontuário para terapeutas: fallback por agendamento quando assignment não existe no cache (bug "Paciente não identificado" - Heitor Firmino / Vitória Santos)
 - [x] Corrigir erro "Série de agendamentos não encontrada" ao cancelar toda uma série na agenda
 - [x] Auditar e corrigir processos que possam marcar agendamentos como cancelados sem ação explícita da equipe
+- [x] Substituir cancelamento de série por exclusão unitária ou da série com checklist prévio de paciente, terapia e datas

@@ -184,6 +184,43 @@ describe('Replication - All week options (4 to 12)', () => {
     expect(retryCancellation.alreadyProcessed).toBe(true);
   });
 
+  it('should preview and permanently delete every appointment in a series', async () => {
+    const { ctx } = createAdminContext(adminUserId);
+    const caller = appRouter.createCaller(ctx);
+    const startTime = new Date('2037-12-01T10:00:00Z');
+    const endTime = new Date('2037-12-01T10:50:00Z');
+
+    const created = await caller.appointments.create({
+      patientId,
+      therapistUserId: therapistId,
+      therapyType: 'fonoaudiologia',
+      startTime,
+      endTime,
+      replicateWeekly: true,
+      replicateWeeks: 4,
+    });
+    const firstAppointment = await db.getAppointmentById(created.id);
+    const seriesId = firstAppointment!.seriesId!;
+
+    const preview = await caller.appointments.seriesPreview({ seriesId });
+    expect(preview).toMatchObject({ therapyType: 'fonoaudiologia' });
+    expect(preview.appointments).toHaveLength(5);
+    expect(preview.appointments.map(appointment => appointment.id)).toContain(created.id);
+
+    const deletion = await caller.appointments.deleteSeries({ seriesId });
+    expect(deletion).toMatchObject({ success: true, deletedCount: 5 });
+    expect(await db.getAllAppointmentsBySeries(seriesId)).toHaveLength(0);
+
+    const statusAudit = await db.getAppointmentStatusAudit(created.id);
+    expect(statusAudit).toHaveLength(1);
+    expect(statusAudit[0]).toMatchObject({
+      previousStatus: 'scheduled',
+      nextStatus: 'deleted',
+      changedByUserId: adminUserId,
+      source: 'appointments.deleteSeries',
+    });
+  });
+
   it('should block cancellation through generic edit and audit explicit single cancellation', async () => {
     const { ctx } = createAdminContext(adminUserId);
     const caller = appRouter.createCaller(ctx);
