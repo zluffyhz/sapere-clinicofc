@@ -650,7 +650,7 @@ export const appRouter = router({
           throw new TRPCError({ code: 'NOT_FOUND', message: 'Série de agendamentos não encontrada' });
         }
 
-        const selectedAppointment = seriesAppointments.find(appointment => appointment.id === input.fromAppointmentId);
+        const selectedAppointment = seriesAppointments.find(appointment => Number(appointment.id) === input.fromAppointmentId);
         if (!selectedAppointment) {
           throw new TRPCError({ code: 'NOT_FOUND', message: 'Sessão selecionada não encontrada nesta série' });
         }
@@ -702,7 +702,7 @@ export const appRouter = router({
           throw new TRPCError({ code: 'NOT_FOUND', message: 'Série de agendamentos não encontrada' });
         }
 
-        const selectedAppointment = seriesAppointments.find(appointment => appointment.id === input.fromAppointmentId);
+        const selectedAppointment = seriesAppointments.find(appointment => Number(appointment.id) === input.fromAppointmentId);
         if (!selectedAppointment) {
           throw new TRPCError({ code: 'NOT_FOUND', message: 'Sessão selecionada não encontrada nesta série' });
         }
