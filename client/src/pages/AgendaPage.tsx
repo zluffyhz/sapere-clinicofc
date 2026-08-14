@@ -130,9 +130,9 @@ export default function AgendaPage() {
   const { data: patients } = trpc.patients.list.useQuery();
   const { data: therapists } = trpc.admin.listUsers.useQuery();
   const seriesPreviewQuery = trpc.appointments.seriesPreview.useQuery(
-    { seriesId: editingSeriesId! },
+    { seriesId: editingSeriesId!, fromAppointmentId: deletingAppointmentId! },
     {
-      enabled: isDeleteDialogOpen && deleteSeriesMode === "all" && Boolean(editingSeriesId),
+      enabled: isDeleteDialogOpen && deleteSeriesMode === "all" && Boolean(editingSeriesId) && Boolean(deletingAppointmentId),
     }
   );
 
@@ -404,12 +404,12 @@ export default function AgendaPage() {
   };
 
   const handleDeleteAppointment = () => {
-    if (deleteSeriesMode === "all" && editingSeriesId) {
+    if (deleteSeriesMode === "all" && editingSeriesId && deletingAppointmentId) {
       deleteSeriesMutation.mutate(
-        { seriesId: editingSeriesId },
+        { seriesId: editingSeriesId, fromAppointmentId: deletingAppointmentId! },
         {
           onSuccess: (data) => {
-            toast.success(`${data.deletedCount} agendamentos da série foram excluídos.`);
+            toast.success(`${data.deletedCount} sessões selecionadas e posteriores foram excluídas.`);
           },
         }
       );
@@ -1464,7 +1464,7 @@ export default function AgendaPage() {
                       onChange={() => setDeleteSeriesMode("all")}
                       className="h-4 w-4 text-destructive focus:ring-red-500"
                     />
-                    <span className="font-semibold text-destructive">Excluir esta sessão e a série de atendimentos</span>
+                    <span className="font-semibold text-destructive">Excluir esta sessão e as posteriores da série</span>
                   </label>
               </div>
             </div>
@@ -1484,11 +1484,18 @@ export default function AgendaPage() {
             </dl>
 
             {deleteSeriesMode === "all" && seriesPreviewQuery.isLoading ? (
-              <p className="mt-3 text-sm text-muted-foreground">Carregando sessões da série…</p>
+              <p className="mt-3 text-sm text-muted-foreground">Carregando sessões a partir desta data…</p>
             ) : deleteSeriesMode === "all" && seriesPreviewQuery.isError ? (
               <p className="mt-3 text-sm text-destructive">Não foi possível carregar as sessões da série. Feche o diálogo e tente novamente.</p>
+            ) : deleteSeriesMode === "all" && deletionChecklist?.appointments.length === 0 ? (
+              <p className="mt-3 text-sm text-muted-foreground">Não há sessões posteriores elegíveis para exclusão a partir desta data. O histórico clínico permanece preservado.</p>
             ) : (
               <div className="mt-3 border-t pt-3">
+                {deleteSeriesMode === "all" && (
+                  <p className="mb-2 text-xs text-muted-foreground">
+                    O histórico anterior, as sessões concluídas e as faltas permanecem preservados.
+                  </p>
+                )}
                 <p className="mb-2 text-sm font-medium">
                   {deletionChecklist?.appointments.length ?? 0} {(deletionChecklist?.appointments.length ?? 0) === 1 ? "sessão será excluída:" : "sessões serão excluídas:"}
                 </p>
@@ -1515,7 +1522,11 @@ export default function AgendaPage() {
               disabled={
                 deleteAppointmentMutation.isPending ||
                 deleteSeriesMutation.isPending ||
-                (deleteSeriesMode === "all" && (!seriesPreviewQuery.data || seriesPreviewQuery.isLoading))
+                (deleteSeriesMode === "all" && (
+                  !seriesPreviewQuery.data ||
+                  seriesPreviewQuery.isLoading ||
+                  seriesPreviewQuery.data.appointments.length === 0
+                ))
               }
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >

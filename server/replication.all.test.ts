@@ -184,7 +184,7 @@ describe('Replication - All week options (4 to 12)', () => {
     expect(retryCancellation.alreadyProcessed).toBe(true);
   });
 
-  it('should preview and permanently delete every appointment in a series', async () => {
+  it('should preview and delete only the selected appointment and subsequent sessions in a series', async () => {
     const { ctx } = createAdminContext(adminUserId);
     const caller = appRouter.createCaller(ctx);
     const startTime = new Date('2037-12-01T10:00:00Z');
@@ -201,23 +201,43 @@ describe('Replication - All week options (4 to 12)', () => {
     });
     const firstAppointment = await db.getAppointmentById(created.id);
     const seriesId = firstAppointment!.seriesId!;
+    const seriesAppointments = (await db.getAllAppointmentsBySeries(seriesId))
+      .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 
-    const preview = await caller.appointments.seriesPreview({ seriesId });
+    await caller.appointments.update({ id: seriesAppointments[0].id, status: 'completed' });
+    await caller.appointments.update({ id: seriesAppointments[1].id, status: 'absent' });
+    const selectedAppointment = seriesAppointments[2];
+
+    const preview = await caller.appointments.seriesPreview({
+      seriesId,
+      fromAppointmentId: selectedAppointment.id,
+    });
     expect(preview).toMatchObject({ therapyType: 'fonoaudiologia' });
-    expect(preview.appointments).toHaveLength(5);
-    expect(preview.appointments.map(appointment => appointment.id)).toContain(created.id);
+    expect(preview.preservedCount).toBe(2);
+    expect(preview.appointments).toHaveLength(3);
+    expect(preview.appointments.map(appointment => appointment.id)).toEqual(
+      seriesAppointments.slice(2).map(appointment => appointment.id)
+    );
 
-    const deletion = await caller.appointments.deleteSeries({ seriesId });
-    expect(deletion).toMatchObject({ success: true, deletedCount: 5 });
-    expect(await db.getAllAppointmentsBySeries(seriesId)).toHaveLength(0);
+    const deletion = await caller.appointments.deleteSeries({
+      seriesId,
+      fromAppointmentId: selectedAppointment.id,
+    });
+    expect(deletion).toMatchObject({ success: true, deletedCount: 3, preservedCount: 2 });
+    const remainingAppointments = await db.getAllAppointmentsBySeries(seriesId);
+    expect(remainingAppointments).toHaveLength(2);
+    expect(remainingAppointments.map(appointment => appointment.id).sort()).toEqual(
+      seriesAppointments.slice(0, 2).map(appointment => appointment.id).sort()
+    );
+    expect(remainingAppointments.map(appointment => appointment.status).sort()).toEqual(['absent', 'completed']);
 
-    const statusAudit = await db.getAppointmentStatusAudit(created.id);
+    const statusAudit = await db.getAppointmentStatusAudit(selectedAppointment.id);
     expect(statusAudit).toHaveLength(1);
     expect(statusAudit[0]).toMatchObject({
       previousStatus: 'scheduled',
       nextStatus: 'deleted',
       changedByUserId: adminUserId,
-      source: 'appointments.deleteSeries',
+      source: 'appointments.deleteSeriesFromSelected',
     });
   });
 

@@ -1287,3 +1287,4 @@
 - [x] Corrigir erro "Série de agendamentos não encontrada" ao cancelar toda uma série na agenda
 - [x] Auditar e corrigir processos que possam marcar agendamentos como cancelados sem ação explícita da equipe
 - [x] Substituir cancelamento de série por exclusão unitária ou da série com checklist prévio de paciente, terapia e datas
+- [x] Fazer a exclusão de série remover apenas a sessão selecionada e as posteriores, preservando o histórico anterior

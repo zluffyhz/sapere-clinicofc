@@ -643,19 +643,31 @@ export const appRouter = router({
       }),
 
     seriesPreview: adminProcedure
-      .input(z.object({ seriesId: z.string() }))
+      .input(z.object({ seriesId: z.string(), fromAppointmentId: z.number() }))
       .query(async ({ input }) => {
         const seriesAppointments = await db.getAllAppointmentsBySeries(input.seriesId);
         if (seriesAppointments.length === 0) {
           throw new TRPCError({ code: 'NOT_FOUND', message: 'Série de agendamentos não encontrada' });
         }
 
+        const selectedAppointment = seriesAppointments.find(appointment => appointment.id === input.fromAppointmentId);
+        if (!selectedAppointment) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Sessão selecionada não encontrada nesta série' });
+        }
+
+        const appointmentsToDelete = seriesAppointments.filter(appointment =>
+          appointment.startTime >= selectedAppointment.startTime &&
+          appointment.status !== 'completed' &&
+          appointment.status !== 'absent'
+        );
         const firstAppointment = seriesAppointments[0];
         const patient = await db.getPatientById(firstAppointment.patientId);
         return {
           patientName: patient?.name ?? 'Paciente não identificado',
           therapyType: firstAppointment.therapyType,
-          appointments: seriesAppointments.map(appointment => ({
+          startingAt: selectedAppointment.startTime,
+          preservedCount: seriesAppointments.length - appointmentsToDelete.length,
+          appointments: appointmentsToDelete.map(appointment => ({
             id: appointment.id,
             startTime: appointment.startTime,
             status: appointment.status,
@@ -683,25 +695,46 @@ export const appRouter = router({
       }),
 
     deleteSeries: adminProcedure
-      .input(z.object({ seriesId: z.string() }))
+      .input(z.object({ seriesId: z.string(), fromAppointmentId: z.number() }))
       .mutation(async ({ input, ctx }) => {
         const seriesAppointments = await db.getAllAppointmentsBySeries(input.seriesId);
         if (seriesAppointments.length === 0) {
           throw new TRPCError({ code: 'NOT_FOUND', message: 'Série de agendamentos não encontrada' });
         }
 
-        for (const appointment of seriesAppointments) {
+        const selectedAppointment = seriesAppointments.find(appointment => appointment.id === input.fromAppointmentId);
+        if (!selectedAppointment) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Sessão selecionada não encontrada nesta série' });
+        }
+
+        const appointmentsToDelete = seriesAppointments.filter(appointment =>
+          appointment.startTime >= selectedAppointment.startTime &&
+          appointment.status !== 'completed' &&
+          appointment.status !== 'absent'
+        );
+        if (appointmentsToDelete.length === 0) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Não há sessões futuras elegíveis para exclusão a partir da sessão selecionada',
+          });
+        }
+
+        for (const appointment of appointmentsToDelete) {
           await db.createAppointmentStatusAudit({
             appointmentId: appointment.id,
             previousStatus: appointment.status,
             nextStatus: 'deleted',
             changedByUserId: ctx.user.id,
-            source: 'appointments.deleteSeries',
+            source: 'appointments.deleteSeriesFromSelected',
           });
           await db.deleteAppointment(appointment.id);
         }
 
-        return { success: true, deletedCount: seriesAppointments.length };
+        return {
+          success: true,
+          deletedCount: appointmentsToDelete.length,
+          preservedCount: seriesAppointments.length - appointmentsToDelete.length,
+        };
       }),
 
     updateSeries: therapistProcedure
